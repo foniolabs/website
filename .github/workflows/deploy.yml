@@ -29,6 +29,17 @@ jobs:
           which node || true
           echo "--- End Node / NPM info ---"
 
+      - name: Force install Node.js 20 (NodeSource fallback)
+        if: runner.os == 'Linux'
+        run: |
+          echo "Installing Node.js 20 via NodeSource (fallback)"
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          echo "After NodeSource install:"
+          node -v || true
+          npm -v || true
+          which node || true
+
       - name: Install dependencies
         run: |
           echo "Running npm ci..."
