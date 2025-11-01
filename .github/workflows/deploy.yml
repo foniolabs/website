@@ -3,50 +3,56 @@ name: Deploy to cPanel
 
 on:
   push:
-    branches: [ main, master ]  # Deploy when pushing to main or master branch
-  workflow_dispatch:  # Allow manual deployment
+    branches: [main, master] # Deploy when pushing to main or master branch
+  workflow_dispatch: # Allow manual deployment
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.9.0'
-        check-latest: true
-        
-        
-    - name: Install dependencies
-      run: |
-        node -v
-        npm -v
-        which node || true
-        npm ci
-      
-    - name: Build application
-      run: npm run build
-      
-    - name: Deploy to cPanel via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.FTP_HOST }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./out/
-        server-dir: ./public_html/
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          .github/**
-        dangerous-clean-slate: true  # This removes all files from server before uploading new ones
-        
-    - name: Verify deployment
-      run: |
-        echo "✅ Deployment completed successfully!"
-        echo "🌐 Your website should now be live at your domain"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Use a broader spec to avoid exact-resolution issues on some runners
+          node-version: "20"
+          check-latest: true
+
+      - name: Verify Node.js version (debug)
+        run: |
+          echo "--- Node / NPM info after setup-node ---"
+          node -v || true
+          npm -v || true
+          which node || true
+          echo "--- End Node / NPM info ---"
+
+      - name: Install dependencies
+        run: |
+          echo "Running npm ci..."
+          npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Deploy to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./out/
+          server-dir: ./public_html/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .github/**
+          dangerous-clean-slate: true # This removes all files from server before uploading new ones
+
+      - name: Verify deployment
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "🌐 Your website should now be live at your domain"
