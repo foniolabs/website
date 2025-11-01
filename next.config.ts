@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-   output: 'export',  // This creates HTML files!
+   output: 'export',  
   images: { unoptimized: true }
 };
 
