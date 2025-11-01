@@ -18,10 +18,15 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20.9.0'
+        check-latest: true
         
         
     - name: Install dependencies
-      run: npm ci
+      run: |
+        node -v
+        npm -v
+        which node || true
+        npm ci
       
     - name: Build application
       run: npm run build
