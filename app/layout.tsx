@@ -20,6 +20,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Fonio Labs - Building the Future of Web3 & AI",
   description: "A research-driven company focusing on building user-friendly tools and technology around Web3 and AI",
+  icons: "images/foniolabs-logo.png"
 };
 
 export default function RootLayout({
