@@ -21,8 +21,9 @@ export const metadata: Metadata = {
   description:
     "A research-driven company focusing on building user-friendly tools and technology around Web3 and AI",
   icons: {
-    icon: "/images/foniolabs-logo.png",
-    apple: "/images/foniolabs-logo.png",
+    icon: "/foniolabs-logo.svg",
+    shortcut: "/foniolabs-logo.svg",
+    apple: "/foniolabs-logo.svg",
   },
 };
 
@@ -34,14 +35,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Explicit favicon links to ensure browsers pick up the logo correctly */}
-        <link rel="icon" href="/images/foniolabs-logo.png" />
+       
+        <link rel="icon" href="/foniolabs-logo.svg?v=2" />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/images/foniolabs-logo.png"
+          href="/foniolabs-logo.svg?v=2"
         />
-        <link rel="shortcut icon" href="/images/foniolabs-logo.png" />
+        <link rel="shortcut icon" href="/foniolabs-logo.svg?v=2" />
       </head>
       <body
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
