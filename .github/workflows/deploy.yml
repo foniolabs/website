@@ -25,17 +25,9 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Deploy via lftp
+      - name: Deploy via SSH
         run: |
-          sudo apt-get install -y lftp
-          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp://${{ secrets.FTP_HOST }} <<EOF
-          set ftp:ssl-allow no
-          set mirror:use-pget-n 5
-          mirror --reverse --delete --verbose ./out/ ./
-          chmod -R 755 ./
-          find . -type f -exec chmod 644 {} \;
-          bye
-          EOF
-
-      - name: Verify deployment
-        run: echo "Deployment completed successfully!"
+          sudo apt-get install -y sshpass
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --delete \
+            -e "ssh -p 65002 -o StrictHostKeyChecking=no" \
+            ./out/ u879909074@145.14.153.30:~/public_html/
