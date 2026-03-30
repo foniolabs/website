@@ -16,7 +16,7 @@ const products = [
     statusColor: "bg-emerald-500",
   },
   {
-    name: "SchoolBox",
+    name: "Skoolbox",
     tag: "EdTech",
     tagColor: "text-orange-400",
     tagBg: "bg-orange-400/10 border-orange-400/20",

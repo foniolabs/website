@@ -48,12 +48,12 @@ const CircuitBg = () => (
 const Hero = () => {
   const products = [
     { name: "Football Fusion", tag: "Web3 Gaming", color: "bg-emerald-400" },
-    { name: "SchoolBox",       tag: "EdTech",      color: "bg-orange-400"  },
+    { name: "Skoolbox",       tag: "EdTech",      color: "bg-orange-400"  },
     { name: "Stacka",          tag: "Fintech",     color: "bg-blue-400"    },
   ];
 
   const builtProducts = [
-    "Football Fusion", "SchoolBox", "Stacka", "Football Fusion", "SchoolBox", "Stacka",
+    "Football Fusion", "Skoolbox", "Stacka", "Football Fusion", "Skoolbox", "Stacka",
   ];
 
   return (

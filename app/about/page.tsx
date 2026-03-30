@@ -142,7 +142,7 @@ VIII`}
                 users worldwide.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Through products like Football Fusion, SchoolBox, and Stacka, we're
+                Through products like Football Fusion, Skoolbox, and Stacka, we're
                 proving that world-class technology can come from anywhere. Each product
                 we launch is a step toward a more connected, empowered, and
                 innovative world.

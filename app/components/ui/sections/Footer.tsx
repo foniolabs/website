@@ -89,7 +89,7 @@ FFFFFFIII`}
               </li>
               <li>
                 <Link href="/products" className="text-gray-400 hover:text-white transition-colors">
-                  SchoolBox
+                  Skoolbox
                 </Link>
               </li>
               <li>

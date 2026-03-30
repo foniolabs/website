@@ -14,11 +14,11 @@ const products = [
     status: "In Development",
   },
   {
-    name: "SchoolBox",
+    name: "Skoolbox",
     tag: "EdTech",
     color: "#fb923c",
     description:
-      "A comprehensive education platform designed for African schools and institutions. SchoolBox streamlines learning management, student tracking, and communication between teachers, students, and parents.",
+      "A comprehensive education platform designed for African schools and institutions. Skoolbox streamlines learning management, student tracking, and communication between teachers, students, and parents.",
     features: ["Learning Management System", "Student Progress Tracking", "Parent-Teacher Communication", "Offline-First Design"],
     status: "In Development",
   },

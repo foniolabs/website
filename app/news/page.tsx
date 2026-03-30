@@ -13,9 +13,9 @@ const posts = [
     color: "#34d399",
   },
   {
-    title: "Why We're Building SchoolBox for African Schools",
+    title: "Why We're Building Skoolbox for African Schools",
     excerpt:
-      "Education technology in Africa needs a different approach. SchoolBox is designed from the ground up for the realities of African classrooms.",
+      "Education technology in Africa needs a different approach. Skoolbox is designed from the ground up for the realities of African classrooms.",
     date: "Coming Soon",
     tag: "Product",
     color: "#fb923c",
