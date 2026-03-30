@@ -30,4 +30,4 @@ jobs:
           sudo apt-get install -y sshpass
           sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --delete \
             -e "ssh -p 65002 -o StrictHostKeyChecking=no" \
-            ./out/ u879909074@145.14.153.30:~/public_html/
+            ./out/ u879909074@145.14.153.30:/home/u879909074/domains/foniolabs.xyz/public_html/
