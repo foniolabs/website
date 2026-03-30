@@ -84,7 +84,7 @@ FFFFFFIII`}
             <ul className="space-y-3">
               <li>
                 <Link href="/products" className="text-gray-400 hover:text-white transition-colors">
-                  Football Fusion
+                  Futbol Fusion
                 </Link>
               </li>
               <li>

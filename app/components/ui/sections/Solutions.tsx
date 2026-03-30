@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const products = [
   {
-    name: "Football Fusion",
+    name: "Futbol Fusion",
     tag: "Web3 Gaming",
     tagColor: "text-emerald-400",
     tagBg: "bg-emerald-400/10 border-emerald-400/20",

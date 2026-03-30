@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const products = [
   {
-    name: "Football Fusion",
+    name: "Futbol Fusion",
     tag: "Web3 Gaming",
     color: "#34d399",
     description:

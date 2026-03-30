@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const posts = [
   {
-    title: "Introducing Football Fusion — Web3 Meets Fantasy Sports",
+    title: "Introducing Futbol Fusion — Web3 Meets Fantasy Sports",
     excerpt:
       "We're building a new kind of football gaming experience powered by blockchain. Here's what we're working on and why it matters.",
     date: "Coming Soon",
