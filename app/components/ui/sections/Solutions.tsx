@@ -27,18 +27,18 @@ const products = [
     status: "In Development",
     statusColor: "bg-orange-500",
   },
-  {
-    name: "Stacka",
-    tag: "Fintech",
-    tagColor: "text-blue-400",
-    tagBg: "bg-blue-400/10 border-blue-400/20",
-    description:
-      "A next-generation investment platform bridging crypto and traditional finance. Built for crypto-native users in Nigeria and emerging markets, with unified access to stocks, crypto, and DeFi using USDC.",
-    gradient: "from-blue-500 to-cyan-500",
-    highlights: ["Stocks + Crypto + DeFi", "USDC-Powered", "Emerging Markets", "Unified Portfolio"],
-    status: "In Development",
-    statusColor: "bg-blue-500",
-  },
+  // {
+  //   name: "Stacka",
+  //   tag: "Fintech",
+  //   tagColor: "text-blue-400",
+  //   tagBg: "bg-blue-400/10 border-blue-400/20",
+  //   description:
+  //     "A next-generation investment platform bridging crypto and traditional finance. Built for crypto-native users in Nigeria and emerging markets, with unified access to stocks, crypto, and DeFi using USDC.",
+  //   gradient: "from-blue-500 to-cyan-500",
+  //   highlights: ["Stocks + Crypto + DeFi", "USDC-Powered", "Emerging Markets", "Unified Portfolio"],
+  //   status: "In Development",
+  //   statusColor: "bg-blue-500",
+  // },
 ];
 
 const Solutions = () => {

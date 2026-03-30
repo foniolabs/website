@@ -22,15 +22,15 @@ const products = [
     features: ["Learning Management System", "Student Progress Tracking", "Parent-Teacher Communication", "Offline-First Design"],
     status: "In Development",
   },
-  {
-    name: "Stacka",
-    tag: "Fintech",
-    color: "#60a5fa",
-    description:
-      "A modern investment platform that makes stocks, crypto, and DeFi accessible to everyone. Stacka simplifies portfolio management with AI-powered insights and seamless USDC settlements.",
-    features: ["Stock & Crypto Trading", "DeFi Protocol Access", "AI Portfolio Insights", "USDC Settlements"],
-    status: "In Development",
-  },
+  // {
+  //   name: "Stacka",
+  //   tag: "Fintech",
+  //   color: "#60a5fa",
+  //   description:
+  //     "A modern investment platform that makes stocks, crypto, and DeFi accessible to everyone. Stacka simplifies portfolio management with AI-powered insights and seamless USDC settlements.",
+  //   features: ["Stock & Crypto Trading", "DeFi Protocol Access", "AI Portfolio Insights", "USDC Settlements"],
+  //   status: "In Development",
+  // },
 ];
 
 export default function ProductsPage() {

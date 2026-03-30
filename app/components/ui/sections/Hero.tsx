@@ -49,11 +49,11 @@ const Hero = () => {
   const products = [
     { name: "Futbol Fusion", tag: "Web3 Gaming", color: "bg-emerald-400" },
     { name: "Skoolbox",       tag: "EdTech",      color: "bg-orange-400"  },
-    { name: "Stacka",          tag: "Fintech",     color: "bg-blue-400"    },
+    // { name: "Stacka",          tag: "Fintech",     color: "bg-blue-400"    },
   ];
 
   const builtProducts = [
-    "Futbol Fusion", "Skoolbox", "Stacka", "Futbol Fusion", "Skoolbox", "Stacka",
+    "Futbol Fusion", "Skoolbox", "Futbol Fusion", "Skoolbox",
   ];
 
   return (

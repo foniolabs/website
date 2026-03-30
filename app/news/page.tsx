@@ -20,14 +20,14 @@ const posts = [
     tag: "Product",
     color: "#fb923c",
   },
-  {
-    title: "Stacka: Making Investing Accessible to Everyone",
-    excerpt:
-      "From stocks to crypto to DeFi — Stacka brings modern investing tools to users who have been underserved by traditional platforms.",
-    date: "Coming Soon",
-    tag: "Product",
-    color: "#60a5fa",
-  },
+  // {
+  //   title: "Stacka: Making Investing Accessible to Everyone",
+  //   excerpt:
+  //     "From stocks to crypto to DeFi — Stacka brings modern investing tools to users who have been underserved by traditional platforms.",
+  //   date: "Coming Soon",
+  //   tag: "Product",
+  //   color: "#60a5fa",
+  // },
   {
     title: "The Fonio Labs Story — From Idea to Product Studio",
     excerpt:

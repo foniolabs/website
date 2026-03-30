@@ -92,11 +92,11 @@ FFFFFFIII`}
                   Skoolbox
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/products" className="text-gray-400 hover:text-white transition-colors">
                   Stacka
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
