@@ -48,6 +48,12 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Debug FTP directory listing
+        run: |
+          curl -v --list-only ftp://${{ secrets.FTP_HOST }}/ --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" || true
+          echo "---"
+          curl -v --list-only ftp://${{ secrets.FTP_HOST }}/public_html/ --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" || true
+
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
