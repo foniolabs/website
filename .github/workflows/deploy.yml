@@ -1,10 +1,10 @@
 # .github/workflows/deploy.yml
-name: Deploy to cPanel
+name: Deploy to Hostinger
 
 on:
   push:
-    branches: [main, master] # Deploy when pushing to main or master branch
-  workflow_dispatch: # Allow manual deployment
+    branches: [main, master]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -17,59 +17,25 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          # Use a broader spec to avoid exact-resolution issues on some runners
           node-version: "20"
-          check-latest: true
-
-      - name: Verify Node.js version (debug)
-        run: |
-          echo "--- Node / NPM info after setup-node ---"
-          node -v || true
-          npm -v || true
-          which node || true
-          echo "--- End Node / NPM info ---"
-
-      - name: Force install Node.js 20 (NodeSource fallback)
-        if: runner.os == 'Linux'
-        run: |
-          echo "Installing Node.js 20 via NodeSource (fallback)"
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          echo "After NodeSource install:"
-          node -v || true
-          npm -v || true
-          which node || true
 
       - name: Install dependencies
-        run: |
-          echo "Running npm ci..."
-          npm ci
+        run: npm ci
 
       - name: Build application
         run: npm run build
 
-      - name: Debug FTP directory listing
+      - name: Deploy via lftp
         run: |
-          curl -v --list-only ftp://${{ secrets.FTP_HOST }}/ --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" || true
-          echo "---"
-          curl -v --list-only ftp://${{ secrets.FTP_HOST }}/public_html/ --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" || true
-
-      - name: Deploy to cPanel via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./out/
-          server-dir: ./
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            .github/**
-          dangerous-clean-slate: true # This removes all files from server before uploading new ones
+          sudo apt-get install -y lftp
+          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ftp://${{ secrets.FTP_HOST }} <<EOF
+          set ftp:ssl-allow no
+          set mirror:use-pget-n 5
+          mirror --reverse --delete --verbose ./out/ ./
+          chmod -R 755 ./
+          find . -type f -exec chmod 644 {} \;
+          bye
+          EOF
 
       - name: Verify deployment
-        run: |
-          echo "✅ Deployment completed successfully!"
-          echo "🌐 Your website should now be live at your domain"
+        run: echo "Deployment completed successfully!"
