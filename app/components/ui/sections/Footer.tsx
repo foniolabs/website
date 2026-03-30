@@ -44,7 +44,7 @@ FFFFFFIII`}
                 <FaXTwitter />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://linkedin.com/company/foniolabs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/10 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-all duration-300"
@@ -52,7 +52,7 @@ FFFFFFIII`}
                 <FaLinkedin />
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/foniolabs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/10 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-all duration-300"

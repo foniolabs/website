@@ -30,15 +30,24 @@ export default function ContactPage() {
     setStatus({ type: "loading", message: "Sending message..." });
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          from_name: "Fonio Labs Website",
+        }),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
         setStatus({
           type: "success",
           message: "Message sent successfully! We'll get back to you soon.",
@@ -177,7 +186,7 @@ CCCCCCCCCC`}
                     <FaXTwitter className="w-5 h-5" />
                   </a>
                   <a
-                    href="https://github.com/web3normad"
+                    href="https://github.com/foniolabs"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-12 h-12 bg-gray-100 hover:bg-blue-600 hover:text-white rounded-lg flex items-center justify-center transition-all duration-300"
@@ -185,7 +194,7 @@ CCCCCCCCCC`}
                     <FaGithub className="w-5 h-5" />
                   </a>
                   <a
-                    href="https://ng.linkedin.com/in/emmanuel-doji"
+                    href="https://linkedin.com/company/foniolabs"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-12 h-12 bg-gray-100 hover:bg-blue-600 hover:text-white rounded-lg flex items-center justify-center transition-all duration-300"

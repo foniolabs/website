@@ -156,9 +156,11 @@ LLLLLLLLLL`}
               <button className="btn-primary text-lg">
                 Explore Our Products
               </button>
-              <button className="btn-outline text-lg">
-                Get In Touch
-              </button>
+              <a href="/contact">
+                <button className="btn-outline text-lg">
+                  Get In Touch
+                </button>
+              </a>
             </div>
           </div>
         </motion.div>

@@ -226,9 +226,11 @@ LLLLLL`}
                 <button className="btn-primary text-lg">
                   View Open Positions
                 </button>
-                <button className="px-8 py-3 border-2 border-gray-900 rounded-lg font-semibold hover:bg-gray-900 hover:text-white transition-all duration-300">
-                  Get in Touch
-                </button>
+                <a href="/contact">
+                  <button className="px-8 py-3 border-2 border-gray-900 rounded-lg font-semibold hover:bg-gray-900 hover:text-white transition-all duration-300">
+                    Get in Touch
+                  </button>
+                </a>
               </div>
             </motion.div>
 
