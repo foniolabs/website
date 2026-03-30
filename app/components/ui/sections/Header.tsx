@@ -2,151 +2,109 @@
 import { useState } from 'react';
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { HiMenu, HiX } from "react-icons/hi";
 
+export const HEADER_HEIGHT = 68; // px — shared with Hero for marginTop
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/team", label: "Team" },
+  { href: "/products", label: "Products" },
+  { href: "/news", label: "News" },
+];
+
 const Header = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200"
-      initial={{ opacity: 0, y: -50 }}
+      className="fixed top-0 left-0 right-0 z-50 flex items-stretch bg-white lg:bg-[#0b0f1a]"
+      style={{ height: `${HEADER_HEIGHT}px` }}
+      initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.5 }}
     >
-      <nav className=" mx-56 px-6 md:px-12 lg:px-20 py-4">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/foniolabs-logo.svg"
-              alt="Fonio Labs Logo"
-              width={40}
-              height={40}
-              className="w-10 h-10 object-contain"
-            />
-            <span className="text-xl font-bold">Fonio Labs</span>
-          </Link>
+      {/* Logo — white bg ear with concave curve at bottom-right on desktop */}
+      <div
+        className="flex items-center flex-shrink-0 px-5 lg:bg-white"
+        style={{ borderRadius: "0 0 1.5rem 0" }}
+      >
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image
+            src="/foniolabs-logo.svg"
+            alt="Fonio Labs"
+            width={36}
+            height={36}
+            className="w-9 h-9 object-contain"
+          />
+          <span className="text-base font-bold text-gray-900 hidden sm:block">Fonio Labs</span>
+        </Link>
+      </div>
 
-          {/* Desktop Navigation */}
-          <ul className="hidden lg:flex items-center gap-8 font-medium">
-            <li>
-              <Link href="/" className="hover:text-blue-600 transition-colors">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="hover:text-blue-600 transition-colors">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link href="/team" className="hover:text-blue-600 transition-colors">
-                Team
-              </Link>
-            </li>
-            <li>
-              <Link href="/docs" className="hover:text-blue-600 transition-colors">
-                Docs
-              </Link>
-            </li>
-            <li>
-              <Link href="/transparency" className="hover:text-blue-600 transition-colors">
-                Transparency
-              </Link>
-            </li>
-          </ul>
-
-          {/* CTA Buttons - Desktop */}
-          <div className="hidden lg:flex items-center gap-4">
-            <button className="px-6 py-2 font-semibold hover:text-blue-600 transition-colors">
-              Launch App
-            </button>
-            <Link href="/contact">
-              <button className="btn-primary">
-                Contact
-              </button>
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden text-2xl"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+      {/* Dark nav — desktop only, inherits dark bg from header */}
+      <div className="hidden lg:flex flex-1 items-center justify-center gap-8 px-10">
+        {navLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="text-sm font-medium transition-colors duration-200 text-white/60 hover:text-white"
           >
-            {mobileMenuOpen ? <HiX /> : <HiMenu />}
-          </button>
-        </div>
+            {link.label}
+          </Link>
+        ))}
+      </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
+      {/* CTA + mobile hamburger — white bg ear with concave curve at bottom-left on desktop */}
+      <div
+        className="flex items-center flex-shrink-0 px-5 lg:bg-white gap-3"
+        style={{ borderRadius: "0 0 0 1.5rem" }}
+      >
+        <Link href="/contact" className="hidden lg:block">
+          <button className="btn-primary text-sm px-5 py-2">Contact Us</button>
+        </Link>
+        <button
+          className="lg:hidden text-2xl text-gray-800"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? <HiX /> : <HiMenu />}
+        </button>
+      </div>
+
+      {/* Mobile dropdown */}
+      <AnimatePresence>
+        {mobileOpen && (
           <motion.div
-            className="lg:hidden mt-6 pb-6"
+            className="lg:hidden absolute top-full left-0 right-0 z-50 border-t"
+            style={{ background: "#0b0f1a", borderColor: "rgba(255,255,255,0.08)" }}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22 }}
           >
-            <ul className="flex flex-col gap-4 font-medium">
-              <li>
-                <Link
-                  href="/"
-                  className="block py-2 hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  className="block py-2 hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/team"
-                  className="block py-2 hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Team
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/docs"
-                  className="block py-2 hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Docs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/transparency"
-                  className="block py-2 hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Transparency
-                </Link>
-              </li>
-            </ul>
-            <div className="flex flex-col gap-3 mt-6">
-              <button className="px-6 py-3 font-semibold border-2 border-gray-900 rounded-lg hover:bg-gray-900 hover:text-white transition-all">
-                Launch App
-              </button>
-              <Link href="/contact">
-                <button className="btn-primary w-full">
-                  Contact
-                </button>
+            <div className="px-6 py-5">
+              <ul className="flex flex-col gap-1 mb-4">
+                {navLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="block py-2.5 px-3 rounded-lg text-sm font-medium text-white/70 hover:text-white transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/contact" onClick={() => setMobileOpen(false)}>
+                <button className="btn-primary w-full">Contact Us</button>
               </Link>
             </div>
           </motion.div>
         )}
-      </nav>
+      </AnimatePresence>
     </motion.header>
   );
 };

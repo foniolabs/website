@@ -78,7 +78,7 @@ export default function TeamPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-dark pt-40 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden">
+      <section className="relative pt-40 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden" style={{ background: "#0b0f1a" }}>
         <div className="absolute top-20 left-20 ascii-art text-white/10 hidden lg:block">
           {`TTTTTTTTTT
 TTTTTTTTTTT
@@ -115,7 +115,7 @@ TTTTTTTTTT`}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Building the future of Web3 and AI, one innovative solution at a time.
+            A passionate team building products that change industries.
           </motion.p>
         </div>
       </section>
@@ -214,7 +214,7 @@ LLLLLL`}
               </h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
                 We're always looking for talented, passionate individuals who
-                share our vision of making Web3 and AI accessible to everyone.
+                share our vision of building products that change industries.
               </p>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
                 Whether you're a researcher, engineer, designer, or community

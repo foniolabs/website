@@ -1,203 +1,181 @@
 "use client";
 import React from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+const HEADER_HEIGHT = 68; // must match Header.tsx
+
+const TechNetworkFlow = dynamic(
+  () => import("./TechNetworkFlow"),
+  { ssr: false }
+);
+
+// PCB-style circuit board trace background
+const CircuitBg = () => (
+  <svg
+    className="absolute inset-0 w-full h-full pointer-events-none select-none"
+    viewBox="0 0 1200 750"
+    fill="none"
+    preserveAspectRatio="xMidYMid slice"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M -30 170 H 110 L 155 125 H 310 L 355 170 H 520 L 560 130 H 700" stroke="rgba(59,130,246,0.22)" strokeWidth="1.5" />
+    <circle cx="110" cy="170" r="3.5" fill="rgba(59,130,246,0.45)" />
+    <circle cx="310" cy="125" r="3.5" fill="rgba(59,130,246,0.45)" />
+    <circle cx="520" cy="170" r="3.5" fill="rgba(59,130,246,0.45)" />
+    <path d="M 155 125 V 55 H 290 L 330 15 H 500" stroke="rgba(99,102,241,0.16)" strokeWidth="1.5" />
+    <circle cx="290" cy="55" r="3" fill="rgba(99,102,241,0.35)" />
+    <path d="M 355 170 V 240 H 220 L 180 280 H 30" stroke="rgba(59,130,246,0.14)" strokeWidth="1.5" />
+    <circle cx="220" cy="240" r="3" fill="rgba(59,130,246,0.3)" />
+    <path d="M -30 330 H 75 L 115 290 H 240 L 280 330 H 410 L 450 370 H 580" stroke="rgba(59,130,246,0.14)" strokeWidth="1.5" />
+    <circle cx="75" cy="330" r="2.5" fill="rgba(59,130,246,0.28)" />
+    <circle cx="240" cy="290" r="2.5" fill="rgba(59,130,246,0.28)" />
+    <circle cx="410" cy="330" r="2.5" fill="rgba(59,130,246,0.28)" />
+    <path d="M 280 330 V 420 H 160 L 120 460 H 30" stroke="rgba(99,102,241,0.1)" strokeWidth="1" />
+    <path d="M -30 490 H 90 L 130 450 H 270 L 310 490 H 460 L 500 530 H 600" stroke="rgba(59,130,246,0.1)" strokeWidth="1.5" />
+    <circle cx="130" cy="450" r="2.5" fill="rgba(59,130,246,0.22)" />
+    <path d="M -30 620 H 120 L 160 660 H 320 L 360 620 H 510" stroke="rgba(59,130,246,0.09)" strokeWidth="1.5" />
+    <path d="M 560 130 V 80 H 640 L 680 40 H 800" stroke="rgba(59,130,246,0.12)" strokeWidth="1" />
+    <circle cx="640" cy="80" r="2" fill="rgba(59,130,246,0.25)" />
+    <path d="M 1250 80 H 1120 L 1080 120 H 980 L 940 80 H 860" stroke="rgba(59,130,246,0.07)" strokeWidth="1" />
+    <path d="M 1250 680 H 1100 L 1060 640 H 920 L 880 680 H 780" stroke="rgba(59,130,246,0.06)" strokeWidth="1" />
+    <rect x="293" y="116" width="8" height="8" rx="1" fill="rgba(99,102,241,0.2)" />
+    <rect x="513" y="161" width="8" height="8" rx="1" fill="rgba(59,130,246,0.2)" />
+    <rect x="213" y="231" width="8" height="8" rx="1" fill="rgba(59,130,246,0.18)" />
+  </svg>
+);
+
 
 const Hero = () => {
+  const products = [
+    { name: "Football Fusion", tag: "Web3 Gaming", color: "bg-emerald-400" },
+    { name: "SchoolBox",       tag: "EdTech",      color: "bg-orange-400"  },
+    { name: "Stacka",          tag: "Fintech",     color: "bg-blue-400"    },
+  ];
+
+  const builtProducts = [
+    "Football Fusion", "SchoolBox", "Stacka", "Football Fusion", "SchoolBox", "Stacka",
+  ];
+
   return (
-    <section className="relative min-h-screen bg-white pt-32 pb-20 px-6 md:px-12 lg:px-20 overflow-hidden">
-      {/* Background ASCII Art Decorations */}
-      <div className="absolute top-20 right-10 ascii-art text-blue-500 hidden lg:block">
-        {`VVVVVVVVVV
-VVVVVVVVVVI
-VVVVVVVVII
-VVVVVVVIII
-VVVVVVIIII`}
-      </div>
+    <section
+      className="relative overflow-hidden"
+      style={{
+        background: "#0b0f1a",
+        marginTop: `${HEADER_HEIGHT}px`,
+      }}
+    >
+      <CircuitBg />
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 60% 60% at 50% 40%, rgba(99,102,241,0.07) 0%, transparent 70%)" }}
+      />
 
-      <div className="absolute bottom-40 left-10 ascii-art text-gray-300 hidden lg:block">
-        {`*******III
-****++LLLL
-****LLLLLL
-****++LLLL`}
-      </div>
+      {/* Hero content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-16 pb-16">
+        <div className="grid lg:grid-cols-2 gap-10 items-center" style={{ minHeight: "82vh" }}>
 
-      <div className="absolute top-1/3 right-1/4 ascii-art text-blue-300 hidden xl:block">
-        {`IIIIIIIIII
-IIIIIISSI
-IIIIISSSSI
-IIIISSSSSI
-IIISSSSSS
-IISSSSSSS
-IISSSSSSS
-IISSSSSSSS
-IISSSSSSSS`}
-      </div>
-
-      <div className="max-w-7xl mx-auto">
-        {/* Top Stats Bar */}
-        <motion.div
-          className="flex flex-wrap gap-8 mb-16 text-sm font-mono"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-            <span className="text-gray-600">Research-Driven</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-purple-600 rounded-full"></span>
-            <span className="text-gray-600">User-Friendly Tools</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-600 rounded-full"></span>
-            <span className="text-gray-600">Web3 & AI Innovation</span>
-          </div>
-        </motion.div>
-
-        {/* Main Hero Content */}
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <motion.h1
-              className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+          {/* Left */}
+          <div className="flex flex-col justify-center">
+            <motion.div
+              className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full w-fit mb-9"
+              style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)", backdropFilter: "blur(12px)" }}
+              initial={{ opacity: 0, y: -16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
             >
-              Building{" "}
-              <span className="relative inline-block">
-                <span className="bg-gradient-primary text-white px-4 py-2 rounded-lg">
-                  user-friendly
-                </span>
-              </span>{" "}
-              tools for the{" "}
-              <span className="text-gradient">future</span>
+              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+              <span className="text-xs font-mono font-semibold tracking-widest uppercase" style={{ color: "#93c5fd" }}>
+                Technology Product Studio
+              </span>
+            </motion.div>
+
+            <motion.h1
+              className="font-bold text-white leading-[1.05] tracking-tight mb-6"
+              style={{ fontSize: "clamp(2.4rem, 5.5vw, 4.2rem)" }}
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.85, delay: 0.2 }}
+            >
+              We Build Products<br />
+              <span className="text-gradient">That Change</span><br />
+              Industries
             </motion.h1>
 
             <motion.p
-              className="text-xl text-gray-600 mb-8 leading-relaxed"
-              initial={{ opacity: 0, x: -50 }}
+              className="text-base md:text-lg leading-relaxed mb-8"
+              style={{ color: "#9ca3af", maxWidth: "520px" }}
+              initial={{ opacity: 0, x: -40 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.85, delay: 0.38 }}
             >
-              Fonio Labs is a research-driven company focusing on building accessible technology solutions around Web3 and AI. We transform complex technologies into intuitive tools that anyone can use.
+              Fonio Labs is a Nigerian technology studio building apps and platforms across gaming, education, fintech, and beyond — powered by AI and Web3.
             </motion.p>
 
             <motion.div
-              className="flex flex-wrap gap-4"
-              initial={{ opacity: 0, y: 20 }}
+              className="flex flex-wrap gap-2.5 mb-9"
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: 0.75, delay: 0.52 }}
             >
-              <button className="btn-primary text-lg">
-                Explore Our Tools
-              </button>
-              <button className="px-8 py-3 border-2 border-gray-900 rounded-lg font-semibold hover:bg-gray-900 hover:text-white transition-all duration-300">
-                Learn More
-              </button>
+              {products.map((p) => (
+                <div key={p.name} className="flex items-center gap-2 px-3.5 py-1.5 rounded-full"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <span className={`w-2 h-2 rounded-full ${p.color}`} />
+                  <span className="text-sm font-semibold text-white">{p.name}</span>
+                  <span className="text-xs" style={{ color: "#6b7280" }}>{p.tag}</span>
+                </div>
+              ))}
             </motion.div>
 
-            <motion.p
-              className="mt-8 text-sm text-gray-500 font-mono"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
+            <motion.div className="flex flex-wrap gap-4"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, delay: 0.66 }}
             >
-              Not available for US persons
-            </motion.p>
+              <button className="btn-primary text-base px-8 py-3.5">Explore Our Products</button>
+              <button
+                className="px-8 py-3.5 rounded-lg font-semibold text-white text-base transition-all duration-300"
+                style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              >
+                Partner With Us
+              </button>
+            </motion.div>
           </div>
 
-          {/* Right Side - Stats Display */}
-          <motion.div
-            className="relative"
-            initial={{ opacity: 0, scale: 0.9 }}
+          {/* Right */}
+          <motion.div className="flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.88 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 1.1, delay: 0.3 }}
           >
-            <div className="bg-gradient-dark rounded-3xl p-12 text-white relative overflow-hidden">
-              {/* Decorative ASCII in background */}
-              <div className="absolute top-5 right-5 ascii-art text-blue-400 opacity-30">
-                {`████████████
-██████████████
-████████████████
-██████████████
-████████████`}
-              </div>
-
-              <div className="relative z-10">
-                <div className="mb-12">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-full text-sm font-semibold mb-6">
-                    <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                    Building the Future
-                  </div>
-                  <h3 className="text-3xl font-bold mb-4">
-                    Empowering innovation through research & development
-                  </h3>
-                  <p className="text-gray-300">
-                    Our mission is to bridge the gap between cutting-edge technology and everyday users through intuitive design and robust engineering.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                    <div className="text-4xl font-bold mb-2 text-gradient">Web3</div>
-                    <div className="text-sm text-gray-300">Decentralized Tools</div>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                    <div className="text-4xl font-bold mb-2 text-gradient">AI</div>
-                    <div className="text-sm text-gray-300">Smart Solutions</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <TechNetworkFlow />
           </motion.div>
         </div>
-
-        {/* Bottom Section - Building With */}
-        <motion.div
-          className="mt-24 overflow-hidden"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
-        >
-          <p className="text-sm text-gray-500 mb-6 font-semibold tracking-wider uppercase">
-            Technologies we leverage
-          </p>
-          <div className="relative w-full overflow-hidden mask-gradient">
-            <div
-              className="flex"
-              style={{
-                animation: 'infiniteScroll 30s linear infinite',
-                willChange: 'transform'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.animationPlayState = 'paused'}
-              onMouseLeave={(e) => e.currentTarget.style.animationPlayState = 'running'}
-            >
-              <div className="flex gap-12 items-center whitespace-nowrap pr-12">
-                <span className="text-2xl font-bold text-gray-400">Ethereum</span>
-                <span className="text-2xl font-bold text-gray-400">Solana</span>
-                <span className="text-2xl font-bold text-gray-400">OpenAI</span>
-                <span className="text-2xl font-bold text-gray-400">Anthropic</span>
-                <span className="text-2xl font-bold text-gray-400">IPFS</span>
-                <span className="text-2xl font-bold text-gray-400">Polygon</span>
-                <span className="text-2xl font-bold text-gray-400">Base</span>
-                <span className="text-2xl font-bold text-gray-400">TypeScript</span>
-              </div>
-              {/* Duplicate for seamless loop */}
-              <div className="flex gap-12 items-center whitespace-nowrap pr-12">
-                <span className="text-2xl font-bold text-gray-400">Ethereum</span>
-                <span className="text-2xl font-bold text-gray-400">Solana</span>
-                <span className="text-2xl font-bold text-gray-400">OpenAI</span>
-                <span className="text-2xl font-bold text-gray-400">Anthropic</span>
-                <span className="text-2xl font-bold text-gray-400">IPFS</span>
-                <span className="text-2xl font-bold text-gray-400">Polygon</span>
-                <span className="text-2xl font-bold text-gray-400">Base</span>
-                <span className="text-2xl font-bold text-gray-400">TypeScript</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
+
+      {/* Tech ticker */}
+      <motion.div className="relative z-10 pb-12 pt-2"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1 }}>
+        <p className="text-center font-mono text-xs font-semibold tracking-widest uppercase mb-5" style={{ color: "#374151" }}>
+          Products we have built
+        </p>
+        <div className="relative w-full overflow-hidden mask-gradient">
+          <div className="flex"
+            style={{ animation: "infiniteScroll 32s linear infinite", willChange: "transform" }}
+            onMouseEnter={(e) => (e.currentTarget.style.animationPlayState = "paused")}
+            onMouseLeave={(e) => (e.currentTarget.style.animationPlayState = "running")}
+          >
+            {[0, 1].map((d) => (
+              <div key={d} className="flex gap-12 items-center whitespace-nowrap pr-12">
+                {builtProducts.map((name, i) => (
+                  <span key={`${name}-${i}`} className="text-lg font-bold" style={{ color: "#374151" }}>{name}</span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 };

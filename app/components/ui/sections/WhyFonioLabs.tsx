@@ -6,8 +6,8 @@ import { HiBeaker, HiUsers, HiLightBulb } from "react-icons/hi";
 const WhyFonioLabs = () => {
   const features = [
     {
-      title: "Research-Driven Innovation",
-      description: "Every tool we build is backed by deep research and analysis, ensuring we deliver solutions that solve real problems with cutting-edge technology.",
+      title: "Problem-First Thinking",
+      description: "We start with real problems — not trends. Every product we build targets a gap that matters, validated by on-the-ground research before a line of code is written.",
       Icon: HiBeaker,
       gradient: "from-blue-500 to-cyan-500",
       image: `::::::::::::::::
@@ -17,8 +17,8 @@ const WhyFonioLabs = () => {
 ::::::::::::::::`
     },
     {
-      title: "User-First Design",
-      description: "We believe technology should be accessible to everyone. Our tools are designed with simplicity and usability at the core, making complex systems intuitive.",
+      title: "Built for Real Users",
+      description: "Our products are designed for the people who need them most — from rural students with no internet access to crypto-native users in emerging markets.",
       Icon: HiUsers,
       gradient: "from-purple-500 to-pink-500",
       image: `UUUUUUUUUUU
@@ -28,8 +28,8 @@ UUUUUUUUUUUU
 UUUUUUUUUUU`
     },
     {
-      title: "Open & Collaborative",
-      description: "We're building in public, collaborating with the best minds in Web3 and AI. Transparency and community feedback drive our development process.",
+      title: "Ship Fast, Iterate Bold",
+      description: "We move quickly from idea to product. We build, launch, and improve in the open — using user feedback and data to shape every iteration.",
       Icon: HiLightBulb,
       gradient: "from-green-500 to-emerald-500",
       image: `LLLLLLLLLL
@@ -68,8 +68,8 @@ LLLLLLLLLL`
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Building with purpose and{" "}
-            <span className="text-gradient">precision</span>
+            How we build at{" "}
+            <span className="text-gradient">Fonio Labs</span>
           </motion.h2>
 
           <motion.p
@@ -79,7 +79,7 @@ LLLLLLLLLL`
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            We combine deep research, user-centric design, and collaborative development to create tools that truly make a difference
+            A product studio is only as good as its principles. Here&apos;s what drives every product we build.
           </motion.p>
         </div>
 
@@ -147,17 +147,17 @@ LLLLLLLLLL`}
 
           <div className="relative z-10">
             <h3 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to explore our tools?
+              Interested in what we&apos;re building?
             </h3>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join developers and organizations already using Fonio Labs to build the future of Web3 and AI
+              Whether you&apos;re a potential user, investor, or partner — we&apos;d love to connect and share what&apos;s coming next.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <button className="btn-primary text-lg">
-                Get Started
+                Explore Our Products
               </button>
               <button className="btn-outline text-lg">
-                View Documentation
+                Get In Touch
               </button>
             </div>
           </div>

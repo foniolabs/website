@@ -32,7 +32,7 @@ FFFFFFIII`}
               <h3 className="text-2xl font-bold">Fonio Labs</h3>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Building user-friendly tools and technology around Web3 and AI
+              A technology product studio building across gaming, education, and fintech
             </p>
             <div className="flex gap-3">
               <a
@@ -83,23 +83,18 @@ FFFFFFIII`}
             <h4 className="font-bold text-lg mb-4">Products</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/tools" className="text-gray-400 hover:text-white transition-colors">
+                <Link href="/products" className="text-gray-400 hover:text-white transition-colors">
+                  Football Fusion
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="text-gray-400 hover:text-white transition-colors">
+                  SchoolBox
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="text-gray-400 hover:text-white transition-colors">
                   Stacka
-                </Link>
-              </li>
-              <li>
-                <Link href="/tools" className="text-gray-400 hover:text-white transition-colors">
-                  AI Research Tools
-                </Link>
-              </li>
-              <li>
-                <Link href="/tools" className="text-gray-400 hover:text-white transition-colors">
-                  DApp Framework
-                </Link>
-              </li>
-              <li>
-                <Link href="/docs" className="text-gray-400 hover:text-white transition-colors">
-                  Documentation
                 </Link>
               </li>
             </ul>
@@ -120,8 +115,8 @@ FFFFFFIII`}
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-gray-400 hover:text-white transition-colors">
-                  Blog
+                <Link href="/news" className="text-gray-400 hover:text-white transition-colors">
+                  News
                 </Link>
               </li>
               <li>
@@ -137,13 +132,13 @@ FFFFFFIII`}
             <h4 className="font-bold text-lg mb-4">Resources</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/transparency" className="text-gray-400 hover:text-white transition-colors">
-                  Transparency
+                <Link href="/products" className="text-gray-400 hover:text-white transition-colors">
+                  Products
                 </Link>
               </li>
               <li>
-                <Link href="/docs" className="text-gray-400 hover:text-white transition-colors">
-                  Docs
+                <Link href="/news" className="text-gray-400 hover:text-white transition-colors">
+                  News
                 </Link>
               </li>
               <li>

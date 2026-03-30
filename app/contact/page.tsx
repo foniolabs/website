@@ -61,7 +61,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-dark pt-40 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden">
+      <section className="relative pt-40 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden" style={{ background: "#0b0f1a" }}>
         <div className="absolute top-20 right-20 ascii-art text-white/10 hidden lg:block">
           {`CCCCCCCCCC
 CCCCCCCCCCCC

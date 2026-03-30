@@ -6,7 +6,7 @@ import { HiHome, HiArrowLeft, HiMail } from "react-icons/hi";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-dark flex items-center justify-center px-6 md:px-12 lg:px-20 pt-32 pb-20 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-20 pt-32 pb-20 relative overflow-hidden" style={{ background: "#0b0f1a" }}>
       {/* Background ASCII Art */}
       <div className="absolute top-20 right-20 ascii-art text-white/5 hidden lg:block">
         {`444444444
@@ -104,13 +104,13 @@ export default function NotFound() {
             </div>
           </Link>
 
-          <Link href="/docs">
+          <Link href="/products">
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 group">
               <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-blue-400 transition-colors">
-                Documentation
+                Our Products
               </h3>
               <p className="text-gray-400 text-sm">
-                Explore our guides and documentation
+                Explore what we're building
               </p>
             </div>
           </Link>

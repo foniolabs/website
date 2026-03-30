@@ -24,6 +24,12 @@ body {
   color: var(--foreground);
   font-family: var(--font-space-grotesk), system-ui, -apple-system, sans-serif;
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 /* Animations */
@@ -169,4 +175,30 @@ body {
 .btn-outline:hover {
   background: white;
   color: var(--gray-dark);
+}
+
+
+/* React Flow overrides for dark hero */
+.react-flow {
+  background: transparent !important;
+}
+.react-flow__edge-path {
+  stroke-linecap: round;
+}
+.react-flow__node {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.react-flow__node:focus,
+.react-flow__node:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Mask for scroll ticker fade edges */
+.mask-gradient {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, white 12%, white 88%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, white 12%, white 88%, transparent 100%);
 }

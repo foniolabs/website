@@ -6,7 +6,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-dark pt-40 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden">
+      <section className="relative pt-40 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden" style={{ background: "#0b0f1a" }}>
         <div className="absolute top-20 right-20 ascii-art text-white/10 hidden lg:block">
           {`AAAAAAAAAA
 AAAAAAAAAAAA
@@ -43,8 +43,8 @@ AAAAAAAAAA`}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Fonio Labs is on a mission to make Web3 and AI technologies accessible
-            to everyone through research-driven development and user-centric design.
+            Fonio Labs is a Nigerian technology product studio building apps and platforms
+            across gaming, education, fintech, and beyond — powered by AI and Web3.
           </motion.p>
         </div>
       </section>
@@ -61,17 +61,16 @@ AAAAAAAAAA`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Story</h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                Fonio Labs was founded with a simple yet powerful vision: to bridge
-                the gap between cutting-edge technology and everyday users. We saw
-                that while Web3 and AI had incredible potential, they remained
-                inaccessible to most people due to complexity and poor user
-                experience.
+                Fonio Labs was founded with a clear mission: to build technology products
+                that solve real problems across multiple industries. From gaming to
+                education to fintech, we saw opportunities to create meaningful impact
+                through thoughtful product development.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                We set out to change that by combining deep technical research with
-                a relentless focus on usability. Every tool we build is designed to
-                be powerful yet intuitive, giving users access to advanced
-                technologies without requiring them to become experts first.
+                We're a product studio — not an agency. We conceive, design, build,
+                and launch our own products. Each one is crafted to serve a specific
+                market need, combining cutting-edge technology with user-centered
+                design to deliver real value.
               </p>
             </motion.div>
 
@@ -137,16 +136,16 @@ VIII`}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Vision</h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                We envision a world where anyone can leverage the power of Web3 and
-                AI technologies, regardless of their technical background. Where
-                decentralized systems are as easy to use as traditional apps, and
-                AI tools augment human capabilities naturally.
+                We envision a future where technology products built in Africa
+                compete on the global stage. Where innovation isn't limited by
+                geography, and where Nigerian-built platforms serve millions of
+                users worldwide.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Through continuous research, open collaboration, and user feedback,
-                we're building the infrastructure and tools that will make this
-                vision a reality. We're not just creating products—we're shaping
-                the future of how people interact with technology.
+                Through products like Football Fusion, SchoolBox, and Stacka, we're
+                proving that world-class technology can come from anywhere. Each product
+                we launch is a step toward a more connected, empowered, and
+                innovative world.
               </p>
             </motion.div>
           </div>
@@ -213,7 +212,7 @@ VIII`}
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 bg-gradient-dark">
+      <section className="py-32 px-6 md:px-12 lg:px-20" style={{ background: "#0b0f1a" }}>
         <div className="max-w-4xl mx-auto text-center">
           <motion.h2
             className="text-4xl md:text-5xl font-bold mb-8 text-white"
