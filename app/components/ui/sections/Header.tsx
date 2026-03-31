@@ -33,7 +33,7 @@ const Header = () => {
       >
         <Link href="/" className="flex items-center gap-2.5">
           <Image
-            src="/foniolabs-logo.svg"
+            src="/images/logo.svg"
             alt="Fonio Labs"
             width={36}
             height={36}

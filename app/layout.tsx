@@ -21,9 +21,9 @@ export const metadata: Metadata = {
   description:
     "A research-driven company focusing on building user-friendly tools and technology around Web3 and AI",
   icons: {
-    icon: "/foniolabs-logo.svg",
-    shortcut: "/foniolabs-logo.svg",
-    apple: "/foniolabs-logo.svg",
+    icon: "/images/logo.svg",
+    shortcut: "/images/logo.svg",
+    apple: "/images/logo.svg",
   },
 };
 
