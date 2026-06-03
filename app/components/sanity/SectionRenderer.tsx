@@ -6,10 +6,13 @@ import { urlFor } from "@/lib/sanity/image";
 import { HubspotForm } from "./HubspotForm";
 import { PortableText } from "./PortableText";
 
-// Cross-section globals — currently just the HubSpot Portal ID coming from
-// siteSettings, used by ContactFormSection when a block doesn't override.
+// Cross-section globals — currently the HubSpot Portal ID + region coming
+// from siteSettings, used by ContactFormSection when a block doesn't
+// override. Region matters: forms from an EU portal silently fail to load
+// with the default na1 script.
 type RenderGlobals = {
   hubspotPortalId?: string;
+  hubspotRegion?: string;
 };
 
 // Day 5 ships *visually-rough* placeholders so editors can see each section
@@ -306,6 +309,7 @@ function ContactFormSection({
   const portalId =
     (s.portalIdOverride as string) ?? globals?.hubspotPortalId ?? "";
   const formId = (s.hubspotFormId as string) ?? "";
+  const region = globals?.hubspotRegion ?? "na1";
   const redirectOnSuccess = s.redirectOnSuccess as string | undefined;
   return (
     <section className="py-20 px-6 md:px-12 bg-neutral-950/50">
@@ -313,6 +317,7 @@ function ContactFormSection({
         <HubspotForm
           portalId={portalId}
           formId={formId}
+          region={region}
           redirectUrl={redirectOnSuccess}
           headline={s.headline as string | undefined}
           body={s.body as string | undefined}

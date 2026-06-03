@@ -39,7 +39,19 @@ type Props = {
   body?: string;
 };
 
-const SCRIPT_SRC = "//js.hsforms.net/forms/embed/v2.js";
+// HubSpot ships region-specific versions of the embed script. EU portals
+// won't load via the default //js.hsforms.net/... domain — the form will
+// silently fail to render. Map region → CDN host.
+//   na1 → js.hsforms.net (default, also valid for "global")
+//   eu1 → js-eu1.hsforms.net
+//   ap1 → js-ap1.hsforms.net
+//   au1 → js-au1.hsforms.net
+//   ca1 → js-ca1.hsforms.net
+//   jp1 → js-jp1.hsforms.net
+const scriptSrcFor = (region: string) =>
+  region && region !== "na1"
+    ? `//js-${region}.hsforms.net/forms/embed/v2.js`
+    : "//js.hsforms.net/forms/embed/v2.js";
 
 export function HubspotForm({
   portalId,
@@ -49,6 +61,7 @@ export function HubspotForm({
   headline,
   body,
 }: Props) {
+  const scriptSrc = scriptSrcFor(region);
   const targetId = useId();
   const sanitisedTargetId = `hbspt-${targetId.replace(/:/g, "")}`;
   const [scriptReady, setScriptReady] = useState(false);
@@ -87,7 +100,7 @@ export function HubspotForm({
       )}
       {body && <p className="text-neutral-300 mb-6">{body}</p>}
       <Script
-        src={SCRIPT_SRC}
+        src={scriptSrc}
         strategy="lazyOnload"
         onLoad={() => setScriptReady(true)}
         onReady={() => setScriptReady(true)}

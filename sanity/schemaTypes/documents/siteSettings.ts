@@ -75,7 +75,27 @@ export const siteSettings = defineType({
       title: "HubSpot Portal ID",
       type: "string",
       group: "integrations",
-      description: "Numeric portal ID from your HubSpot account.",
+      description: "Numeric portal ID from your HubSpot account (visible in the URL when logged in).",
+    }),
+    defineField({
+      name: "hubspotRegion",
+      title: "HubSpot region",
+      type: "string",
+      group: "integrations",
+      description:
+        "HubSpot's data center for this account. Check your HubSpot URL: app.hubspot.com → na1; app-eu1.hubspot.com → eu1; etc. Forms silently won't load with the wrong region.",
+      options: {
+        list: [
+          { title: "na1 — North America (default)", value: "na1" },
+          { title: "eu1 — Europe", value: "eu1" },
+          { title: "ap1 — Asia Pacific", value: "ap1" },
+          { title: "au1 — Australia", value: "au1" },
+          { title: "ca1 — Canada", value: "ca1" },
+          { title: "jp1 — Japan", value: "jp1" },
+        ],
+        layout: "dropdown",
+      },
+      initialValue: "na1",
     }),
     defineField({
       name: "contactEmail",
