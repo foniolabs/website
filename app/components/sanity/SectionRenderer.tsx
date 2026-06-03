@@ -3,7 +3,14 @@ import Link from "next/link";
 
 import { urlFor } from "@/lib/sanity/image";
 
+import { HubspotForm } from "./HubspotForm";
 import { PortableText } from "./PortableText";
+
+// Cross-section globals — currently just the HubSpot Portal ID coming from
+// siteSettings, used by ContactFormSection when a block doesn't override.
+type RenderGlobals = {
+  hubspotPortalId?: string;
+};
 
 // Day 5 ships *visually-rough* placeholders so editors can see each section
 // type render with real data from Sanity. Day 6 swaps each branch out for
@@ -289,31 +296,38 @@ function EmbedHtmlSection({ s }: { s: Section }) {
   );
 }
 
-function ContactFormSection({ s }: { s: Section }) {
+function ContactFormSection({
+  s,
+  globals,
+}: {
+  s: Section;
+  globals?: RenderGlobals;
+}) {
+  const portalId =
+    (s.portalIdOverride as string) ?? globals?.hubspotPortalId ?? "";
+  const formId = (s.hubspotFormId as string) ?? "";
+  const redirectOnSuccess = s.redirectOnSuccess as string | undefined;
   return (
     <section className="py-20 px-6 md:px-12 bg-neutral-950/50">
-      <div className="max-w-2xl mx-auto text-center">
-        {!!s.headline && (
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {s.headline as string}
-          </h2>
-        )}
-        {!!s.body && (
-          <p className="text-neutral-400 mb-6">{s.body as string}</p>
-        )}
-        {/* Day 8 swaps this for the real HubspotForm component */}
-        <div className="rounded-lg border border-dashed border-neutral-700 p-8 text-sm text-neutral-500">
-          HubSpot form embed — form ID:{" "}
-          <code className="text-orange-400">{(s.hubspotFormId as string) ?? "(unset)"}</code>
-          <br />
-          (Day 8 wires the real HubspotForm component.)
-        </div>
+      <div className="max-w-2xl mx-auto">
+        <HubspotForm
+          portalId={portalId}
+          formId={formId}
+          redirectUrl={redirectOnSuccess}
+          headline={s.headline as string | undefined}
+          body={s.body as string | undefined}
+        />
       </div>
     </section>
   );
 }
 
-const SECTION_RENDERERS: Record<string, (props: { s: Section }) => React.ReactNode> = {
+type SectionComponent = (props: {
+  s: Section;
+  globals?: RenderGlobals;
+}) => React.ReactNode;
+
+const SECTION_RENDERERS: Record<string, SectionComponent> = {
   heroBlock: HeroSection,
   featureGridBlock: FeatureGridSection,
   richTextBlock: RichTextSection,
@@ -326,8 +340,10 @@ const SECTION_RENDERERS: Record<string, (props: { s: Section }) => React.ReactNo
 
 export function SectionRenderer({
   sections,
+  globals,
 }: {
   sections: Array<{ _type?: string; _key?: string } & Record<string, unknown>> | null | undefined;
+  globals?: RenderGlobals;
 }) {
   if (!sections?.length) return null;
   return (
@@ -344,7 +360,13 @@ export function SectionRenderer({
             </div>
           );
         }
-        return <Cmp key={s._key ?? Math.random()} s={s as Section} />;
+        return (
+          <Cmp
+            key={s._key ?? Math.random()}
+            s={s as Section}
+            globals={globals}
+          />
+        );
       })}
     </>
   );
