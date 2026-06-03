@@ -2,7 +2,7 @@
 
 **Purpose of this doc:** snapshot of the in-flight Sanity migration so work can resume cleanly from inside this repo (`/home/emmanuel/Documents/work_projects/foniolabs-website/`) in a fresh session or context window.
 
-**Last updated:** Day 5 complete, mid-sprint.
+**Last updated:** Day 6 complete, mid-sprint.
 
 ---
 
@@ -34,6 +34,8 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 - `ea502e7` — Day 4: 4 custom Studio components (SlugInput with auto-redirect, VariantChipInput chips, SEOPreview Google snippet, OGImagePreview live OG card) + Presentation tool + /api/og edge route
 - `d9abe0a` — docs: HANDOFF refresh, Days 3–4 done / Day 5 queued
 - `0bf3f71` — Day 5: GROQ queries + fetch wrapper + PortableText + SectionRenderer + `/products/[slug]` + `/news/[slug]` dynamic routes (existing top-level pages deferred to Day 7 content migration)
+- `5c0f1c4` — docs: HANDOFF refresh, Day 5 done / Day 6 queued
+- `163d0bd` — Day 6: draft-mode enable/disable + revalidate webhook + presentationTool previewMode wiring + VisualEditing overlay + draft-mode banner
 
 **Working tree:** clean (except this HANDOFF.md update).
 
@@ -41,11 +43,22 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 
 **Sanity project:** `8smu0dlv`, dataset `production` (free tier, owned by you).
 
-**Days complete:** 0–5 of 14. Day 6 (draft mode + ISR + SectionRenderer polish) is the next code task.
+**Days complete:** 0–6 of 14. Day 7 (content migration + top-level page rewires) is the next code task.
 
 ---
 
 ## 3. Files Created / Touched
+
+### New files (Day 6)
+```
+app/api/draft-mode/enable/route.ts        Wraps defineEnableDraftMode from next-sanity/draft-mode; validates preview-URL signature against readToken
+app/api/draft-mode/disable/route.ts       Calls draftMode().disable(), redirects to referrer
+app/api/revalidate/route.ts               Sanity webhook target — parseBody validates SANITY_REVALIDATE_SECRET, then revalidateTag(t, { expire: 0 }) for each computed tag
+app/components/sanity/DraftModeBanner.tsx Bottom-center "Draft mode" pill with Exit preview link, server-rendered only when draftMode is on
+```
+Plus: `sanity.config.ts` adds `previewUrl.previewMode.enable/disable` paths; `app/layout.tsx` becomes async + conditionally mounts `<DraftModeBanner />` + `<VisualEditing />` at the body level.
+
+Pending env: `SANITY_REVALIDATE_SECRET` — `openssl rand -hex 32` and paste into `.env.local`. Without it the revalidate route refuses all requests with HTTP 500.
 
 ### New files (Day 5)
 ```
@@ -228,36 +241,52 @@ These are blocking various later days. None block Day 2.
 
 ---
 
-## 7. Next Step — Day 6: Draft mode + ISR + SectionRenderer polish
+## 7. Next Step — Day 7: Content migration + top-level page rewires
 
-Goal: editors can preview unpublished drafts in the Studio's Presentation pane, and published changes go live in seconds (not on the next deploy). Files to create / update:
+Goal: actually move the existing hardcoded content into Sanity, then rewire `/`, `/about`, `/team`, `/products`, `/news` to read from there. This is the day that earns the "led a CMS migration end-to-end" bullet on the OZ application.
+
+Files to create / update:
 
 ```
-app/api/draft-mode/enable/route.ts        Validates a secret + sets draftMode().enable(); supports ?slug=… redirect
-app/api/draft-mode/disable/route.ts       draftMode().disable() + redirect to referrer
-app/api/revalidate/route.ts               POST handler that validates SANITY_REVALIDATE_SECRET, then revalidateTag(...)
-                                          for any tag in body. Wired to Sanity webhook on Day 12.
-sanity.config.ts                          presentationTool.previewUrl.preview / .previewMode.enable now point at /api/draft-mode/enable
-app/components/sanity/SectionRenderer.tsx Swap placeholders for the real production section components from app/components/ui/sections/. Each block _type maps to its polished counterpart and passes Sanity data through as props (Hero takes hero data, Features takes feature grid data, etc.). Where there is no existing equivalent (logoCloudBlock, embedHtmlBlock, contactFormBlock), keep the Day 5 placeholder until Day 7/8 needs them.
-next-sanity/visual-editing                Optional — wire <VisualEditing /> in app/layout.tsx when draftMode is on so the Presentation tool's overlays work end-to-end.
+scripts/migrate.ts        Reads existing hardcoded data from app/(marketing)/{page,about,team,products,news}.tsx
+                          and the section components, transforms each into Sanity documents, uploads via
+                          @sanity/client. Uses SANITY_API_WRITE_TOKEN. Supports --dry-run.
+                          Uploads images via client.assets.upload, preserves alt + filename.
+                          
+MIGRATION.md              The artifact OZ will look at: source inventory, field-mapping table per doc type,
+                          asset handling strategy, redirect map (old URL → new URL), rollback plan.
+
+app/(marketing)/page.tsx          Rewired — fetches page with slug "home" via sanityFetch; renders hero +
+                                  sections via SectionRenderer; falls back to current hardcoded content
+                                  if the home doc isn't published yet.
+app/(marketing)/about/page.tsx    Same — fetches slug "about".
+app/(marketing)/team/page.tsx     Lists teamMember docs, sorted by order. Replaces hardcoded `const team = […]`.
+app/(marketing)/products/page.tsx Lists product docs.
+app/(marketing)/news/page.tsx     Lists post docs, sorted by publishedAt desc.
+
+app/components/sanity/SectionRenderer.tsx  Now informed by what migrated, swap each placeholder for a
+                                           production-quality rendering. The current Liqtra-themed
+                                           components under app/components/ui/sections/ stay as one-off
+                                           page sections (Mission, Solutions, etc.); the Sanity sections
+                                           render new, generic-but-on-brand components.
 ```
 
-Pending env: `SANITY_REVALIDATE_SECRET` — `openssl rand -hex 32` and paste into `.env.local` (already templated in `.env.local.example`).
+Pending env: `SANITY_API_WRITE_TOKEN` — generate at https://www.sanity.io/manage/project/8smu0dlv/api → Tokens with Editor permissions, paste into `.env.local`.
 
-Acceptance for Day 6:
-- Hitting `/api/draft-mode/enable?slug=/products/foo&secret=…` sets the draft cookie and redirects
-- With draft mode on, sanityFetch() returns the unpublished version
-- Sanity webhook (or manual POST) → `/api/revalidate` clears the right tag and the next request shows the new content within seconds
-- SectionRenderer's `heroBlock` / `featureGridBlock` / `richTextBlock` / `ctaBlock` / `testimonialBlock` render as production-quality, not placeholders
-- Commit message: `feat(day 6): draft mode + on-demand ISR + production SectionRenderer`
+Acceptance for Day 7:
+- Running `npm run migrate -- --dry-run` prints every doc that would be created without writing
+- Running `npm run migrate` populates Sanity with the same content the live site currently shows
+- /, /about, /team, /products, /news all render the migrated content from Sanity
+- Every public URL from `migration/URL_INVENTORY.md` has a corresponding Sanity doc (or a redirect)
+- `MIGRATION.md` documents source → target mapping, alt-text strategy, and a rollback plan
+- Commit message: `feat(day 7): content migration + top-level page rewires + MIGRATION.md`
 
 ---
 
-## 7a. What's queued after Day 6
+## 7a. What's queued after Day 7
 
 | Day | Theme | Key files |
 |---|---|---|
-| 7 | Content migration (existing pages → Sanity) | `scripts/migrate.ts`, `MIGRATION.md`, rewire /, /about, /team, /products, /news to fetch from Sanity |
 | 8 | HubSpot forms + GA4 | `components/HubspotForm.tsx`, `@next/third-parties/google` |
 | 9 | SEO + redirects + Core Web Vitals | `next-sitemap`, `next.config.ts` redirect import from Sanity, JSON-LD, per-route Metadata, Lighthouse 95+ |
 | 10 | Claude Code + Sanity MCP | MCP server config, `OPERATING.md`, Loom |
@@ -284,9 +313,9 @@ rm -f .next/dev/lock
 
 Open a new session inside `/home/emmanuel/Documents/work_projects/foniolabs-website/` and prompt with something like:
 
-> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 6: draft mode + on-demand ISR + SectionRenderer polish. Build the routes listed in §7 (/api/draft-mode/enable, /api/draft-mode/disable, /api/revalidate), wire previewMode into sanity.config.ts presentationTool, and swap each placeholder in SectionRenderer for the corresponding production component from app/components/ui/sections/. Stop before content migration — that's Day 7.
+> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 7: content migration + top-level page rewires. Build scripts/migrate.ts (with --dry-run support and SANITY_API_WRITE_TOKEN), MIGRATION.md, and rewire /, /about, /team, /products, /news in app/(marketing)/ to fetch from Sanity. Also informed by what migrates, swap the SectionRenderer placeholders for production-quality components. Stop before HubSpot/GA4 — that's Day 8.
 
-Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–5 context.
+Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–6 context.
 
 ---
 
