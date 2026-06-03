@@ -15,6 +15,7 @@
     "deploy:go54:ssh": "./deploy-ssh-go54.sh"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.7",
     "@portabletext/react": "^6.2.0",
     "@privy-io/react-auth": "^3.4.1",
     "@sanity/client": "^7.22.1",

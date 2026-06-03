@@ -3,6 +3,7 @@ import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 import { VisualEditing } from "next-sanity/visual-editing";
 
+import { GoogleAnalytics } from "./components/analytics/GoogleAnalytics";
 import { DraftModeBanner } from "./components/sanity/DraftModeBanner";
 import "./globals.css";
 
@@ -58,6 +59,11 @@ export default async function RootLayout({
           </>
         )}
       </body>
+      {/* GA4 mounts only when siteSettings.ga4MeasurementId is set. The
+          server component returns null otherwise — zero script tags load
+          pre-configuration. Marketing flips this on by pasting the
+          Measurement ID into Studio → Site Settings. */}
+      <GoogleAnalytics />
     </html>
   );
 }
