@@ -1,9 +1,13 @@
 import { defineField, defineType } from "sanity";
 
+import { ogImageInputComponents } from "../../components/OGImagePreview";
+import { seoInputComponents } from "../../components/SEOPreview";
+
 export const seo = defineType({
   name: "seo",
   title: "SEO",
   type: "object",
+  components: seoInputComponents,
   fields: [
     defineField({
       name: "title",
@@ -28,6 +32,7 @@ export const seo = defineType({
       description:
         "1200×630 recommended. Falls back to the site default OG image set in Site Settings.",
       options: { hotspot: true },
+      components: ogImageInputComponents,
       fields: [
         defineField({
           name: "alt",

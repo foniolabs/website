@@ -1,6 +1,8 @@
 import { DocumentsIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+import { slugInputComponents } from "../../components/SlugInput";
+
 export const page = defineType({
   name: "page",
   title: "Page",
@@ -26,6 +28,7 @@ export const page = defineType({
       description:
         "URL path (without leading slash). The home page should use the slug \"home\".",
       options: { source: "title", maxLength: 96 },
+      components: slugInputComponents,
       validation: (rule) => rule.required(),
     }),
     defineField({

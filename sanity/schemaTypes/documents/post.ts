@@ -1,6 +1,8 @@
 import { DocumentTextIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+import { slugInputComponents } from "../../components/SlugInput";
+
 export const post = defineType({
   name: "post",
   title: "News post",
@@ -25,6 +27,7 @@ export const post = defineType({
       type: "slug",
       group: "content",
       options: { source: "title", maxLength: 96 },
+      components: slugInputComponents,
       validation: (rule) => rule.required(),
     }),
     defineField({
