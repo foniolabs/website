@@ -2,7 +2,7 @@
 
 **Purpose of this doc:** snapshot of the in-flight Sanity migration so work can resume cleanly from inside this repo (`/home/emmanuel/Documents/work_projects/foniolabs-website/`) in a fresh session or context window.
 
-**Last updated:** Day 4 complete, mid-sprint.
+**Last updated:** Day 5 complete, mid-sprint.
 
 ---
 
@@ -32,6 +32,8 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 - `e725959` — docs: HANDOFF refresh, Day 2 done / Day 3 queued
 - `9495deb` — Day 3: 8 composable section blocks + custom desk structure
 - `ea502e7` — Day 4: 4 custom Studio components (SlugInput with auto-redirect, VariantChipInput chips, SEOPreview Google snippet, OGImagePreview live OG card) + Presentation tool + /api/og edge route
+- `d9abe0a` — docs: HANDOFF refresh, Days 3–4 done / Day 5 queued
+- `0bf3f71` — Day 5: GROQ queries + fetch wrapper + PortableText + SectionRenderer + `/products/[slug]` + `/news/[slug]` dynamic routes (existing top-level pages deferred to Day 7 content migration)
 
 **Working tree:** clean (except this HANDOFF.md update).
 
@@ -39,11 +41,24 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 
 **Sanity project:** `8smu0dlv`, dataset `production` (free tier, owned by you).
 
-**Days complete:** 0–4 of 14. Day 5 (App Router pages backed by GROQ) is the next code task.
+**Days complete:** 0–5 of 14. Day 6 (draft mode + ISR + SectionRenderer polish) is the next code task.
 
 ---
 
 ## 3. Files Created / Touched
+
+### New files (Day 5)
+```
+lib/sanity/queries.ts                          GROQ for every page type + shared projections (image/seo/section)
+lib/sanity/fetch.ts                            Server-side wrapper picking published/draft client based on draftMode()
+app/components/sanity/PortableText.tsx         Renderer for richText body — code/callout/codeBlock/image/internalLink marks
+app/components/sanity/SectionRenderer.tsx      Maps each of the 8 block _types → placeholder React section (Day 6 swaps real components)
+app/(marketing)/products/[slug]/page.tsx       Sanity-driven product page + generateStaticParams + generateMetadata (auto-OG via /api/og fallback)
+app/(marketing)/news/[slug]/page.tsx           Sanity-driven post page + generateStaticParams + generateMetadata (article OG)
+```
+Also: `lib/sanity/image.ts` Day 1 type-import fixed (`@sanity/image-url` exports `SanityImageSource` directly).
+
+Scope note: existing top-level marketing pages (/, /about, /team, /products, /news) intentionally stay on hardcoded content. They become Sanity-driven during Day 7 content migration, once real docs exist.
 
 ### New files (Day 4)
 ```
@@ -213,45 +228,38 @@ These are blocking various later days. None block Day 2.
 
 ---
 
-## 7. Next Step — Day 5: GROQ + App Router rewire
+## 7. Next Step — Day 6: Draft mode + ISR + SectionRenderer polish
 
-Goal: stop hardcoding page content in the (marketing) routes and start reading from Sanity. Files to create:
+Goal: editors can preview unpublished drafts in the Studio's Presentation pane, and published changes go live in seconds (not on the next deploy). Files to create / update:
 
 ```
-lib/sanity/queries.ts            GROQ for every page type (home, /about, /team, /products, /products/[slug], /news, /news/[slug])
-lib/sanity/fetch.ts              Wrapper that picks published vs draft client based on draft-mode cookie
-app/(marketing)/page.tsx         Rewired to fetch the "home" page doc and render its sections
-app/(marketing)/about/page.tsx   Same — fetches page where slug == "about"
-app/(marketing)/team/page.tsx    Lists teamMember docs, sorted by order
-app/(marketing)/products/page.tsx        Lists product docs
-app/(marketing)/products/[slug]/page.tsx New dynamic route with generateStaticParams
-app/(marketing)/news/page.tsx    Lists post docs
-app/(marketing)/news/[slug]/page.tsx     New dynamic route with generateStaticParams
-components/PortableText.tsx      Renderer with custom components for code/callout/internalLink (matches richText block marks)
-components/SectionRenderer.tsx   Maps section _type → React component (placeholder — Day 6 fills it out)
+app/api/draft-mode/enable/route.ts        Validates a secret + sets draftMode().enable(); supports ?slug=… redirect
+app/api/draft-mode/disable/route.ts       draftMode().disable() + redirect to referrer
+app/api/revalidate/route.ts               POST handler that validates SANITY_REVALIDATE_SECRET, then revalidateTag(...)
+                                          for any tag in body. Wired to Sanity webhook on Day 12.
+sanity.config.ts                          presentationTool.previewUrl.preview / .previewMode.enable now point at /api/draft-mode/enable
+app/components/sanity/SectionRenderer.tsx Swap placeholders for the real production section components from app/components/ui/sections/. Each block _type maps to its polished counterpart and passes Sanity data through as props (Hero takes hero data, Features takes feature grid data, etc.). Where there is no existing equivalent (logoCloudBlock, embedHtmlBlock, contactFormBlock), keep the Day 5 placeholder until Day 7/8 needs them.
+next-sanity/visual-editing                Optional — wire <VisualEditing /> in app/layout.tsx when draftMode is on so the Presentation tool's overlays work end-to-end.
 ```
 
-Then fix [lib/sanity/image.ts](lib/sanity/image.ts:2) — its import of `@sanity/image-url/lib/types/types` has been broken since Day 1. Real export is `SanityImageSource` from `@sanity/image-url`. Day 5 needs it working since pages will start rendering Sanity images.
+Pending env: `SANITY_REVALIDATE_SECRET` — `openssl rand -hex 32` and paste into `.env.local` (already templated in `.env.local.example`).
 
-Custom Studio components from Day 4 will start showing real previews once a real page document exists in Sanity. Until content is migrated (Day 7), Day 5 pages can render placeholder copy for empty queries.
-
-Acceptance for Day 5:
-- `/`, `/about`, `/team`, `/products`, `/news` all 200 and render the (empty-for-now) Sanity data shape
-- Dynamic routes `/products/[slug]`, `/news/[slug]` have `generateStaticParams` returning all slugs from Sanity
-- `PortableText` renders cleanly for posts that have body content
-- `lib/sanity/image.ts` typecheck error gone
-- Commit message: `feat(day 5): App Router pages backed by GROQ + Portable Text`
+Acceptance for Day 6:
+- Hitting `/api/draft-mode/enable?slug=/products/foo&secret=…` sets the draft cookie and redirects
+- With draft mode on, sanityFetch() returns the unpublished version
+- Sanity webhook (or manual POST) → `/api/revalidate` clears the right tag and the next request shows the new content within seconds
+- SectionRenderer's `heroBlock` / `featureGridBlock` / `richTextBlock` / `ctaBlock` / `testimonialBlock` render as production-quality, not placeholders
+- Commit message: `feat(day 6): draft mode + on-demand ISR + production SectionRenderer`
 
 ---
 
-## 7a. What's queued after Day 5
+## 7a. What's queued after Day 6
 
 | Day | Theme | Key files |
 |---|---|---|
-| 6 | Draft mode + ISR + SectionRenderer | `app/api/draft`, `app/api/disable-draft`, `app/api/revalidate`, full block→component map |
-| 7 | Content migration | `scripts/migrate.ts`, `MIGRATION.md` |
+| 7 | Content migration (existing pages → Sanity) | `scripts/migrate.ts`, `MIGRATION.md`, rewire /, /about, /team, /products, /news to fetch from Sanity |
 | 8 | HubSpot forms + GA4 | `components/HubspotForm.tsx`, `@next/third-parties/google` |
-| 9 | SEO + redirects + Core Web Vitals | `next-sitemap`, `next.config.ts` redirect import, JSON-LD, per-route Metadata, Lighthouse 95+ |
+| 9 | SEO + redirects + Core Web Vitals | `next-sitemap`, `next.config.ts` redirect import from Sanity, JSON-LD, per-route Metadata, Lighthouse 95+ |
 | 10 | Claude Code + Sanity MCP | MCP server config, `OPERATING.md`, Loom |
 | 11 | Live stats interactive block | new `liveStatsBlock` schema + component |
 | 12 | CI/CD + Vercel | GitHub Actions, preview deploys, webhook → revalidate |
@@ -276,9 +284,9 @@ rm -f .next/dev/lock
 
 Open a new session inside `/home/emmanuel/Documents/work_projects/foniolabs-website/` and prompt with something like:
 
-> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 5: GROQ + App Router rewire. Build the files listed in §7 — GROQ queries, fetch wrapper, rewired marketing pages, dynamic /products/[slug] + /news/[slug] routes, PortableText renderer, SectionRenderer placeholder. Also fix the lib/sanity/image.ts type import (broken since Day 1). Stop before draft mode + ISR — those are Day 6.
+> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 6: draft mode + on-demand ISR + SectionRenderer polish. Build the routes listed in §7 (/api/draft-mode/enable, /api/draft-mode/disable, /api/revalidate), wire previewMode into sanity.config.ts presentationTool, and swap each placeholder in SectionRenderer for the corresponding production component from app/components/ui/sections/. Stop before content migration — that's Day 7.
 
-Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–4 context.
+Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–5 context.
 
 ---
 
