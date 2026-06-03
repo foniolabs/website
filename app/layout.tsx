@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "./components/ui/sections/Header";
-import Footer from "./components/ui/sections/Footer";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -35,7 +33,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-       
         <link rel="icon" href="/foniolabs-logo.svg?v=2" />
         <link
           rel="apple-touch-icon"
@@ -47,9 +44,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
       >
-        <Header />
         {children}
-        <Footer />
       </body>
     </html>
   );
