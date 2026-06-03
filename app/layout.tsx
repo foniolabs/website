@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
+
+import { DraftModeBanner } from "./components/sanity/DraftModeBanner";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -25,11 +29,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { isEnabled: isDraftMode } = await draftMode();
+
   return (
     <html lang="en">
       <head>
@@ -45,6 +51,12 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
       >
         {children}
+        {isDraftMode && (
+          <>
+            <DraftModeBanner />
+            <VisualEditing />
+          </>
+        )}
       </body>
     </html>
   );

@@ -26,9 +26,10 @@ export default defineConfig({
       previewUrl: {
         origin: PREVIEW_ORIGIN,
         preview: "/",
-        // Day 6 wires draft mode at `/api/draft-mode/enable` and visual
-        // editing overlays in the site bundle. Until then Presentation will
-        // show the *published* version of any doc opened from the rail.
+        previewMode: {
+          enable: "/api/draft-mode/enable",
+          disable: "/api/draft-mode/disable",
+        },
       },
       resolve: {
         // Map a Studio document → the URL its content renders at on the site.
