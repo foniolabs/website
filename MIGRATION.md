@@ -134,15 +134,14 @@ The listing pages (`/team`, `/news`, `/products`) **are** rewired to fetch from 
 ## 7. Running the migration
 
 ```bash
-# One-time setup
-nvm use 22.20.0
-
 # Preview without writing (no token needed)
 npm run migrate:dry
 
 # Actual run (needs SANITY_API_WRITE_TOKEN in .env.local)
 npm run migrate
 ```
+
+The script runs through `tsx` (devDependency), so it works on any Node ≥18 — no `nvm use` step required, and no `--experimental-strip-types` / `--env-file` flags. The `.env.local` file is loaded by a tiny inline parser at the top of `scripts/migrate.ts`.
 
 Generate the write token at https://www.sanity.io/manage/project/8smu0dlv/api → **Tokens** → create with **Editor** permissions, paste into `.env.local` as `SANITY_API_WRITE_TOKEN=…`.
 

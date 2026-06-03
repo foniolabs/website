@@ -12,20 +12,45 @@
  *
  * Run:
  *   --- dry run (no writes, no token needed) ---
- *   nvm use 22.20.0
- *   node --env-file=.env.local --experimental-strip-types \
- *        scripts/migrate.ts --dry-run
+ *   npm run migrate:dry
  *
  *   --- live run (needs SANITY_API_WRITE_TOKEN in .env.local) ---
- *   node --env-file=.env.local --experimental-strip-types \
- *        scripts/migrate.ts
+ *   npm run migrate
  *
  * See MIGRATION.md for the source → target mapping table and rollback plan.
  */
 
 import { createClient, type SanityClient } from "@sanity/client";
+import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { basename, join } from "node:path";
+
+// Tiny .env.local loader. We can't use Node's --env-file because that's
+// Node ≥20.6 and we want this script to run on the system default Node 18
+// too. Lines like `KEY=value` and `KEY="value"` are parsed; comments and
+// blanks are skipped. Existing process.env values win (so CI overrides work).
+(function loadEnvLocal() {
+  const path = join(process.cwd(), ".env.local");
+  let raw: string;
+  try {
+    raw = readFileSync(path, "utf8");
+  } catch {
+    return; // No .env.local — that's fine for --dry-run with public values.
+  }
+  for (const line of raw.split("\n")) {
+    const match = line.match(/^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*?)\s*$/);
+    if (!match) continue;
+    const key = match[1];
+    let value = match[2];
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    if (process.env[key] === undefined) process.env[key] = value;
+  }
+})();
 
 const DRY_RUN =
   process.argv.includes("--dry-run") || process.argv.includes("-n");
