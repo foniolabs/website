@@ -69,10 +69,16 @@ export const page = defineType({
       type: "array",
       group: "content",
       description:
-        "Composable sections. Day 3 will add hero / featureGrid / richText / cta / testimonial / logoCloud / embedHtml / contactForm block members here.",
+        "Compose the page from reusable sections. Drag to reorder. Each section is an inline block, not a reference — copies are page-specific.",
       of: [
-        // Placeholder until Day 3 — keeps the array valid for new pages.
-        defineArrayMember({ type: "block" }),
+        defineArrayMember({ type: "heroBlock" }),
+        defineArrayMember({ type: "featureGridBlock" }),
+        defineArrayMember({ type: "richTextBlock" }),
+        defineArrayMember({ type: "ctaBlock" }),
+        defineArrayMember({ type: "testimonialBlock" }),
+        defineArrayMember({ type: "logoCloudBlock" }),
+        defineArrayMember({ type: "embedHtmlBlock" }),
+        defineArrayMember({ type: "contactFormBlock" }),
       ],
     }),
     defineField({

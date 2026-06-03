@@ -1,5 +1,14 @@
 import type { SchemaTypeDefinition } from "sanity";
 
+import { contactFormBlock } from "./blocks/contactForm";
+import { ctaBlock } from "./blocks/cta";
+import { embedHtmlBlock } from "./blocks/embedHtml";
+import { featureGridBlock } from "./blocks/featureGrid";
+import { heroBlock } from "./blocks/hero";
+import { logoCloudBlock } from "./blocks/logoCloud";
+import { richTextBlock } from "./blocks/richText";
+import { testimonialBlock } from "./blocks/testimonial";
+import { ctaLink } from "./blocks/_shared";
 import { author } from "./documents/author";
 import { navigation } from "./documents/navigation";
 import { page } from "./documents/page";
@@ -11,13 +20,25 @@ import { teamMember } from "./documents/teamMember";
 import { seo } from "./objects/seo";
 import { socialLinks } from "./objects/socialLinks";
 
-// Day 3 will add reusable section blocks (hero, featureGrid, richText, cta,
-// testimonial, logoCloud, embedHtml, contactForm) and wire them into
-// `page.sections`. Day 4 adds custom Studio components.
+// Order matters: any type referenced by another (objects, shared link types,
+// block members) must be registered before the type that references it.
+// Day 4 adds custom Studio components (SlugInput, ColorVariantInput, SEOPreview,
+// OGImagePreview) and the presentation tool.
 export const schemaTypes: SchemaTypeDefinition[] = [
-  // Reusable objects (must come before documents that reference them)
+  // Reusable objects
   seo,
   socialLinks,
+  ctaLink,
+
+  // Section blocks (used inside page.sections)
+  heroBlock,
+  featureGridBlock,
+  richTextBlock,
+  ctaBlock,
+  testimonialBlock,
+  logoCloudBlock,
+  embedHtmlBlock,
+  contactFormBlock,
 
   // Singletons
   siteSettings,
