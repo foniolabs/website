@@ -1,6 +1,8 @@
 import { RocketIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+import { variantChipInputComponents } from "../../components/VariantChipInput";
+
 export const ctaBlock = defineType({
   name: "ctaBlock",
   title: "Call-to-action",
@@ -11,15 +13,15 @@ export const ctaBlock = defineType({
       name: "tone",
       title: "Tone",
       type: "string",
-      description: "Visual treatment. Day 4 swaps this for a color preview.",
+      description: "Visual treatment.",
       options: {
         list: [
           { title: "Default", value: "default" },
           { title: "Accent", value: "accent" },
           { title: "Dark", value: "dark" },
         ],
-        layout: "radio",
       },
+      components: variantChipInputComponents,
       initialValue: "default",
     }),
     defineField({

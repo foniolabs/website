@@ -1,6 +1,8 @@
 import { StarIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+import { variantChipInputComponents } from "../../components/VariantChipInput";
+
 export const heroBlock = defineType({
   name: "heroBlock",
   title: "Hero",
@@ -11,16 +13,15 @@ export const heroBlock = defineType({
       name: "variant",
       title: "Layout",
       type: "string",
-      description:
-        "How the hero is rendered. Day 4 replaces this with a visual ColorVariantInput-style picker.",
+      description: "How the hero is rendered.",
       options: {
         list: [
           { title: "Split — text left, media right", value: "split" },
           { title: "Centered — text + CTA stack", value: "centered" },
           { title: "Video background — full-bleed", value: "videoBg" },
         ],
-        layout: "radio",
       },
+      components: variantChipInputComponents,
       initialValue: "centered",
       validation: (rule) => rule.required(),
     }),
