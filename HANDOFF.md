@@ -2,7 +2,7 @@
 
 **Purpose of this doc:** snapshot of the in-flight Sanity migration so work can resume cleanly from inside this repo (`/home/emmanuel/Documents/work_projects/foniolabs-website/`) in a fresh session or context window.
 
-**Last updated:** Day 6 complete, mid-sprint.
+**Last updated:** Day 7 complete, mid-sprint.
 
 ---
 
@@ -36,6 +36,8 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 - `0bf3f71` — Day 5: GROQ queries + fetch wrapper + PortableText + SectionRenderer + `/products/[slug]` + `/news/[slug]` dynamic routes (existing top-level pages deferred to Day 7 content migration)
 - `5c0f1c4` — docs: HANDOFF refresh, Day 5 done / Day 6 queued
 - `163d0bd` — Day 6: draft-mode enable/disable + revalidate webhook + presentationTool previewMode wiring + VisualEditing overlay + draft-mode banner
+- `9ceb7f7` — docs: HANDOFF refresh, Day 6 done / Day 7 queued
+- `8bac7e5` — Day 7: idempotent migration script + MIGRATION.md + /team, /news, /products rewired (async server + client content split, with hardcoded fallback)
 
 **Working tree:** clean (except this HANDOFF.md update).
 
@@ -43,11 +45,26 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 
 **Sanity project:** `8smu0dlv`, dataset `production` (free tier, owned by you).
 
-**Days complete:** 0–6 of 14. Day 7 (content migration + top-level page rewires) is the next code task.
+**Days complete:** 0–7 of 14. Day 8 (HubSpot Forms + GA4) is the next code task.
 
 ---
 
 ## 3. Files Created / Touched
+
+### New files (Day 7)
+```
+MIGRATION.md                                       OZ-facing migration writeup — goals, inventory, per-doc field mapping, asset strategy, redirect map, rollback paths, acceptance checklist
+scripts/migrate.ts                                 Idempotent ETL — reads inline source const, uploads /images/team/Founder.jpg to Sanity assets, writes 10 docs with deterministic _ids. --dry-run flag.
+app/(marketing)/team/TeamPageContent.tsx           Client component holding all the framer-motion JSX, takes team[] as prop
+app/(marketing)/team/page.tsx                      Async server — fetches teamMembersQuery + falls back to hardcoded founder
+app/(marketing)/news/NewsPageContent.tsx           Same shape — posts grid + chrome
+app/(marketing)/news/page.tsx                      Async server — fetches postsListQuery + tag→color map + date formatting
+app/(marketing)/products/ProductsPageContent.tsx   Same shape — products grid + chrome
+app/(marketing)/products/page.tsx                  Async server — fetches products with PortableText→plaintext for description
+```
+Plus `package.json` adds `npm run migrate` and `npm run migrate:dry` (both use Node 22 `--env-file` + `--experimental-strip-types`, no new deps).
+
+Pending env: `SANITY_API_WRITE_TOKEN` — Editor token from https://www.sanity.io/manage/project/8smu0dlv/api → Tokens, paste into `.env.local`, then `npm run migrate` to populate the dataset.
 
 ### New files (Day 6)
 ```
@@ -241,53 +258,40 @@ These are blocking various later days. None block Day 2.
 
 ---
 
-## 7. Next Step — Day 7: Content migration + top-level page rewires
+## 7. Next Step — Day 8: HubSpot Forms + GA4
 
-Goal: actually move the existing hardcoded content into Sanity, then rewire `/`, `/about`, `/team`, `/products`, `/news` to read from there. This is the day that earns the "led a CMS migration end-to-end" bullet on the OZ application.
+Goal: wire real lead capture and analytics, both driven by `siteSettings`. Marketing should be able to swap HubSpot forms per page and change the GA4 ID from Studio without touching code.
 
-Files to create / update:
+Files to create:
 
 ```
-scripts/migrate.ts        Reads existing hardcoded data from app/(marketing)/{page,about,team,products,news}.tsx
-                          and the section components, transforms each into Sanity documents, uploads via
-                          @sanity/client. Uses SANITY_API_WRITE_TOKEN. Supports --dry-run.
-                          Uploads images via client.assets.upload, preserves alt + filename.
-                          
-MIGRATION.md              The artifact OZ will look at: source inventory, field-mapping table per doc type,
-                          asset handling strategy, redirect map (old URL → new URL), rollback plan.
-
-app/(marketing)/page.tsx          Rewired — fetches page with slug "home" via sanityFetch; renders hero +
-                                  sections via SectionRenderer; falls back to current hardcoded content
-                                  if the home doc isn't published yet.
-app/(marketing)/about/page.tsx    Same — fetches slug "about".
-app/(marketing)/team/page.tsx     Lists teamMember docs, sorted by order. Replaces hardcoded `const team = […]`.
-app/(marketing)/products/page.tsx Lists product docs.
-app/(marketing)/news/page.tsx     Lists post docs, sorted by publishedAt desc.
-
-app/components/sanity/SectionRenderer.tsx  Now informed by what migrated, swap each placeholder for a
-                                           production-quality rendering. The current Liqtra-themed
-                                           components under app/components/ui/sections/ stay as one-off
-                                           page sections (Mission, Solutions, etc.); the Sanity sections
-                                           render new, generic-but-on-brand components.
+app/components/sanity/HubspotForm.tsx         Client component — loads //js.hsforms.net/forms/embed/v2.js, takes portalId + formId props, mounts hbspt.forms.create(...)
+app/components/sanity/SectionRenderer.tsx     Update the contactFormBlock branch to use HubspotForm (today's placeholder)
+app/components/analytics/GoogleAnalytics.tsx  Server component reading siteSettings.ga4MeasurementId via sanityFetch, renders @next/third-parties GoogleAnalytics — only when the ID is set
+app/layout.tsx                                Mount <GoogleAnalytics /> conditionally above <body>
+app/(marketing)/contact/page.tsx              Use HubspotForm against siteSettings.hubspotPortalId + a hardcoded contact form ID, OR rewire to fetch a contactForm block from a "contact" page doc
 ```
 
-Pending env: `SANITY_API_WRITE_TOKEN` — generate at https://www.sanity.io/manage/project/8smu0dlv/api → Tokens with Editor permissions, paste into `.env.local`.
+New dep: `@next/third-parties` for the official GA4 integration (small, official).
 
-Acceptance for Day 7:
-- Running `npm run migrate -- --dry-run` prints every doc that would be created without writing
-- Running `npm run migrate` populates Sanity with the same content the live site currently shows
-- /, /about, /team, /products, /news all render the migrated content from Sanity
-- Every public URL from `migration/URL_INVENTORY.md` has a corresponding Sanity doc (or a redirect)
-- `MIGRATION.md` documents source → target mapping, alt-text strategy, and a rollback plan
-- Commit message: `feat(day 7): content migration + top-level page rewires + MIGRATION.md`
+Pending user actions:
+- Free HubSpot Developer account at https://developers.hubspot.com — note Portal ID
+- Build a contact form in HubSpot (Name / Email / Message) — note Form ID (GUID)
+- GA4 property at https://analytics.google.com for foniolabs.xyz — note Measurement ID `G-XXXXXXXXXX`
+- Open Studio → Site Settings, paste Portal ID + GA4 ID into the fields built on Day 2
+
+Acceptance for Day 8:
+- /contact submission → confirm lead lands in HubSpot
+- GA4 DebugView shows `page_view` events as you navigate
+- Marketing can change the HubSpot form embedded on any page by editing the `contactFormBlock` in Studio (no code change)
+- Commit message: `feat(day 8): HubSpot Forms + GA4 driven by siteSettings`
 
 ---
 
-## 7a. What's queued after Day 7
+## 7a. What's queued after Day 8
 
 | Day | Theme | Key files |
 |---|---|---|
-| 8 | HubSpot forms + GA4 | `components/HubspotForm.tsx`, `@next/third-parties/google` |
 | 9 | SEO + redirects + Core Web Vitals | `next-sitemap`, `next.config.ts` redirect import from Sanity, JSON-LD, per-route Metadata, Lighthouse 95+ |
 | 10 | Claude Code + Sanity MCP | MCP server config, `OPERATING.md`, Loom |
 | 11 | Live stats interactive block | new `liveStatsBlock` schema + component |
@@ -313,9 +317,9 @@ rm -f .next/dev/lock
 
 Open a new session inside `/home/emmanuel/Documents/work_projects/foniolabs-website/` and prompt with something like:
 
-> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 7: content migration + top-level page rewires. Build scripts/migrate.ts (with --dry-run support and SANITY_API_WRITE_TOKEN), MIGRATION.md, and rewire /, /about, /team, /products, /news in app/(marketing)/ to fetch from Sanity. Also informed by what migrates, swap the SectionRenderer placeholders for production-quality components. Stop before HubSpot/GA4 — that's Day 8.
+> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 8: HubSpot Forms + GA4. Build HubspotForm.tsx (loads //js.hsforms.net/forms/embed/v2.js, takes portalId + formId props), wire it into the SectionRenderer's contactFormBlock branch (replacing today's placeholder), and add a GoogleAnalytics server component that reads siteSettings.ga4MeasurementId. Install @next/third-parties. Mount GA in app/layout.tsx conditionally. Stop before SEO/redirects — those are Day 9.
 
-Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–6 context.
+Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–7 context.
 
 ---
 
