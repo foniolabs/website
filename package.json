@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "migrate:dry": "node --env-file=.env.local --experimental-strip-types scripts/migrate.ts --dry-run",
-    "migrate": "node --env-file=.env.local --experimental-strip-types scripts/migrate.ts",
+    "migrate:dry": "tsx scripts/migrate.ts --dry-run",
+    "migrate": "tsx scripts/migrate.ts",
     "deploy:vercel": "vercel --prod",
     "deploy:preview": "vercel",
     "deploy:go54": "npm run build && node deploy-go54.js",
@@ -39,6 +39,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "tailwindcss": "^4",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }
