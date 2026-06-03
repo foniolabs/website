@@ -2,7 +2,7 @@
 
 **Purpose of this doc:** snapshot of the in-flight Sanity migration so work can resume cleanly from inside this repo (`/home/emmanuel/Documents/work_projects/foniolabs-website/`) in a fresh session or context window.
 
-**Last updated:** Day 7 complete, mid-sprint.
+**Last updated:** Day 8 complete, mid-sprint.
 
 ---
 
@@ -38,18 +38,35 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 - `163d0bd` — Day 6: draft-mode enable/disable + revalidate webhook + presentationTool previewMode wiring + VisualEditing overlay + draft-mode banner
 - `9ceb7f7` — docs: HANDOFF refresh, Day 6 done / Day 7 queued
 - `8bac7e5` — Day 7: idempotent migration script + MIGRATION.md + /team, /news, /products rewired (async server + client content split, with hardcoded fallback)
+- `776e371` — docs: HANDOFF refresh, Day 7 done / Day 8 queued
+- `acfdd49` — fix: migrate script runs on any Node ≥18 (tsx + inline .env loader) + DEFERRED.md decision log
+- `39dc088` — Day 8: HubspotForm + GoogleAnalytics + SectionRenderer contactFormBlock wired through siteSettings
+
+**Migration run:** ✓ 10 docs in Sanity. `/team`, `/news/introducing-futbol-fusion`, `/products/futbol-fusion` etc. all serve real Sanity content.
 
 **Working tree:** clean (except this HANDOFF.md update).
 
-**Dev server:** not running. Start with `nvm use 22.20.0 && npm run dev` (port 3000). **Node ≥20.9.0 required** — system default is 18, and `npm run dev` exits 0 silently on Node 18 without serving anything. See §10.
+**Dev server:** not running. Start with `npm run dev` (port 3000). **Node ≥20.9.0 required for the dev server** — system default is 18, and `npm run dev` exits 0 silently on Node 18 without serving anything. See §10. (The migrate script does NOT need Node 20+ — see `acfdd49`.)
 
 **Sanity project:** `8smu0dlv`, dataset `production` (free tier, owned by you).
 
-**Days complete:** 0–7 of 14. Day 8 (HubSpot Forms + GA4) is the next code task.
+**Days complete:** 0–8 of 14. Day 9 (SEO continuity + redirects + Core Web Vitals) is the next code task.
 
 ---
 
 ## 3. Files Created / Touched
+
+### New files (Day 8)
+```
+app/components/sanity/HubspotForm.tsx                Client component — lazy-loads //js.hsforms.net/forms/embed/v2.js, mounts hbspt.forms.create per-instance
+app/components/analytics/GoogleAnalytics.tsx         Server component — fetches siteSettings.ga4MeasurementId, mounts @next/third-parties GoogleAnalytics
+DEFERRED.md                                          (landed in acfdd49) Decision log — why /, /about, /contact stay hardcoded
+```
+Plus: `app/components/sanity/SectionRenderer.tsx` adds `RenderGlobals` threading + replaces the `contactFormBlock` placeholder with the real HubspotForm; `app/layout.tsx` mounts `<GoogleAnalytics />` (returns null until `ga4MeasurementId` is set in Studio); `@next/third-parties` added as a dep.
+
+Pending user actions to make HubSpot/GA actually fire:
+- HubSpot Developer account at https://developers.hubspot.com → Portal ID + Form ID. Paste Portal ID into Studio → Site Settings → HubSpot Portal ID. To embed a form on any page, drop a `contactFormBlock` into `page.sections` with the form GUID.
+- GA4 property at https://analytics.google.com → Measurement ID `G-XXXXXXXXXX`. Paste into Studio → Site Settings → GA4 Measurement ID.
 
 ### New files (Day 7)
 ```
@@ -258,41 +275,56 @@ These are blocking various later days. None block Day 2.
 
 ---
 
-## 7. Next Step — Day 8: HubSpot Forms + GA4
+## 7. Next Step — Day 9: SEO continuity + redirects + Core Web Vitals
 
-Goal: wire real lead capture and analytics, both driven by `siteSettings`. Marketing should be able to swap HubSpot forms per page and change the GA4 ID from Studio without touching code.
+Goal: don't lose a single ranking when DNS cuts over (Day 13). Sitemap from Sanity at build, build-time redirects from `redirect` docs, JSON-LD on key page types, per-route Metadata from each doc's SEO object, and a perf pass to hit Lighthouse 95+.
 
-Files to create:
+Files to create / update:
 
 ```
-app/components/sanity/HubspotForm.tsx         Client component — loads //js.hsforms.net/forms/embed/v2.js, takes portalId + formId props, mounts hbspt.forms.create(...)
-app/components/sanity/SectionRenderer.tsx     Update the contactFormBlock branch to use HubspotForm (today's placeholder)
-app/components/analytics/GoogleAnalytics.tsx  Server component reading siteSettings.ga4MeasurementId via sanityFetch, renders @next/third-parties GoogleAnalytics — only when the ID is set
-app/layout.tsx                                Mount <GoogleAnalytics /> conditionally above <body>
-app/(marketing)/contact/page.tsx              Use HubspotForm against siteSettings.hubspotPortalId + a hardcoded contact form ID, OR rewire to fetch a contactForm block from a "contact" page doc
+next-sitemap.config.js              Generates sitemap.xml + robots.txt from Sanity at build. Reads all
+                                    page/post/product/teamMember slugs via the client, ordered by
+                                    publishedAt where applicable.
+                                    
+app/robots.ts                       Programmatic robots.txt (Next 16 metadata API) — points at the
+                                    sitemap and disallows the /studio route from indexing.
+
+next.config.ts (async redirects)    Imports the @sanity/client at build time, fetches all redirect
+                                    docs via allRedirectsQuery, returns them as a redirects() array.
+                                    The SlugInput auto-redirect from Day 4 + manual entries combine.
+
+app/components/seo/JsonLd.tsx       Renders a JSON-LD <script type="application/ld+json"> for the
+                                    Organization (site-wide), Article (news posts), and BreadcrumbList
+                                    (deep routes). Server component, no runtime cost beyond the JSON.
+
+app/(marketing)/{news,products}/[slug]/page.tsx   Wire JsonLd into generateMetadata-adjacent render.
+
+next.config.ts (images + perf)      Tighten image config (no unoptimized, sensible deviceSizes), turn
+                                    on optimisticClientCache if useful, ensure Next/Image is used
+                                    everywhere (audit with grep).
+
+app/layout.tsx                      Preload key fonts (already done via next/font), add critical
+                                    metadata defaults (siteUrl, twitter handle from siteSettings).
+
+migration/lighthouse-baseline/      Re-run Lighthouse mobile against /, /about, /team, /products,
+                                    /news after the perf pass; check in the new SUMMARY.md showing
+                                    before/after.
 ```
 
-New dep: `@next/third-parties` for the official GA4 integration (small, official).
-
-Pending user actions:
-- Free HubSpot Developer account at https://developers.hubspot.com — note Portal ID
-- Build a contact form in HubSpot (Name / Email / Message) — note Form ID (GUID)
-- GA4 property at https://analytics.google.com for foniolabs.xyz — note Measurement ID `G-XXXXXXXXXX`
-- Open Studio → Site Settings, paste Portal ID + GA4 ID into the fields built on Day 2
-
-Acceptance for Day 8:
-- /contact submission → confirm lead lands in HubSpot
-- GA4 DebugView shows `page_view` events as you navigate
-- Marketing can change the HubSpot form embedded on any page by editing the `contactFormBlock` in Studio (no code change)
-- Commit message: `feat(day 8): HubSpot Forms + GA4 driven by siteSettings`
+Acceptance for Day 9:
+- sitemap.xml served at `/sitemap.xml` and includes every Sanity slug
+- `npm run build` (or `next build`) reads redirect docs from Sanity and emits them in the build output
+- Every page renders the right `<title>`, `<meta description>`, canonical, and og:image from its SEO object (falling back via the chain set up in Day 4)
+- Lighthouse mobile ≥ 95 on Performance / Accessibility / Best Practices / SEO across the migrated routes
+- /team's pre-migration LCP 5.6s (baseline) is fixed
+- Commit message: `feat(day 9): SEO continuity (sitemap + redirects + JSON-LD + OG) + Core Web Vitals pass`
 
 ---
 
-## 7a. What's queued after Day 8
+## 7a. What's queued after Day 9
 
 | Day | Theme | Key files |
 |---|---|---|
-| 9 | SEO + redirects + Core Web Vitals | `next-sitemap`, `next.config.ts` redirect import from Sanity, JSON-LD, per-route Metadata, Lighthouse 95+ |
 | 10 | Claude Code + Sanity MCP | MCP server config, `OPERATING.md`, Loom |
 | 11 | Live stats interactive block | new `liveStatsBlock` schema + component |
 | 12 | CI/CD + Vercel | GitHub Actions, preview deploys, webhook → revalidate |
@@ -317,9 +349,9 @@ rm -f .next/dev/lock
 
 Open a new session inside `/home/emmanuel/Documents/work_projects/foniolabs-website/` and prompt with something like:
 
-> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 8: HubSpot Forms + GA4. Build HubspotForm.tsx (loads //js.hsforms.net/forms/embed/v2.js, takes portalId + formId props), wire it into the SectionRenderer's contactFormBlock branch (replacing today's placeholder), and add a GoogleAnalytics server component that reads siteSettings.ga4MeasurementId. Install @next/third-parties. Mount GA in app/layout.tsx conditionally. Stop before SEO/redirects — those are Day 9.
+> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 9: SEO continuity + redirects + Core Web Vitals. Build next-sitemap.config.js, app/robots.ts, an async redirects() in next.config.ts that reads from Sanity at build, a JsonLd component for Organization/Article/BreadcrumbList, and run a perf pass to hit Lighthouse 95+ mobile. The acceptance is no SEO ranking loss at DNS cutover and a real Lighthouse screenshot. Stop before Claude Code + Sanity MCP — that's Day 10.
 
-Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–7 context.
+Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–8 context.
 
 ---
 
