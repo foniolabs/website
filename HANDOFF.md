@@ -2,7 +2,7 @@
 
 **Purpose of this doc:** snapshot of the in-flight Sanity migration so work can resume cleanly from inside this repo (`/home/emmanuel/Documents/work_projects/foniolabs-website/`) in a fresh session or context window.
 
-**Last updated:** Day 2 complete, mid-sprint.
+**Last updated:** Day 4 complete, mid-sprint.
 
 ---
 
@@ -29,6 +29,9 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 - `ee5ccb8` — Day 0: baseline audit (URL inventory, Lighthouse JSONs, HTML snapshots, expanded env examples)
 - `9fb5b9e` — Day 1: embedded Sanity Studio + `(marketing)` route group + dropped `output:'export'`
 - `d9ef379` — Day 2: 8 document types + 2 reusable objects (siteSettings, navigation, page, post, author, product, teamMember, redirect, seo, socialLinks)
+- `e725959` — docs: HANDOFF refresh, Day 2 done / Day 3 queued
+- `9495deb` — Day 3: 8 composable section blocks + custom desk structure
+- `ea502e7` — Day 4: 4 custom Studio components (SlugInput with auto-redirect, VariantChipInput chips, SEOPreview Google snippet, OGImagePreview live OG card) + Presentation tool + /api/og edge route
 
 **Working tree:** clean (except this HANDOFF.md update).
 
@@ -36,11 +39,36 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 
 **Sanity project:** `8smu0dlv`, dataset `production` (free tier, owned by you).
 
-**Days complete:** 0–2 of 14. Day 3 (composable section blocks + custom desk) is the next code task.
+**Days complete:** 0–4 of 14. Day 5 (App Router pages backed by GROQ) is the next code task.
 
 ---
 
 ## 3. Files Created / Touched
+
+### New files (Day 4)
+```
+sanity/components/SlugInput.tsx              Custom slug input — collision check + auto 301-redirect button
+sanity/components/VariantChipInput.tsx       Visual chip picker (hero variants + CTA tones)
+sanity/components/SEOPreview.tsx             Google SERP snippet preview wrapping SEO object input
+sanity/components/OGImagePreview.tsx         Live OG card preview wrapping seo.ogImage (renders /api/og fallback)
+sanity/components/helpers/useImageUrl.ts     Asset _ref → CDN URL hook for inline previews
+app/api/og/route.tsx                         Edge-runtime next/og — 1200×630 PNG from ?title/?subtitle/?eyebrow
+```
+Plus schema wire-ups: `slugInputComponents` on page/post/product slugs, `variantChipInputComponents` on hero.variant + cta.tone, `seoInputComponents` + `ogImageInputComponents` on the seo type definition (auto-applies wherever `type: "seo"` is referenced). `sanity.config.ts` adds `presentationTool` with document location resolvers for page/post/product/siteSettings/navigation. `@sanity/ui@^3.2.0` added as a top-level dep so Studio components can import its primitives directly.
+
+### New files (Day 3)
+```
+sanity/schemaTypes/blocks/_shared.ts         ctaLink reusable object (label, href, variant, external)
+sanity/schemaTypes/blocks/hero.ts            variant (split / centered / videoBg) + media + ctas
+sanity/schemaTypes/blocks/featureGrid.ts     columns (2/3/4) + items[]
+sanity/schemaTypes/blocks/richText.ts        PortableText + code/callout/internalLink marks + image
+sanity/schemaTypes/blocks/cta.ts             tone + headline + body + buttons
+sanity/schemaTypes/blocks/testimonial.ts     items[] (quote, author, role, avatar, logo)
+sanity/schemaTypes/blocks/logoCloud.ts       title + logos[] (image + href) + grayscale toggle
+sanity/schemaTypes/blocks/embedHtml.ts       label + html + aspectRatio (raw HTML escape hatch)
+sanity/schemaTypes/blocks/contactForm.ts     hubspotFormId + portalIdOverride + redirectOnSuccess
+```
+`page.sections` now accepts all 8 inline (drag-reorderable). `sanity/structure.ts` pins Site Settings + Navigation, default-orders News by publishedAt desc, Products + Team by `order`.
 
 ### New files (Day 2)
 ```
@@ -185,45 +213,50 @@ These are blocking various later days. None block Day 2.
 
 ---
 
-## 7. Next Step — Day 3: Section Blocks + Custom Desk
+## 7. Next Step — Day 5: GROQ + App Router rewire
 
-Goal: build the composable section block types that marketing will compose pages from, then wire them into `page.sections`, then rewrite the desk structure so singletons + sorted News appear distinctly. Files to create:
+Goal: stop hardcoding page content in the (marketing) routes and start reading from Sanity. Files to create:
 
 ```
-sanity/schemaTypes/blocks/
-  hero.ts             variant (split / centered / video-bg), eyebrow, headline, sub, ctas[]
-  featureGrid.ts      columns (2/3/4), items[] (icon, title, body)
-  richText.ts         PortableText with custom marks: code, callout, internalLink (→ page/post/product/teamMember)
-  cta.ts              headline, body, button (label + href)
-  testimonial.ts      quote, author, role, company, logo
-  logoCloud.ts        title, logos[] (image + alt)
-  embedHtml.ts        rawHtml (escape hatch for one-off iframes / dashboards)
-  contactForm.ts      hubspotFormId (+ optional portalId override), headline, body
+lib/sanity/queries.ts            GROQ for every page type (home, /about, /team, /products, /products/[slug], /news, /news/[slug])
+lib/sanity/fetch.ts              Wrapper that picks published vs draft client based on draft-mode cookie
+app/(marketing)/page.tsx         Rewired to fetch the "home" page doc and render its sections
+app/(marketing)/about/page.tsx   Same — fetches page where slug == "about"
+app/(marketing)/team/page.tsx    Lists teamMember docs, sorted by order
+app/(marketing)/products/page.tsx        Lists product docs
+app/(marketing)/products/[slug]/page.tsx New dynamic route with generateStaticParams
+app/(marketing)/news/page.tsx    Lists post docs
+app/(marketing)/news/[slug]/page.tsx     New dynamic route with generateStaticParams
+components/PortableText.tsx      Renderer with custom components for code/callout/internalLink (matches richText block marks)
+components/SectionRenderer.tsx   Maps section _type → React component (placeholder — Day 6 fills it out)
 ```
 
-Then:
-- Replace `page.sections` array members with `[hero, featureGrid, richText, cta, testimonial, logoCloud, embedHtml, contactForm]` (inline objects, not refs — sections are page-specific).
-- Rewrite `sanity/structure.ts`: pinned **Site Settings** + **Navigation** singletons at top, then Pages, News (orderable by publishedAt desc by default), Products, Team, Authors, Redirects.
+Then fix [lib/sanity/image.ts](lib/sanity/image.ts:2) — its import of `@sanity/image-url/lib/types/types` has been broken since Day 1. Real export is `SanityImageSource` from `@sanity/image-url`. Day 5 needs it working since pages will start rendering Sanity images.
 
-Custom Studio components (SlugInput with redirect, ColorVariantInput, SEOPreview, OGImagePreview, presentation tool) are Day 4 — out of scope for Day 3.
+Custom Studio components from Day 4 will start showing real previews once a real page document exists in Sanity. Until content is migrated (Day 7), Day 5 pages can render placeholder copy for empty queries.
 
-Acceptance for Day 3:
-- All 8 block types defined and importable from `sanity/schemaTypes/index.ts`
-- `page.sections` accepts every block type, drag-reorders cleanly in the Studio
-- Desk structure shows singletons pinned, News default-sorted by publishedAt desc
-- `npm run dev` → `/studio` compiles clean, every block can be added to a page without schema errors
-- Commit message: `feat(day 3): composable section blocks + custom desk structure`
+Acceptance for Day 5:
+- `/`, `/about`, `/team`, `/products`, `/news` all 200 and render the (empty-for-now) Sanity data shape
+- Dynamic routes `/products/[slug]`, `/news/[slug]` have `generateStaticParams` returning all slugs from Sanity
+- `PortableText` renders cleanly for posts that have body content
+- `lib/sanity/image.ts` typecheck error gone
+- Commit message: `feat(day 5): App Router pages backed by GROQ + Portable Text`
 
 ---
 
-## 7a. After Day 3 — what's queued
+## 7a. What's queued after Day 5
 
 | Day | Theme | Key files |
 |---|---|---|
-| 4 | Custom Studio components | `sanity/components/SlugInput.tsx`, `ColorVariantInput.tsx`, `SEOPreview.tsx`, `OGImagePreview.tsx` + presentation tool wiring |
-| 5 | GROQ + App Router rewire | `lib/sanity/queries.ts`, App Router pages pulling from Sanity, PortableText renderer |
-| 6 | Draft mode + ISR + `<SectionRenderer>` | `app/api/draft`, `app/api/revalidate`, section→component map |
+| 6 | Draft mode + ISR + SectionRenderer | `app/api/draft`, `app/api/disable-draft`, `app/api/revalidate`, full block→component map |
 | 7 | Content migration | `scripts/migrate.ts`, `MIGRATION.md` |
+| 8 | HubSpot forms + GA4 | `components/HubspotForm.tsx`, `@next/third-parties/google` |
+| 9 | SEO + redirects + Core Web Vitals | `next-sitemap`, `next.config.ts` redirect import, JSON-LD, per-route Metadata, Lighthouse 95+ |
+| 10 | Claude Code + Sanity MCP | MCP server config, `OPERATING.md`, Loom |
+| 11 | Live stats interactive block | new `liveStatsBlock` schema + component |
+| 12 | CI/CD + Vercel | GitHub Actions, preview deploys, webhook → revalidate |
+| 13 | Docs + DNS cutover | `README`, `SCHEMA.md`, `DEPLOY.md`, point foniolabs.xyz at Vercel |
+| 14 | Application package | resume, cover letter, /case-studies/sanity-migration writeup |
 
 ---
 
@@ -243,9 +276,9 @@ rm -f .next/dev/lock
 
 Open a new session inside `/home/emmanuel/Documents/work_projects/foniolabs-website/` and prompt with something like:
 
-> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 3: composable section blocks + custom desk. Build the 8 block types listed in HANDOFF.md §7, wire them into `page.sections`, and replace `sanity/structure.ts` with the pinned-singletons / News-sorted layout. Use Sanity v5 patterns (`defineType`, `defineField`, `defineArrayMember`). Stop before custom Studio components — those are Day 4.
+> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 5: GROQ + App Router rewire. Build the files listed in §7 — GROQ queries, fetch wrapper, rewired marketing pages, dynamic /products/[slug] + /news/[slug] routes, PortableText renderer, SectionRenderer placeholder. Also fix the lib/sanity/image.ts type import (broken since Day 1). Stop before draft mode + ISR — those are Day 6.
 
-Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0/1/2 context.
+Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–4 context.
 
 ---
 
