@@ -5,6 +5,7 @@ import { ctaBlock } from "./blocks/cta";
 import { embedHtmlBlock } from "./blocks/embedHtml";
 import { featureGridBlock } from "./blocks/featureGrid";
 import { heroBlock } from "./blocks/hero";
+import { liveStatsBlock } from "./blocks/liveStats";
 import { logoCloudBlock } from "./blocks/logoCloud";
 import { richTextBlock } from "./blocks/richText";
 import { testimonialBlock } from "./blocks/testimonial";
@@ -39,6 +40,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   logoCloudBlock,
   embedHtmlBlock,
   contactFormBlock,
+  liveStatsBlock,
 
   // Singletons
   siteSettings,
