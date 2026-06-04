@@ -2,7 +2,7 @@
 
 **Purpose of this doc:** snapshot of the in-flight Sanity migration so work can resume cleanly from inside this repo (`/home/emmanuel/Documents/work_projects/foniolabs-website/`) in a fresh session or context window.
 
-**Last updated:** Day 8 complete, mid-sprint.
+**Last updated:** Day 9 complete, mid-sprint.
 
 ---
 
@@ -41,20 +41,46 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 - `776e371` — docs: HANDOFF refresh, Day 7 done / Day 8 queued
 - `acfdd49` — fix: migrate script runs on any Node ≥18 (tsx + inline .env loader) + DEFERRED.md decision log
 - `39dc088` — Day 8: HubspotForm + GoogleAnalytics + SectionRenderer contactFormBlock wired through siteSettings
+- `07b6520` — fix: HubSpot region-aware embed (EU/AP/AU/CA/JP CDN hosts)
+- `977662f` — `/p/[slug]` preview route + /about Sanity-first fallback
+- `eda1235` — /contact rewired: HubSpot embed in the existing design, controlled via siteSettings
+- `d6599ba` — CSS: hide HubSpot free-tier branding banner
+- `fcc1b60` — Option A for /about: editable Our Story / Our Vision / Our Values / CTA in Studio + matching .btn-primary on HubSpot submit + `seedOnce` so re-running migrate no longer wipes editor-set siteSettings fields
+- `9b56ab1` — Day 9 foundation: app/sitemap.ts + app/robots.ts (Next 16 metadata routes), build-time redirects() reading Sanity, JsonLd component (Organization/Article/BreadcrumbList) mounted on key routes, layout-wide Metadata + OG/Twitter defaults
+- `a2b141c` — Day 9 perf pass: urlFor() now `auto('format')` → AVIF/WebP, priority + sizes on LCP-candidate images, @sanity/image-url moved off deprecated default export
 
-**Migration run:** ✓ 10 docs in Sanity. `/team`, `/news/introducing-futbol-fusion`, `/products/futbol-fusion` etc. all serve real Sanity content.
+**Migration run:** ✓ 10 docs in Sanity. `/team`, `/news/introducing-futbol-fusion`, `/products/futbol-fusion` etc. all serve real Sanity content. /about now Sanity-driven via 4 migrated sections.
 
 **Working tree:** clean (except this HANDOFF.md update).
 
-**Dev server:** not running. Start with `npm run dev` (port 3000). **Node ≥20.9.0 required for the dev server** — system default is 18, and `npm run dev` exits 0 silently on Node 18 without serving anything. See §10. (The migrate script does NOT need Node 20+ — see `acfdd49`.)
+**Dev server:** not running. Start with `npm run dev` (port 3000 — bumps to 3001 if 3000 is taken). **Node ≥20.9.0 required for the dev server** — system default is 18, and `npm run dev` exits 0 silently on Node 18 without serving anything. See §10. (The migrate script does NOT need Node 20+ — see `acfdd49`.)
+
+**Production build:** `npm run build` succeeds. 22 static routes prerendered including /, /about, /team, /news, /products, /contact, /studio, /sitemap.xml, /robots.txt, plus SSG'd dynamic routes /news/[slug] (3), /products/[slug] (2), /p/[slug] (2).
 
 **Sanity project:** `8smu0dlv`, dataset `production` (free tier, owned by you).
 
-**Days complete:** 0–8 of 14. Day 9 (SEO continuity + redirects + Core Web Vitals) is the next code task.
+**Days complete:** 0–9 of 14. Day 10 (Claude Code + Sanity MCP integration ⭐ — the OZ JD differentiator) is the next code task.
 
 ---
 
 ## 3. Files Created / Touched
+
+### New files (Day 9)
+```
+app/sitemap.ts                          MetadataRoute.Sitemap — pulls page/post/product slugs from Sanity in parallel, merges with top-level routes; NEXT_PUBLIC_SITE_URL drives origin
+app/robots.ts                           MetadataRoute.Robots — allow all, disallow /studio and /api/, point at /sitemap.xml, set canonical host
+app/components/seo/JsonLd.tsx           OrganizationJsonLd / ArticleJsonLd / BreadcrumbJsonLd server components. serialize() strips undefined + escapes < to prevent </script> injection
+```
+Plus: `next.config.ts` adds async `redirects()` that fetches Sanity redirect docs at build (Day 4 SlugInput auto-redirects + manual editor entries flow through); `app/layout.tsx` gains full `metadata` (metadataBase, title template, OG/Twitter defaults pointing at /api/og fallback) and mounts `<OrganizationJsonLd />`; news + product detail routes emit Article + Breadcrumb JSON-LD; `public/robots.txt` deleted (was empty, conflicted with dynamic route).
+
+Perf pass (`a2b141c`): `lib/sanity/image.ts` urlFor() now `auto('format')` for AVIF/WebP via Sanity CDN; LCP-candidate images get `priority` + `sizes` (team founder photo, news cover, product hero, about/p hero backgrounds); SectionRenderer + PortableText image rendering both gain `sizes`; `@sanity/image-url` moved off deprecated default export site-wide.
+
+Editor-driven page changes since Day 8:
+- `app/(marketing)/p/[slug]/page.tsx` (`977662f`) — universal Sanity page renderer, hit /p/<slug> to preview any page doc; generateStaticParams + generateMetadata included
+- `app/(marketing)/about/page.tsx` (`977662f`) — async server with Sanity-first / hardcoded-fallback pattern. `fcc1b60` populates Sanity sections so it renders the Sanity path
+- `app/(marketing)/contact/{page,ContactPageContent}.tsx` (`eda1235`) — async server fetching siteSettings.{hubspotPortalId, hubspotContactFormId, hubspotRegion} and threading them into the existing two-column design's right-column HubspotForm
+- `sanity/schemaTypes/documents/siteSettings.ts` — added `hubspotContactFormId` (`eda1235`) and `hubspotRegion` (`07b6520`) fields
+- `scripts/migrate.ts` (`fcc1b60`) — about page seeded with richTextBlock + featureGridBlock + ctaBlock sections; siteSettings and navigation switched to `seedOnce` (createIfNotExists) so editor-set fields survive re-runs
 
 ### New files (Day 8)
 ```
@@ -259,6 +285,26 @@ Lighthouse mobile baseline (pre-migration, from `migration/lighthouse-baseline/S
 
 ---
 
+## 5a. Pending Lighthouse verification (Day 9 acceptance)
+
+The perf code changes are landed (`a2b141c`), but capturing real numbers needs a user-driven step. Build production, run Lighthouse mobile against the migrated routes, drop screenshots / JSON exports next to the baseline:
+
+```bash
+npm run build && npm start
+# In Chrome DevTools → Lighthouse tab, Mobile, all four categories:
+#  - /
+#  - /about
+#  - /team
+#  - /news
+#  - /news/introducing-futbol-fusion
+#  - /products/futbol-fusion
+# Save each as migration/lighthouse-baseline/<route>-mobile-after.json
+```
+
+Baseline numbers in `migration/lighthouse-baseline/SUMMARY.md` (Perf 89–93 most routes, **/team 59 with LCP 5.6s** — the headline number to beat). Day 9 acceptance is ≥ 95 across all four categories on the migrated routes.
+
+---
+
 ## 6. Pending User Actions (do these in browser/Sanity dashboard)
 
 These are blocking various later days. None block Day 2.
@@ -275,57 +321,60 @@ These are blocking various later days. None block Day 2.
 
 ---
 
-## 7. Next Step — Day 9: SEO continuity + redirects + Core Web Vitals
+## 7. Next Step — Day 10: Claude Code + Sanity MCP integration ⭐
 
-Goal: don't lose a single ranking when DNS cuts over (Day 13). Sitemap from Sanity at build, build-time redirects from `redirect` docs, JSON-LD on key page types, per-route Metadata from each doc's SEO object, and a perf pass to hit Lighthouse 95+.
+This is the single most differentiating artifact in the sprint — almost no other OZ applicant will have actually shipped a working Claude Code + Sanity MCP integration with a recorded demo. The deliverable is a Loom video and an OPERATING.md showing the marketing team's day-to-day workflow.
 
 Files to create / update:
 
 ```
-next-sitemap.config.js              Generates sitemap.xml + robots.txt from Sanity at build. Reads all
-                                    page/post/product/teamMember slugs via the client, ordered by
-                                    publishedAt where applicable.
-                                    
-app/robots.ts                       Programmatic robots.txt (Next 16 metadata API) — points at the
-                                    sitemap and disallows the /studio route from indexing.
+.claude/mcp.json                     Per-project MCP server config registering the Sanity MCP server.
+                                     Uses SANITY_API_WRITE_TOKEN from .env.local (Editor permissions).
+                                     Alternative: add via `claude mcp add` CLI; pick whichever the
+                                     team finds easier to commit to git.
 
-next.config.ts (async redirects)    Imports the @sanity/client at build time, fetches all redirect
-                                    docs via allRedirectsQuery, returns them as a redirects() array.
-                                    The SlugInput auto-redirect from Day 4 + manual entries combine.
+OPERATING.md                         Marketing-team-facing doc. Sections:
+                                       - Setting up Claude Code (one-time)
+                                       - Loading the MCP server
+                                       - Example prompts that work today (with expected behaviour)
+                                       - Roles + permissions (marketing-editor vs developer)
+                                       - When NOT to use MCP (schema changes, structural edits)
+                                       - Troubleshooting checklist
 
-app/components/seo/JsonLd.tsx       Renders a JSON-LD <script type="application/ld+json"> for the
-                                    Organization (site-wide), Article (news posts), and BreadcrumbList
-                                    (deep routes). Server component, no runtime cost beyond the JSON.
+migration/loom-script.md             ~2-3 min Loom outline. Suggested flow:
+                                       1. Open Claude Code in this repo (10s)
+                                       2. "Create a news post titled 'Foniolabs partners with X'
+                                          with body 'We're delighted…' set publishedAt to today,
+                                          assign author Emmanuel Doji"
+                                       3. Switch to Studio /studio → show the new post under News
+                                       4. Open /news on the site → show it on the listing
+                                       5. Switch back to Claude Code: "Update the post excerpt
+                                          to 'A new collaboration to…'"
+                                       6. Refresh /news/<slug> → show the change
 
-app/(marketing)/{news,products}/[slug]/page.tsx   Wire JsonLd into generateMetadata-adjacent render.
-
-next.config.ts (images + perf)      Tighten image config (no unoptimized, sensible deviceSizes), turn
-                                    on optimisticClientCache if useful, ensure Next/Image is used
-                                    everywhere (audit with grep).
-
-app/layout.tsx                      Preload key fonts (already done via next/font), add critical
-                                    metadata defaults (siteUrl, twitter handle from siteSettings).
-
-migration/lighthouse-baseline/      Re-run Lighthouse mobile against /, /about, /team, /products,
-                                    /news after the perf pass; check in the new SUMMARY.md showing
-                                    before/after.
+Studio roles (set via Sanity manage UI, not code):
+  marketing-editor                   Read all, edit content docs (page/post/product/teamMember/
+                                     author), NO schema edits, NO siteSettings.token writes.
 ```
 
-Acceptance for Day 9:
-- sitemap.xml served at `/sitemap.xml` and includes every Sanity slug
-- `npm run build` (or `next build`) reads redirect docs from Sanity and emits them in the build output
-- Every page renders the right `<title>`, `<meta description>`, canonical, and og:image from its SEO object (falling back via the chain set up in Day 4)
-- Lighthouse mobile ≥ 95 on Performance / Accessibility / Best Practices / SEO across the migrated routes
-- /team's pre-migration LCP 5.6s (baseline) is fixed
-- Commit message: `feat(day 9): SEO continuity (sitemap + redirects + JSON-LD + OG) + Core Web Vitals pass`
+Pending user actions:
+- **SANITY_API_WRITE_TOKEN** already in `.env.local` (used by migrate). MCP can reuse it.
+- Install Sanity MCP per current docs at sanity.io/docs/mcp-server (or `npm install -g @sanity/mcp-server` depending on what ships at the time).
+- Set up the `marketing-editor` role in https://www.sanity.io/manage/project/8smu0dlv/members → Roles. The role definition is GROQ-filter-based — content docs allowed, schema/internal docs denied.
+
+Acceptance for Day 10:
+- `.claude/mcp.json` (or equivalent) commits the per-project MCP config so a teammate can just `git pull && claude` and have MCP loaded
+- All four example prompts (create post, add team member, find/update internal links, add CTA section) work end-to-end from Claude Code, with results visible in Studio + on the site
+- OPERATING.md walks a non-technical marketer through their first 30 minutes
+- Loom recorded, link saved in OPERATING.md (or migration/loom-script.md as a placeholder until uploaded)
+- Commit message: `feat(day 10): Claude Code + Sanity MCP integration + OPERATING.md`
 
 ---
 
-## 7a. What's queued after Day 9
+## 7a. What's queued after Day 10
 
 | Day | Theme | Key files |
 |---|---|---|
-| 10 | Claude Code + Sanity MCP | MCP server config, `OPERATING.md`, Loom |
 | 11 | Live stats interactive block | new `liveStatsBlock` schema + component |
 | 12 | CI/CD + Vercel | GitHub Actions, preview deploys, webhook → revalidate |
 | 13 | Docs + DNS cutover | `README`, `SCHEMA.md`, `DEPLOY.md`, point foniolabs.xyz at Vercel |
@@ -349,9 +398,9 @@ rm -f .next/dev/lock
 
 Open a new session inside `/home/emmanuel/Documents/work_projects/foniolabs-website/` and prompt with something like:
 
-> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 9: SEO continuity + redirects + Core Web Vitals. Build next-sitemap.config.js, app/robots.ts, an async redirects() in next.config.ts that reads from Sanity at build, a JsonLd component for Organization/Article/BreadcrumbList, and run a perf pass to hit Lighthouse 95+ mobile. The acceptance is no SEO ranking loss at DNS cutover and a real Lighthouse screenshot. Stop before Claude Code + Sanity MCP — that's Day 10.
+> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 10: Claude Code + Sanity MCP integration — the OZ JD differentiator. Wire up the per-project .claude/mcp.json that registers the Sanity MCP server using SANITY_API_WRITE_TOKEN from .env.local. Write OPERATING.md walking marketing through their first 30 minutes. Test the four example prompts in §7. Outline a 2-3 min Loom script in migration/loom-script.md. Stop before the interactive live-stats block — that's Day 11.
 
-Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–8 context.
+Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–9 context.
 
 ---
 
