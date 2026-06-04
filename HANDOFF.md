@@ -2,7 +2,7 @@
 
 **Purpose of this doc:** snapshot of the in-flight Sanity migration so work can resume cleanly from inside this repo (`/home/emmanuel/Documents/work_projects/foniolabs-website/`) in a fresh session or context window.
 
-**Last updated:** Day 10 code-side complete (MCP config + OPERATING.md + Loom script landed; Loom recording + Sanity role config are user actions). Mid-sprint.
+**Last updated:** Day 11 complete (liveStatsBlock end-to-end, verified rendering real GitHub API numbers on /about). Mid-sprint.
 
 ---
 
@@ -49,6 +49,7 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 - `9b56ab1` — Day 9 foundation: app/sitemap.ts + app/robots.ts (Next 16 metadata routes), build-time redirects() reading Sanity, JsonLd component (Organization/Article/BreadcrumbList) mounted on key routes, layout-wide Metadata + OG/Twitter defaults
 - `a2b141c` — Day 9 perf pass: urlFor() now `auto('format')` → AVIF/WebP, priority + sizes on LCP-candidate images, @sanity/image-url moved off deprecated default export
 - Day 10 (pending commit) — `.mcp.json` at repo root registering hosted Sanity MCP (`https://mcp.sanity.io` over HTTP, OAuth — no token in repo) + OPERATING.md (marketing first-30-min playbook, prompt cheat-sheet, roles, when-NOT-to-use, troubleshooting) + migration/loom-script.md (2:30 demo outline, pre-flight, what not to do on camera)
+- Day 11 (pending commit) — `liveStatsBlock` schema with conditional source config (github | npm | static), `LiveStatsBlock.tsx` async server component (parallel upstream fetches, ISR via `next.revalidate` + `live-stats` tag, fallback string on upstream failure, hide-if-no-fallback), wired into SectionRenderer + page.sections + sectionProjection; schema re-deployed; verified rendering 6,154 Sanity stars + 139.7K Next.js stars + 2024 Founded on /about
 
 **Migration run:** ✓ 10 docs in Sanity. `/team`, `/news/introducing-futbol-fusion`, `/products/futbol-fusion` etc. all serve real Sanity content. /about now Sanity-driven via 4 migrated sections.
 
@@ -60,7 +61,7 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 
 **Sanity project:** `8smu0dlv`, dataset `production` (free tier, owned by you).
 
-**Days complete:** 0–10 of 14 (code side). Day 10 still has two user-action acceptance items: record the Loom from `migration/loom-script.md` and create the `marketing-editor` role in Sanity Manage. Day 11 (live stats interactive block) is the next code task.
+**Days complete:** 0–11 of 14 (code side). Day 10 still has two user-action acceptance items: record the Loom from `migration/loom-script.md` and create the `marketing-editor` role in Sanity Manage. Day 12 (CI/CD + Vercel) is the next code task.
 
 ---
 
@@ -364,48 +365,100 @@ migration/loom-script.md             2:30 demo outline. Beats (open & frame → 
 
 ---
 
-## 7a. Next Step — Day 11: live stats interactive block
+## 7a. Day 11 — live stats interactive block (done)
 
-JD asks for "interactive elements where needed (live stats dashboards, embedded tools, custom landing page experiences)." Pick one and ship it. Recommended: **Foniolabs by the numbers** — a Sanity block, drag-droppable into any page, pulling live data from a real API (GitHub stars on your repos, npm downloads, or — best — pulling from the Futbol Fusion backend if it has a public stats endpoint).
-
-Sketch:
+**Files landed:**
 
 ```
-sanity/schemaTypes/blocks/liveStats.ts        New block. Fields: title, source (enum:
-                                              github | npm | custom-api), config (e.g.
-                                              github repo slug, npm package name, custom
-                                              URL), refresh interval, layout (compact/wide).
+sanity/schemaTypes/blocks/liveStats.ts          New `liveStatsBlock` object type. Fields:
+                                                eyebrow, headline, intro, layout (grid-2|3|4),
+                                                metrics[] (each: label, source [github|npm|
+                                                static], conditional config — githubRepo/Metric,
+                                                npmPackage/Metric, staticValue, suffix, fallback),
+                                                revalidateSeconds (60–86400, default 3600),
+                                                showAsOf. Source-specific fields are
+                                                `hidden: ({parent}) => parent.source !== "X"`
+                                                with conditional `validation.custom` so the
+                                                Studio asks the editor for the right config
+                                                without cluttering every metric form.
 
-app/components/sanity/blocks/LiveStatsBlock.tsx
-                                              Server component. Fetches the API, ISR-cached
-                                              with a tag so the revalidate webhook can blow
-                                              it on demand. Renders a 2-4 column number grid
-                                              with the metric, the source label, and "as of"
-                                              timestamp.
+app/components/sanity/blocks/LiveStatsBlock.tsx Async server component. fetchGithubMetric +
+                                                fetchNpmMetric do `fetch(url, { next: {
+                                                revalidate, tags: ["live-stats"] } })`. Per-metric
+                                                Promise.all — one failing source doesn't poison
+                                                the others. Each failure falls back to the
+                                                editor-set `fallback` string (rendered with
+                                                "Cached values · …" label) or hides the metric
+                                                if no fallback is set. Whole section hides if
+                                                every metric resolves to nothing. Numbers
+                                                format via Intl.NumberFormat compact notation
+                                                for ≥10k (12.3k, 1.5M), comma-separated below.
 
-app/components/sanity/SectionRenderer.tsx     Add the new case.
+sanity/schemaTypes/index.ts                     Registers liveStatsBlock alongside the other
+                                                section blocks.
 
-sanity/structure.ts                           No change — block is reusable via page.sections.
+sanity/schemaTypes/documents/page.ts            `page.sections` array gains
+                                                `defineArrayMember({ type: "liveStatsBlock" })`.
 
-scripts/migrate.ts                            Optional: add a liveStats block to the homepage
-                                              sections array so it renders without an editor
-                                              having to drop it in.
+lib/sanity/queries.ts                           sectionProjection gains the
+                                                `_type == "liveStatsBlock" => { … }` branch,
+                                                pulling every metric field for the renderer.
+
+app/components/sanity/SectionRenderer.tsx       SectionComponent type widened to allow async
+                                                `Promise<React.ReactNode>` returns; map gains
+                                                `liveStatsBlock: ({ s }) => <LiveStatsBlock …/>`.
+                                                React 19 RSC handles the async child.
 ```
 
-**Acceptance for Day 11:**
-- Block appears in Studio's section picker; editor can configure it without code
-- Real numbers from at least one real API render on a page
-- Cached + revalidated through the existing tag-based webhook (no fresh fetch every request)
-- Falls back gracefully if the upstream API is down (last-known values + stale-as-of timestamp; never a 500)
-- Commit message: `feat(day 11): live stats interactive block`
+**Verified live:**
+- Schema re-deployed (`npx sanity@latest schema deploy` — 1/1)
+- Via Sanity MCP, appended a real `liveStatsBlock` section to `page-about` (3 metrics: `sanity-io/sanity` stars, `vercel/next.js` stars, static 2024) and published the doc
+- `npm run build` clean, 22 routes prerendered, no type errors
+- `npm run dev` (port 3001 — port 3000 was occupied) + `curl /about` rendered the section with **6,154** Sanity stars + **139.7K** Next.js stars + **2024** Founded, plus the "As of" timestamp; markers grep'd at expected counts
+- Caching: each `fetch()` call carries `next: { revalidate: 3600, tags: ["live-stats"] }`. The page-level `sanityFetch` already revalidates on Sanity webhook hits via `page:about` / `type:page` tags. Upstream APIs honor the per-fetch revalidate window. A `revalidateTag("live-stats")` call (from a future scheduled cron / manual API hit) would force a fresh upstream pull without redeploying.
+
+**Skipped vs the original plan:**
+- `scripts/migrate.ts` not modified to seed a liveStats block. The MCP-based insert into the existing `page-about` doc is a stronger demo (it doubles as Day 10's MCP end-to-end proof) and avoids tangling `seedOnce` semantics with the existing 4 about sections. If a teammate wants reproducible seeding later, add a fresh page doc rather than reaching into about.
+
+**Commit message used:** `feat(day 11): live stats interactive block`
 
 ---
 
-## 7b. What's queued after Day 11
+## 7b. Next Step — Day 12: CI/CD + Vercel
+
+JD wants production rigor — preview deploys per PR, content-driven revalidation, secrets not in the repo. Sketch:
+
+```
+.github/workflows/ci.yml                  Lint + type-check + build on PR. Cache .next.
+.github/workflows/deploy.yml              On push to main: Vercel CLI deploy --prod.
+                                          (Alternative: Vercel's git integration — pick one,
+                                          don't run both.)
+
+vercel.json                               Build/output config, env passthrough hints.
+                                          (Most settings stay in Vercel's UI; this file pins
+                                          the few that benefit from being in the repo.)
+
+DEPLOY.md                                 Step-by-step: Vercel project creation, env vars to
+                                          paste, GitHub OAuth, Sanity webhook → /api/revalidate
+                                          with SANITY_REVALIDATE_SECRET, custom domain plan
+                                          (Day 13 cuts DNS).
+
+.vercelignore                             Keep migration/, *.test.*, etc. out of the deploy.
+```
+
+**Acceptance for Day 12:**
+- PR opened against `main` produces a Vercel preview URL with the migrated Sanity content
+- Editing a Sanity doc and publishing fires the revalidate webhook → preview / prod cache invalidates the right tags → live site updates within seconds
+- CI fails the PR if `npm run build` or `tsc` fails (no green builds on broken code)
+- Secrets: all in Vercel env / GitHub Actions secrets, none in the repo
+- Commit message: `feat(day 12): CI/CD + Vercel preview deploys`
+
+---
+
+## 7c. What's queued after Day 12
 
 | Day | Theme | Key files |
 |---|---|---|
-| 12 | CI/CD + Vercel | GitHub Actions, preview deploys, webhook → revalidate |
 | 13 | Docs + DNS cutover | `README`, `SCHEMA.md`, `DEPLOY.md`, point foniolabs.xyz at Vercel |
 | 14 | Application package | resume, cover letter, /case-studies/sanity-migration writeup |
 
@@ -427,7 +480,7 @@ rm -f .next/dev/lock
 
 Open a new session inside `/home/emmanuel/Documents/work_projects/foniolabs-website/` and prompt with something like:
 
-> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. Day 10 code side is landed; we're on Day 11: live stats interactive block. Build a `liveStatsBlock` schema (sanity/schemaTypes/blocks/liveStats.ts), a server-rendered `LiveStatsBlock` component (ISR with a revalidate tag, last-known fallback on upstream failure), wire it into `SectionRenderer`, and optionally seed it onto the homepage via `scripts/migrate.ts`. Pick one real API source — GitHub stars or npm downloads is fine. Acceptance in §7a. Stop before CI/CD — that's Day 12.
+> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. Day 11 is landed; we're on Day 12: CI/CD + Vercel. Stand up `.github/workflows/ci.yml` (lint/type-check/build on PR), `.github/workflows/deploy.yml` OR Vercel git integration (pick one, not both), `vercel.json` for the few settings that benefit from being in the repo, `.vercelignore`, and `DEPLOY.md` walking a teammate through Vercel project creation, env vars, GitHub OAuth, and the Sanity webhook → /api/revalidate wiring. Acceptance in §7b. Stop before DNS cutover — that's Day 13.
 
 Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–9 context.
 
