@@ -353,9 +353,10 @@ migration/loom-script.md             2:30 demo outline. Beats (open & frame → 
 
 | Action | Where | Status |
 |---|---|---|
-| Approve the Sanity MCP server when Claude prompts on launch | Local Claude Code | Pending — runs on first `claude` in this dir |
-| First OAuth flow with Sanity | Browser, auto-opened by Claude on first MCP call | Pending |
-| Run the four example prompts (create post, add team member, find/update internal links, add CTA section) and confirm they end-to-end | Claude Code → Studio → live site | Pending — happens during Loom recording |
+| Approve the Sanity MCP server when Claude prompts on launch | Local Claude Code | ✓ Done |
+| First OAuth flow with Sanity (MCP — `mcp__sanity__authenticate`) | Browser, auto-opened by Claude on first MCP call | ✓ Done (`dojiemma@gmail.com`, OAuth) |
+| `npx sanity login` + `npx sanity schema deploy` — push the manifest to Sanity Cloud so MCP has field-level grounding. The Editor write token can't do this — needs project-member auth or Admin token. | Local terminal | ✓ Done — deployed 1/1, verified via `get_schema post` (all 9 fields + validation visible to MCP) |
+| Run the four example prompts (create post, add team member, find/update internal links, add CTA section) and confirm they end-to-end | Claude Code → Studio → live site | Pending — happens during Loom recording, after schema deploy |
 | Record the 2:30 Loom from migration/loom-script.md, paste link into OPERATING.md "Loom: see it in action" + repo README | Loom | Pending |
 | Create the `marketing-editor` custom role in Sanity Manage (GROQ-filter-based: allow content docs, deny schema docs and `siteSettings.*Token` fields) | https://www.sanity.io/manage/project/8smu0dlv/members → Roles | Pending |
 

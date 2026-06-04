@@ -160,4 +160,12 @@ A 2-minute walkthrough lives at **[link goes here once recorded]**. The script i
 - `.mcp.json` at the repo root registers `https://mcp.sanity.io` over HTTP. Claude Code auto-loads it.
 - OAuth is the default (no secret in the repo). Static-token fallback is documented at https://www.sanity.io/docs/ai/mcp-server for CI / non-interactive contexts.
 - Per-user permissions come from each operator's Sanity role — no per-prompt role override.
-- Schema source of truth is [sanity/schemaTypes/](./sanity/schemaTypes/). MCP responses about types/fields read from the deployed schema, so a `sanity deploy` is required after schema changes for Claude to see them.
+- Schema source of truth is [sanity/schemaTypes/](./sanity/schemaTypes/). MCP responses about types/fields read from the **deployed manifest**, not the local files. You MUST deploy the schema once before MCP has any field-level grounding, and again after every schema change:
+
+  ```bash
+  nvm use 22.20.0           # CLI needs Node ≥ 20
+  npx sanity login          # one-time, opens a browser
+  npx sanity schema deploy  # pushes the manifest to Sanity Cloud
+  ```
+
+  Without this, Claude will "see" the project but treat every type as unknown — symptom is "no schemas have been deployed" from `list_workspace_schemas`. The Editor write token in `.env.local` cannot do this deploy; it lacks the `sanity.project/deployStudio` grant. Use `sanity login` (project member auth) or an Administrator-scoped token in `SANITY_AUTH_TOKEN`.
