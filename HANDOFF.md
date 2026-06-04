@@ -2,7 +2,7 @@
 
 **Purpose of this doc:** snapshot of the in-flight Sanity migration so work can resume cleanly from inside this repo (`/home/emmanuel/Documents/work_projects/foniolabs-website/`) in a fresh session or context window.
 
-**Last updated:** Day 9 complete, mid-sprint.
+**Last updated:** Day 10 code-side complete (MCP config + OPERATING.md + Loom script landed; Loom recording + Sanity role config are user actions). Mid-sprint.
 
 ---
 
@@ -48,6 +48,7 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 - `fcc1b60` — Option A for /about: editable Our Story / Our Vision / Our Values / CTA in Studio + matching .btn-primary on HubSpot submit + `seedOnce` so re-running migrate no longer wipes editor-set siteSettings fields
 - `9b56ab1` — Day 9 foundation: app/sitemap.ts + app/robots.ts (Next 16 metadata routes), build-time redirects() reading Sanity, JsonLd component (Organization/Article/BreadcrumbList) mounted on key routes, layout-wide Metadata + OG/Twitter defaults
 - `a2b141c` — Day 9 perf pass: urlFor() now `auto('format')` → AVIF/WebP, priority + sizes on LCP-candidate images, @sanity/image-url moved off deprecated default export
+- Day 10 (pending commit) — `.mcp.json` at repo root registering hosted Sanity MCP (`https://mcp.sanity.io` over HTTP, OAuth — no token in repo) + OPERATING.md (marketing first-30-min playbook, prompt cheat-sheet, roles, when-NOT-to-use, troubleshooting) + migration/loom-script.md (2:30 demo outline, pre-flight, what not to do on camera)
 
 **Migration run:** ✓ 10 docs in Sanity. `/team`, `/news/introducing-futbol-fusion`, `/products/futbol-fusion` etc. all serve real Sanity content. /about now Sanity-driven via 4 migrated sections.
 
@@ -59,7 +60,7 @@ End-state on Day 14: live foniolabs.xyz on Sanity + Next.js, public GitHub repo,
 
 **Sanity project:** `8smu0dlv`, dataset `production` (free tier, owned by you).
 
-**Days complete:** 0–9 of 14. Day 10 (Claude Code + Sanity MCP integration ⭐ — the OZ JD differentiator) is the next code task.
+**Days complete:** 0–10 of 14 (code side). Day 10 still has two user-action acceptance items: record the Loom from `migration/loom-script.md` and create the `marketing-editor` role in Sanity Manage. Day 11 (live stats interactive block) is the next code task.
 
 ---
 
@@ -321,61 +322,88 @@ These are blocking various later days. None block Day 2.
 
 ---
 
-## 7. Next Step — Day 10: Claude Code + Sanity MCP integration ⭐
+## 7. Day 10 — Claude Code + Sanity MCP integration ⭐ (code side done)
 
-This is the single most differentiating artifact in the sprint — almost no other OZ applicant will have actually shipped a working Claude Code + Sanity MCP integration with a recorded demo. The deliverable is a Loom video and an OPERATING.md showing the marketing team's day-to-day workflow.
-
-Files to create / update:
+**Files landed:**
 
 ```
-.claude/mcp.json                     Per-project MCP server config registering the Sanity MCP server.
-                                     Uses SANITY_API_WRITE_TOKEN from .env.local (Editor permissions).
-                                     Alternative: add via `claude mcp add` CLI; pick whichever the
-                                     team finds easier to commit to git.
+.mcp.json                            Per-project MCP config at repo ROOT (not .claude/mcp.json
+                                     as HANDOFF previously guessed — Claude Code's canonical
+                                     per-project location is `.mcp.json`). Registers hosted
+                                     Sanity MCP server: type "http", url https://mcp.sanity.io.
+                                     OAuth-first by design — no token committed; static-token
+                                     fallback documented in OPERATING.md §"For developers".
 
-OPERATING.md                         Marketing-team-facing doc. Sections:
-                                       - Setting up Claude Code (one-time)
-                                       - Loading the MCP server
-                                       - Example prompts that work today (with expected behaviour)
-                                       - Roles + permissions (marketing-editor vs developer)
-                                       - When NOT to use MCP (schema changes, structural edits)
-                                       - Troubleshooting checklist
+OPERATING.md                         Marketing-team playbook. First-30-minutes setup (install
+                                     Claude → clone → approve MCP on launch → OAuth → verify),
+                                     daily prompt cheat-sheet (post / team / page section /
+                                     cross-doc search-and-replace / redirect), roles table,
+                                     "when NOT to use MCP", troubleshooting matrix.
 
-migration/loom-script.md             ~2-3 min Loom outline. Suggested flow:
-                                       1. Open Claude Code in this repo (10s)
-                                       2. "Create a news post titled 'Foniolabs partners with X'
-                                          with body 'We're delighted…' set publishedAt to today,
-                                          assign author Emmanuel Doji"
-                                       3. Switch to Studio /studio → show the new post under News
-                                       4. Open /news on the site → show it on the listing
-                                       5. Switch back to Claude Code: "Update the post excerpt
-                                          to 'A new collaboration to…'"
-                                       6. Refresh /news/<slug> → show the change
-
-Studio roles (set via Sanity manage UI, not code):
-  marketing-editor                   Read all, edit content docs (page/post/product/teamMember/
-                                     author), NO schema edits, NO siteSettings.token writes.
+migration/loom-script.md             2:30 demo outline. Beats (open & frame → create post →
+                                     publish in Studio → patch from Claude → cross-doc edit →
+                                     close), pre-flight checklist, things to NOT do on camera.
 ```
 
-Pending user actions:
-- **SANITY_API_WRITE_TOKEN** already in `.env.local` (used by migrate). MCP can reuse it.
-- Install Sanity MCP per current docs at sanity.io/docs/mcp-server (or `npm install -g @sanity/mcp-server` depending on what ships at the time).
-- Set up the `marketing-editor` role in https://www.sanity.io/manage/project/8smu0dlv/members → Roles. The role definition is GROQ-filter-based — content docs allowed, schema/internal docs denied.
+**Why hosted MCP, not the npm package:** the local `@sanity/mcp-server` npm package is deprecated. Sanity now ships a hosted remote MCP at `https://mcp.sanity.io` that does the discovery (projects, datasets, roles) from the OAuth identity — `SANITY_PROJECT_ID` / `SANITY_DATASET` / `MCP_USER_ROLE` env vars are no longer needed in the client config. Source: https://www.sanity.io/docs/ai/mcp-server.
 
-Acceptance for Day 10:
-- `.claude/mcp.json` (or equivalent) commits the per-project MCP config so a teammate can just `git pull && claude` and have MCP loaded
-- All four example prompts (create post, add team member, find/update internal links, add CTA section) work end-to-end from Claude Code, with results visible in Studio + on the site
-- OPERATING.md walks a non-technical marketer through their first 30 minutes
-- Loom recorded, link saved in OPERATING.md (or migration/loom-script.md as a placeholder until uploaded)
-- Commit message: `feat(day 10): Claude Code + Sanity MCP integration + OPERATING.md`
+**Why OAuth, not the Bearer-token config:** committing a `${SANITY_API_WRITE_TOKEN}` placeholder in the per-project `.mcp.json` works, but (a) it implies the token is required to use MCP, which isn't true for OAuth users, and (b) it loses the per-user role granularity — every operator would inherit the write-token's permissions. OAuth gives each teammate exactly their Sanity role. The static-token path is still there for CI / non-interactive contexts.
+
+**Day 10 acceptance — remaining user actions:**
+
+| Action | Where | Status |
+|---|---|---|
+| Approve the Sanity MCP server when Claude prompts on launch | Local Claude Code | Pending — runs on first `claude` in this dir |
+| First OAuth flow with Sanity | Browser, auto-opened by Claude on first MCP call | Pending |
+| Run the four example prompts (create post, add team member, find/update internal links, add CTA section) and confirm they end-to-end | Claude Code → Studio → live site | Pending — happens during Loom recording |
+| Record the 2:30 Loom from migration/loom-script.md, paste link into OPERATING.md "Loom: see it in action" + repo README | Loom | Pending |
+| Create the `marketing-editor` custom role in Sanity Manage (GROQ-filter-based: allow content docs, deny schema docs and `siteSettings.*Token` fields) | https://www.sanity.io/manage/project/8smu0dlv/members → Roles | Pending |
+
+**Commit message used:** `feat(day 10): Claude Code + Sanity MCP integration + OPERATING.md`
 
 ---
 
-## 7a. What's queued after Day 10
+## 7a. Next Step — Day 11: live stats interactive block
+
+JD asks for "interactive elements where needed (live stats dashboards, embedded tools, custom landing page experiences)." Pick one and ship it. Recommended: **Foniolabs by the numbers** — a Sanity block, drag-droppable into any page, pulling live data from a real API (GitHub stars on your repos, npm downloads, or — best — pulling from the Futbol Fusion backend if it has a public stats endpoint).
+
+Sketch:
+
+```
+sanity/schemaTypes/blocks/liveStats.ts        New block. Fields: title, source (enum:
+                                              github | npm | custom-api), config (e.g.
+                                              github repo slug, npm package name, custom
+                                              URL), refresh interval, layout (compact/wide).
+
+app/components/sanity/blocks/LiveStatsBlock.tsx
+                                              Server component. Fetches the API, ISR-cached
+                                              with a tag so the revalidate webhook can blow
+                                              it on demand. Renders a 2-4 column number grid
+                                              with the metric, the source label, and "as of"
+                                              timestamp.
+
+app/components/sanity/SectionRenderer.tsx     Add the new case.
+
+sanity/structure.ts                           No change — block is reusable via page.sections.
+
+scripts/migrate.ts                            Optional: add a liveStats block to the homepage
+                                              sections array so it renders without an editor
+                                              having to drop it in.
+```
+
+**Acceptance for Day 11:**
+- Block appears in Studio's section picker; editor can configure it without code
+- Real numbers from at least one real API render on a page
+- Cached + revalidated through the existing tag-based webhook (no fresh fetch every request)
+- Falls back gracefully if the upstream API is down (last-known values + stale-as-of timestamp; never a 500)
+- Commit message: `feat(day 11): live stats interactive block`
+
+---
+
+## 7b. What's queued after Day 11
 
 | Day | Theme | Key files |
 |---|---|---|
-| 11 | Live stats interactive block | new `liveStatsBlock` schema + component |
 | 12 | CI/CD + Vercel | GitHub Actions, preview deploys, webhook → revalidate |
 | 13 | Docs + DNS cutover | `README`, `SCHEMA.md`, `DEPLOY.md`, point foniolabs.xyz at Vercel |
 | 14 | Application package | resume, cover letter, /case-studies/sanity-migration writeup |
@@ -398,7 +426,7 @@ rm -f .next/dev/lock
 
 Open a new session inside `/home/emmanuel/Documents/work_projects/foniolabs-website/` and prompt with something like:
 
-> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. We're on Day 10: Claude Code + Sanity MCP integration — the OZ JD differentiator. Wire up the per-project .claude/mcp.json that registers the Sanity MCP server using SANITY_API_WRITE_TOKEN from .env.local. Write OPERATING.md walking marketing through their first 30 minutes. Test the four example prompts in §7. Outline a 2-3 min Loom script in migration/loom-script.md. Stop before the interactive live-stats block — that's Day 11.
+> Read HANDOFF.md and ../OPENZEPPELIN_PREP_PLAN.md. Day 10 code side is landed; we're on Day 11: live stats interactive block. Build a `liveStatsBlock` schema (sanity/schemaTypes/blocks/liveStats.ts), a server-rendered `LiveStatsBlock` component (ISR with a revalidate tag, last-known fallback on upstream failure), wire it into `SectionRenderer`, and optionally seed it onto the homepage via `scripts/migrate.ts`. Pick one real API source — GitHub stars or npm downloads is fine. Acceptance in §7a. Stop before CI/CD — that's Day 12.
 
 Claude should be able to pick up the work from this doc + the plan file without re-deriving any of the Day 0–9 context.
 
