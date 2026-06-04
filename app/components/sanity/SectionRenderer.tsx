@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { urlFor } from "@/lib/sanity/image";
 
+import { LiveStatsBlock } from "./blocks/LiveStatsBlock";
 import { HubspotForm } from "./HubspotForm";
 import { PortableText } from "./PortableText";
 
@@ -331,7 +332,7 @@ function ContactFormSection({
 type SectionComponent = (props: {
   s: Section;
   globals?: RenderGlobals;
-}) => React.ReactNode;
+}) => React.ReactNode | Promise<React.ReactNode>;
 
 const SECTION_RENDERERS: Record<string, SectionComponent> = {
   heroBlock: HeroSection,
@@ -342,6 +343,7 @@ const SECTION_RENDERERS: Record<string, SectionComponent> = {
   logoCloudBlock: LogoCloudSection,
   embedHtmlBlock: EmbedHtmlSection,
   contactFormBlock: ContactFormSection,
+  liveStatsBlock: ({ s }) => <LiveStatsBlock s={s as never} />,
 };
 
 export function SectionRenderer({

@@ -81,6 +81,25 @@ const sectionProjection = groq`{
     hubspotFormId,
     portalIdOverride,
     redirectOnSuccess
+  },
+  _type == "liveStatsBlock" => {
+    eyebrow,
+    headline,
+    intro,
+    layout,
+    "metrics": metrics[]{
+      label,
+      source,
+      githubRepo,
+      githubMetric,
+      npmPackage,
+      npmMetric,
+      staticValue,
+      suffix,
+      fallback
+    },
+    revalidateSeconds,
+    showAsOf
   }
 }`;
 
