@@ -1,263 +1,155 @@
-# Fonio Labs Website
+# foniolabs.xyz
 
-A modern, responsive website for Fonio Labs - a research-driven company building user-friendly tools around Web3 and AI.
+[![CI](https://github.com/foniolabs/website/actions/workflows/ci.yml/badge.svg)](https://github.com/foniolabs/website/actions/workflows/ci.yml)
 
-## 🚀 Live Site
+Marketing site for [Fonio Labs](https://foniolabs.xyz) — a multi-industry product studio building across Web3 gaming, EdTech, and fintech.
 
-- **Production**: Coming soon at [foniolabs.xyz](https://foniolabs.xyz)
-- **Preview**: Deploy preview available after setup
+The site runs **Next.js on Vercel** with **Sanity CMS** owning content. The embedded Sanity Studio at `/studio` lets the marketing team edit pages, posts, products, and team members without touching code. A Claude Code + Sanity MCP integration extends that to natural-language edits — see [OPERATING.md](./OPERATING.md).
 
-## ✨ Features
+---
 
-- **Modern Design**: Level USD-inspired design with smooth animations
-- **Fully Responsive**: Works perfectly on all devices
-- **Contact Form**: Email integration with Resend
-- **SEO Optimized**: Meta tags and semantic HTML
-- **Custom 404 Page**: User-friendly error pages
-- **TypeScript**: Type-safe codebase
-- **Performance**: Optimized with Next.js 16
+## Quick start
 
-## 📄 Pages
-
-- `/` - Homepage (Hero, Mission, Solutions, Why Fonio Labs)
-- `/about` - About page (Story, Vision, Values)
-- `/team` - Team page (Meet the founder)
-- `/contact` - Contact form
-- `/docs` - Documentation
-- `/transparency` - Transparency & Open Source commitment
-
-## 🛠️ Tech Stack
-
-- **Framework**: [Next.js 16](https://nextjs.org/)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **Animations**: Framer Motion
-- **Icons**: React Icons
-- **Email**: Resend
-- **Fonts**: Space Grotesk, JetBrains Mono
-- **Hosting**: GO54 / Vercel
-
-## 📦 Installation
+Requires Node ≥ 20.9.0 (the `engines.node` field enforces this; `nvm use 22.20.0` if you have nvm).
 
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/foniolabs-website.git
-
-# Navigate to project directory
-cd foniolabs-website
-
-# Install dependencies
-npm install
-
-# Create environment file
+git clone https://github.com/foniolabs/website
+cd website
+npm ci
 cp .env.local.example .env.local
-
-# Add your environment variables to .env.local
-# RESEND_API_KEY=your_api_key_here
-
-# Start development server
+# Paste the values from your Sanity project + secrets — see DEPLOY.md §2
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🔧 Environment Variables
-
-Create a `.env.local` file in the root directory:
-
-```env
-RESEND_API_KEY=re_your_api_key_here
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
-
-See `.env.local.example` and `.env.production.example` for templates.
-
-## 📝 Available Scripts
-
-```bash
-# Development
-npm run dev              # Start dev server
-
-# Production
-npm run build            # Build for production
-npm start               # Start production server
-
-# Deployment to GO54
-npm run deploy:go54      # Build and show upload instructions
-npm run deploy:go54:ssh  # Automated SSH deployment to GO54
-
-# Deployment to Vercel
-npm run deploy:vercel    # Deploy to production (Vercel)
-npm run deploy:preview   # Deploy preview (Vercel)
-
-# Code Quality
-npm run lint            # Run ESLint
-```
-
-## 🚀 Deployment
-
-### Option 1: Deploy to GO54 (Recommended for this project)
-
-**GO54** is West Africa's largest web hosting provider, perfect for Nigerian businesses.
-
-#### Quick Start (10 minutes)
-See [QUICK_START_GO54.md](./QUICK_START_GO54.md) for step-by-step instructions.
-
-#### Deployment Methods
-
-**Method A: Using cPanel (Easiest)**
-```bash
-npm run deploy:go54  # Build and get upload instructions
-# Then upload files via FTP and configure in cPanel
-```
-
-**Method B: Using SSH (Automated)**
-```bash
-npm run deploy:go54:ssh  # Automated deployment via SSH
-```
-
-**Method C: Using Git**
-- Push to GitHub
-- Clone in cPanel Git interface
-- Configure Node.js app
-
-#### Detailed GO54 Guide
-See [DEPLOYMENT_GO54.md](./DEPLOYMENT_GO54.md) for comprehensive instructions including:
-- Three deployment methods (cPanel, SSH, Git)
-- Server configuration
-- SSL setup
-- Environment variables
-- Troubleshooting
-- Performance optimization
+Open `http://localhost:3000` for the site, `http://localhost:3000/studio` for the embedded CMS.
 
 ---
 
-### Option 2: Deploy to Vercel
+## What runs where
 
-**Vercel** offers excellent performance with global CDN.
-
-#### Quick Start (5 minutes)
-See [QUICK_DEPLOY.md](./QUICK_DEPLOY.md) for the fastest way to deploy to Vercel.
-
-#### One-Click Deploy
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/foniolabs-website)
-
-#### Detailed Vercel Guide
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive Vercel deployment instructions.
+| Surface | URL | What it is |
+|---|---|---|
+| Public site | https://foniolabs.xyz | Next 16 RSC, ISR-cached pages, build-time redirects, light-theme design |
+| Sanity Studio | https://foniolabs.xyz/studio | Embedded Studio v5, custom slug + variant + SEO + OG components (Day 4) |
+| Sanity MCP | https://mcp.sanity.io (per-project `.mcp.json` registers it) | Lets Claude Code edit content via OAuth-scoped roles |
+| Content APIs | Sanity Cloud (`8smu0dlv` / `production` dataset) | Single source of truth for page, post, product, teamMember, author, navigation, siteSettings, redirect |
+| Deploy | Vercel + GitHub git integration | Preview per PR, prod on `main` merge |
 
 ---
 
-### Comparison: GO54 vs Vercel
+## Stack
 
-| Feature | GO54 | Vercel |
-|---------|------|--------|
-| **Cost** | ₦20-50k/year (~$25-65) | Free tier available |
-| **Location** | Nigeria/Africa | Global CDN |
-| **Support** | Local support in Nigeria | Email support |
-| **Best For** | Nigerian businesses, local hosting | Global apps, automatic scaling |
-| **Setup** | Manual or SSH | One-click |
-| **Performance** | Good (regional) | Excellent (global) |
-
-**Recommendation**: Use GO54 if you already have hosting there, otherwise Vercel is simpler.
-
-## 📧 Email Setup
-
-The contact form uses [Resend](https://resend.com) for email delivery.
-
-1. Sign up at [resend.com](https://resend.com) (free tier: 100 emails/day)
-2. Get your API key
-3. Add to environment variables
-4. See [SETUP_EMAIL.md](./SETUP_EMAIL.md) for detailed setup
-
-## 🎨 Customization
-
-### Update Team Information
-
-Edit [app/team/page.tsx](./app/team/page.tsx):
-- Add team member photos to `/public/images/team/`
-- Uncomment team member templates
-- Update social media links
-
-### Update Content
-
-- **Hero Section**: [app/components/ui/sections/Hero.tsx](./app/components/ui/sections/Hero.tsx)
-- **About Content**: [app/about/page.tsx](./app/about/page.tsx)
-- **Footer Links**: [app/components/ui/sections/Footer.tsx](./app/components/ui/sections/Footer.tsx)
-
-### Update Branding
-
-- **Colors**: [app/globals.css](./app/globals.css) - Update CSS variables
-- **Fonts**: [app/layout.tsx](./app/layout.tsx) - Change font imports
-- **Logo**: Add your logo to `/public/images/`
-
-## 📁 Project Structure
-
-```
-foniolabs-website/
-├── app/
-│   ├── about/              # About page
-│   ├── api/
-│   │   └── contact/        # Contact form API
-│   ├── components/
-│   │   └── ui/
-│   │       └── sections/   # Reusable sections
-│   ├── contact/            # Contact page
-│   ├── docs/               # Documentation page
-│   ├── team/               # Team page
-│   ├── transparency/       # Transparency page
-│   ├── globals.css         # Global styles
-│   ├── layout.tsx          # Root layout
-│   ├── not-found.tsx       # Custom 404
-│   └── page.tsx            # Homepage
-├── public/
-│   ├── images/             # Images and assets
-│   └── robots.txt          # SEO robots file
-├── .env.local.example      # Environment template
-├── DEPLOYMENT.md           # Deployment guide
-├── QUICK_DEPLOY.md         # Quick deploy guide
-├── SETUP_EMAIL.md          # Email setup guide
-└── package.json
-```
-
-## 🐛 Troubleshooting
-
-### Build Fails
-```bash
-# Clear Next.js cache
-rm -rf .next
-npm run build
-```
-
-### Email Not Working
-- Check `RESEND_API_KEY` is set
-- Verify API key is active in Resend dashboard
-- Check contact form submission in browser console
-
-### Port Already in Use
-```bash
-# Kill process on port 3000
-lsof -ti:3000 | xargs kill -9
-
-# Or use a different port
-PORT=3001 npm run dev
-```
-
-## 📄 License
-
-This project is private and proprietary to Fonio Labs.
-
-## 👥 Team
-
-- **Emmanuel Doji** - Founder & CEO
-  - [GitHub](https://github.com/web3normad)
-  - [Twitter](https://x.com/emmanueldoji)
-  - [LinkedIn](https://ng.linkedin.com/in/emmanuel-doji)
-
-## 📞 Contact
-
-- **Email**: admin@foniolabs.xyz
-- **Website**: [foniolabs.xyz](https://foniolabs.xyz)
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router, RSC, Turbopack dev, ISR with cache tags)
+- **CMS:** [Sanity v5](https://www.sanity.io/) — embedded Studio, GROQ queries, draft mode + presentation tool, image CDN
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **Animations:** Framer Motion (client components)
+- **Email:** [Resend](https://resend.com/) (the `/api/contact` route; production uses HubSpot Forms via `contactFormBlock`)
+- **Forms:** [HubSpot Forms](https://www.hubspot.com/) embed, region-aware (na1 / eu1 / etc.)
+- **Analytics:** GA4 via `@next/third-parties`
+- **Fonts:** Space Grotesk + JetBrains Mono
+- **Hosting:** [Vercel](https://vercel.com/), region `iad1`
+- **CI:** GitHub Actions — lint + `tsc --noEmit` + `next build` on every PR
 
 ---
 
-Built with ❤️ by Fonio Labs
+## Routes
+
+```
+/                     Homepage (still hardcoded — see DEFERRED.md)
+/about                Sanity-driven sections (Our Story, Vision, Values, CTA, Live stats)
+/team                 Sanity teamMember docs, light-theme card grid
+/news                 Sanity post listing
+/news/[slug]          SSG'd post detail, JSON-LD, Article OG
+/products             Sanity product listing
+/products/[slug]      SSG'd product detail
+/contact              HubSpot embed, region-aware
+/p/[slug]             Universal Sanity page renderer for any `page` doc
+/studio               Embedded Sanity Studio (custom desk + Presentation tool)
+/api/og               Edge-runtime OG image (1200×630, ?title + ?subtitle + ?eyebrow)
+/api/revalidate       Sanity webhook target — tag-based ISR invalidation
+/api/draft-mode/...   Sanity preview-URL signing + draft mode toggle
+/api/contact          Resend-backed contact form (legacy path)
+/sitemap.xml          Pulls page/post/product slugs from Sanity
+/robots.txt           Allows all, disallows /studio + /api/
+```
+
+---
+
+## Project docs
+
+Read in this order if you're new to the repo:
+
+| Doc | Audience | What it covers |
+|---|---|---|
+| [HANDOFF.md](./HANDOFF.md) | Engineering | Sprint state — every day's deliverable, dead-ends, what's queued |
+| [MIGRATION.md](./MIGRATION.md) | Engineering / hiring panel | The Sanity migration writeup — content model, redirects, rollback, acceptance |
+| [SCHEMA.md](./SCHEMA.md) | Engineering + marketing | Every doc type, block, and reusable object with field shapes |
+| [OPERATING.md](./OPERATING.md) | Marketing team | First-30-minutes playbook for editing content via Claude Code + Sanity MCP |
+| [DEPLOY.md](./DEPLOY.md) | Operators | Vercel project setup, env-var matrix, webhook wiring, rollback, DNS cutover |
+| [DEFERRED.md](./DEFERRED.md) | Engineering | Decisions about what stays hardcoded (`/`, `/about`, `/contact`) and why |
+| [SETUP_EMAIL.md](./SETUP_EMAIL.md) | Operators | Resend setup for the legacy `/api/contact` route |
+| [migration/URL_INVENTORY.md](./migration/URL_INVENTORY.md) | Engineering | Pre-migration URL inventory + redirect map |
+| [migration/loom-script.md](./migration/loom-script.md) | Marketing / hiring panel | 2:30 demo outline for the Claude Code + MCP video |
+
+---
+
+## Scripts
+
+```bash
+npm run dev              # Next dev (Turbopack)
+npm run build            # Production build
+npm start                # Serve the production build
+npm run lint             # ESLint (CI gate — 0 errors enforced)
+npm run migrate          # One-shot ETL into Sanity (idempotent — see MIGRATION.md)
+npm run migrate:dry      # Same, but logs operations without writing
+```
+
+CI runs lint + `npx tsc --noEmit` + `npm run build`. Both must be clean for a PR to merge.
+
+---
+
+## Environment
+
+`.env.local.example` lists the variables. The full matrix lives in [DEPLOY.md §2](./DEPLOY.md). Short version:
+
+| Variable | What | Where |
+|---|---|---|
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | `8smu0dlv` | All envs |
+| `NEXT_PUBLIC_SANITY_DATASET` | `production` | All envs |
+| `NEXT_PUBLIC_SANITY_API_VERSION` | `2025-05-31` | All envs |
+| `NEXT_PUBLIC_SITE_URL` | `https://foniolabs.xyz` | Production only |
+| `SANITY_API_READ_TOKEN` | Viewer-role token | Draft mode preview |
+| `SANITY_API_WRITE_TOKEN` | Editor-role token | Local migrate script (do not ship to Vercel) |
+| `SANITY_REVALIDATE_SECRET` | `openssl rand -hex 32` | Matches the Sanity webhook secret |
+| `RESEND_API_KEY` | Resend dashboard | Only if `/api/contact` is in use |
+
+Secrets never live in the repo. Vercel project settings own them in production; `.env.local` owns them locally.
+
+---
+
+## Deploys
+
+Vercel handles preview + production via its git integration. Every PR gets a preview URL. Merging to `main` triggers a production deploy.
+
+To wire a new Vercel environment from scratch, follow [DEPLOY.md](./DEPLOY.md) end to end (≈ 15 minutes). DNS cutover from the legacy Hostinger setup is documented at [DEPLOY.md §"Custom domain cutover"](./DEPLOY.md).
+
+---
+
+## Architecture in one paragraph
+
+The public site is a Next.js 16 App Router app deployed to Vercel. Content lives in Sanity Cloud (`8smu0dlv` / `production` dataset); the embedded Studio runs at `/studio` and supports draft mode + visual preview via Sanity's Presentation tool. Public reads hit Sanity's CDN through a small wrapper in [lib/sanity/fetch.ts](./lib/sanity/fetch.ts) that tags each query for ISR. On publish, a Sanity webhook calls [/api/revalidate](./app/api/revalidate/route.ts) with an HMAC-signed body; the handler computes cache tags from `_type` + `slug` and calls `revalidateTag()` so the affected pages re-render within seconds. Build-time redirects are pulled from Sanity `redirect` docs in [next.config.ts](./next.config.ts). A per-project [.mcp.json](./.mcp.json) registers the hosted Sanity MCP server at `https://mcp.sanity.io` so Claude Code can edit content via the OAuth identity's Sanity role.
+
+---
+
+## License
+
+Private and proprietary to Fonio Labs.
+
+---
+
+## Contact
+
+- **Site:** https://foniolabs.xyz
+- **Email:** admin@foniolabs.xyz
+- **Founder:** [Emmanuel Doji](https://github.com/web3normad) ([X](https://x.com/emmanueldoji) · [LinkedIn](https://ng.linkedin.com/in/emmanuel-doji))
