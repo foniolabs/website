@@ -210,3 +210,25 @@ body::-webkit-scrollbar {
 .hubspot-form-container :has(> a[href*="hubspot.com/products/marketing"]) {
   display: none !important;
 }
+
+/* Restyle HubSpot's default submit button to match the site's .btn-primary
+   look (used by other CTAs on /contact and elsewhere). HubSpot's embed
+   v2 ships its own .hs-button class which we override here scoped to the
+   form container so we never accidentally style buttons outside the form. */
+.hubspot-form-container input[type="submit"],
+.hubspot-form-container .hs-button {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+  font-size: 1.125rem !important;
+  cursor: pointer !important;
+  transition: background 0.2s ease !important;
+  width: 100%;
+}
+.hubspot-form-container input[type="submit"]:hover,
+.hubspot-form-container .hs-button:hover {
+  background: #1e40af !important;
+}
