@@ -202,3 +202,11 @@ body::-webkit-scrollbar {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, white 12%, white 88%, transparent 100%);
   mask-image: linear-gradient(to right, transparent 0%, white 12%, white 88%, transparent 100%);
 }
+
+/* Hide HubSpot free-tier "Create your own free forms" branding banner.
+   Targets the link itself plus any parent element that contains only that
+   link, via :has(). Only affects embeds rendered inside .hubspot-form-container. */
+.hubspot-form-container a[href*="hubspot.com/products/marketing"],
+.hubspot-form-container :has(> a[href*="hubspot.com/products/marketing"]) {
+  display: none !important;
+}
