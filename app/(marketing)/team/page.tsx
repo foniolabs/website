@@ -9,7 +9,10 @@ type TeamMemberDoc = {
   name: string;
   role: string;
   bio?: string;
-  photo?: { asset?: { _ref?: string } };
+  // After the GROQ `asset->` dereference (see imageProjection in queries.ts),
+  // the asset has `_id` + `url`, not `_ref`. The old `._ref` check left every
+  // member photo as `null` and rendered the letter-avatar fallback.
+  photo?: { asset?: { _id?: string; url?: string } };
   social?: {
     github?: string;
     linkedin?: string;
@@ -40,7 +43,7 @@ const toView = (m: TeamMemberDoc): TeamMemberView => ({
   name: m.name,
   role: m.role,
   bio: m.bio,
-  imageUrl: m.photo?.asset?._ref
+  imageUrl: m.photo?.asset?._id
     ? urlFor(m.photo as never).width(800).url()
     : null,
   social: m.social ?? {},

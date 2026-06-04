@@ -139,40 +139,46 @@ export async function LiveStatsBlock({ s }: Props) {
   }).format(new Date());
 
   return (
-    <section className="py-20 px-6 md:px-12">
+    <section className="py-32 px-6 md:px-12 lg:px-20 bg-white">
       <div className="max-w-6xl mx-auto">
-        {!!s.eyebrow && (
-          <div className="font-mono text-xs uppercase tracking-widest text-orange-500 mb-2 text-center">
-            {s.eyebrow}
+        {Boolean(s.eyebrow || s.headline || s.intro) && (
+          <div className="text-center mb-16">
+            {!!s.eyebrow && (
+              <div className="inline-flex items-center gap-2 px-6 py-3 bg-blue-50 backdrop-blur-sm rounded-full mb-8 border border-blue-200">
+                <span className="font-mono text-sm font-semibold tracking-wider text-blue-600">
+                  {s.eyebrow}
+                </span>
+              </div>
+            )}
+            {!!s.headline && (
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+                {s.headline}
+              </h2>
+            )}
+            {!!s.intro && (
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                {s.intro}
+              </p>
+            )}
           </div>
         )}
-        {!!s.headline && (
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            {s.headline}
-          </h2>
-        )}
-        {!!s.intro && (
-          <p className="text-neutral-400 text-center max-w-2xl mx-auto mb-12">
-            {s.intro}
-          </p>
-        )}
-        <div className={`grid gap-6 ${colsClass}`}>
+        <div className={`grid gap-8 ${colsClass}`}>
           {resolved.map((r, i) => (
             <div
               key={i}
-              className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-8 text-center"
+              className="bg-white border border-gray-200 rounded-2xl p-8 text-center hover:shadow-lg transition-all duration-300"
             >
-              <div className="text-4xl md:text-5xl font-bold tracking-tight text-orange-400 mb-2">
+              <div className="text-5xl md:text-6xl font-bold tracking-tight text-blue-600 mb-3">
                 {r.value}
               </div>
-              <div className="text-sm uppercase tracking-widest text-neutral-400">
+              <div className="text-sm uppercase tracking-widest text-gray-600 font-semibold">
                 {r.label}
               </div>
             </div>
           ))}
         </div>
         {s.showAsOf !== false && (
-          <div className="mt-6 text-center text-xs text-neutral-500 font-mono">
+          <div className="mt-8 text-center text-xs text-gray-500 font-mono">
             {anyStale ? "Cached values · " : "As of "}
             {asOfLabel}
           </div>
