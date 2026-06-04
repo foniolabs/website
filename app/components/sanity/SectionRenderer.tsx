@@ -40,6 +40,7 @@ const renderImage = (image: SanityImage, fallbackAlt = "") => {
       placeholder={image.asset.metadata?.lqip ? "blur" : "empty"}
       blurDataURL={image.asset.metadata?.lqip}
       className="w-full h-auto rounded-xl"
+      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1024px"
     />
   );
 };

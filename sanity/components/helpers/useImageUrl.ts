@@ -1,6 +1,6 @@
 "use client";
 
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import { useMemo } from "react";
 import { useClient } from "sanity";
 
@@ -13,7 +13,7 @@ export function useImageUrl(assetRef?: string | null): string | null {
   return useMemo(() => {
     if (!assetRef) return null;
     try {
-      return imageUrlBuilder(client).image(assetRef).width(1200).url();
+      return createImageUrlBuilder(client).image(assetRef).width(1200).url();
     } catch {
       return null;
     }

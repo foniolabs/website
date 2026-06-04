@@ -128,6 +128,7 @@ export default async function SanityPage({
               fill
               className="object-cover opacity-20"
               priority
+              sizes="100vw"
             />
           )}
           <div className="max-w-5xl mx-auto text-center relative z-10">
