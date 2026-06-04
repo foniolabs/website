@@ -91,6 +91,11 @@ TTTTTTTTTT`}
                       src={member.imageUrl}
                       alt={member.name}
                       fill
+                      // First card on the page is the most likely LCP element
+                      // on /team. Priority preloads it; sizes lets Next pick
+                      // the right CDN variant for the viewport.
+                      priority={index === 0}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                       className="object-cover"
                     />
                   ) : (

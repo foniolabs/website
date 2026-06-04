@@ -114,6 +114,7 @@ export const portableTextComponents: PortableTextComponents = {
             placeholder={lqip ? "blur" : "empty"}
             blurDataURL={lqip}
             className="rounded-lg"
+            sizes="(max-width: 768px) 100vw, 768px"
           />
           {value.caption && (
             <figcaption className="mt-2 text-sm text-neutral-400">

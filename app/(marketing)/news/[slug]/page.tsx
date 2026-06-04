@@ -201,6 +201,7 @@ export default async function PostPage({
               blurDataURL={doc.coverImage?.asset?.metadata?.lqip}
               className="w-full h-auto rounded-2xl"
               priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 896px"
             />
           </div>
         </div>
