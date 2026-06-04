@@ -78,6 +78,14 @@ export const siteSettings = defineType({
       description: "Numeric portal ID from your HubSpot account (visible in the URL when logged in).",
     }),
     defineField({
+      name: "hubspotContactFormId",
+      title: "HubSpot contact form ID",
+      type: "string",
+      group: "integrations",
+      description:
+        "The HubSpot form GUID embedded on /contact. Paste the long hyphenated ID from your HubSpot form URL. Marketing can change which form /contact uses without a code change.",
+    }),
+    defineField({
       name: "hubspotRegion",
       title: "HubSpot region",
       type: "string",

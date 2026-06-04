@@ -95,6 +95,7 @@ export const siteSettingsQuery = groq`*[_type == "siteSettings"][0]{
   "defaultSeo": defaultSeo ${seoProjection},
   ga4MeasurementId,
   hubspotPortalId,
+  hubspotContactFormId,
   hubspotRegion,
   contactEmail,
   social
