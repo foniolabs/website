@@ -57,7 +57,7 @@ LLLLLLLLLL`
             transition={{ duration: 0.6 }}
           >
             <span className="font-mono text-sm font-semibold tracking-wider text-blue-600">
-              // WHY FONIO LABS //
+              {"// WHY FONIO LABS //"}
             </span>
           </motion.div>
 
