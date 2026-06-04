@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PortableText } from "@/app/components/sanity/PortableText";
+import { BreadcrumbJsonLd } from "@/app/components/seo/JsonLd";
 import { client } from "@/lib/sanity/client";
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { urlFor } from "@/lib/sanity/image";
@@ -102,6 +103,13 @@ export default async function ProductPage({
 
   return (
     <article>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", href: "/" },
+          { name: "Products", href: "/products" },
+          { name: doc.name, href: `/products/${doc.slug}` },
+        ]}
+      />
       <header className="px-6 md:px-12 pt-32 pb-12">
         <div className="max-w-5xl mx-auto">
           <Link
