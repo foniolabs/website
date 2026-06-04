@@ -4,13 +4,17 @@ This file is a deliberate record of pages we **chose not to migrate to Sanity** 
 
 ## What's still hardcoded
 
-| Route | Why it's hardcoded |
-|---|---|
-| `/` (home) | Composed from `Hero`, `Mission`, `Solutions`, `WhyFonioLabs` sections under [`app/components/ui/sections/`](app/components/ui/sections/) — each is a one-off narrative piece, not a reusable block. |
-| `/about` | Multi-section storytelling with ASCII art panels, gradient backgrounds, and animation choreography that's specific to the page narrative, not a generic content shape. |
-| `/contact` | Form + page chrome — gets a real HubSpot embed in Day 8, but the page itself stays as a custom layout, not a Sanity-driven `page` doc. |
+| Route | Status | Why |
+|---|---|---|
+| `/` (home) | **hardcoded** | Composed from `Hero`, `Mission`, `Solutions`, `WhyFonioLabs` sections under [`app/components/ui/sections/`](app/components/ui/sections/) — each is a one-off narrative piece, not a reusable block. |
+| `/about` | **Sanity-first with hardcoded fallback** | If the Sanity `page` doc with slug "about" has sections in Studio → Sanity renders. Otherwise the hardcoded `AboutPageContent` from before the migration renders. Marketing migrates by composing the page in Studio. |
+| `/contact` | **hardcoded** | Custom form + page chrome — uses Web3Forms today. Marketing can embed a HubSpot form here via the `contactFormBlock` once we migrate this page too. |
 
-The listing pages (`/team`, `/news`, `/products`) **were** rewired to fetch from Sanity in Day 7. The detail pages (`/news/[slug]`, `/products/[slug]`) **were** built fresh as Sanity-driven routes in Day 5. The five top-level marketing pages above are the explicit exceptions.
+### New as of this update
+
+- **`/p/[slug]`** — universal Sanity page renderer. Hit `/p/about`, `/p/home`, or any page doc's slug to see the Sanity-driven version *only*, regardless of what the top-level route does. Useful for previewing Sanity-composed pages while the real route still has hardcoded JSX in front of it.
+
+The listing pages (`/team`, `/news`, `/products`) **were** rewired to fetch from Sanity in Day 7. The detail pages (`/news/[slug]`, `/products/[slug]`) **were** built fresh as Sanity-driven routes in Day 5.
 
 ## Why we didn't migrate them
 
@@ -22,13 +26,15 @@ The listing pages (`/team`, `/news`, `/products`) **were** rewired to fetch from
 
 ## When to revisit
 
-The right time to migrate these pages is when **marketing wants to change them** without asking engineering. At that point:
+The right time to migrate these pages is when **marketing wants to change them** without asking engineering. For `/about` the wiring is already done — just compose sections in Studio and Sanity takes over automatically.
 
-1. Open Studio → create a `page` doc with the appropriate slug (`home`, `about`, `contact`).
+For `/` and `/contact`:
+
+1. Open Studio → create a `page` doc with the appropriate slug (`home`, `contact`).
 2. Compose the page from the 8 reusable block types now available in `page.sections`.
 3. If a block they need doesn't exist yet, add it as a new schema under [`sanity/schemaTypes/blocks/`](sanity/schemaTypes/blocks/) and a renderer branch in [`app/components/sanity/SectionRenderer.tsx`](app/components/sanity/SectionRenderer.tsx).
-4. Once the Sanity version is at parity, swap the hardcoded route to fetch via `sanityFetch` (the pattern is already wired up — `app/(marketing)/team/page.tsx` is the template).
-5. Delete the corresponding hardcoded component once the Sanity version ships.
+4. Apply the same Sanity-first-fallback pattern that [`app/(marketing)/about/page.tsx`](app/(marketing)/about/page.tsx) uses: extract the hardcoded JSX into a `*PageContent.tsx` client component, make `page.tsx` an async server that fetches the doc and renders sections when present.
+5. Delete the corresponding `*PageContent.tsx` once the Sanity version is canonical.
 
 ## What this is *not*
 
