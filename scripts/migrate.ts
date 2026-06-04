@@ -205,9 +205,134 @@ const POSTS = [
   },
 ];
 
-// Pages are minimal at this stage — just a title + slug + hero. The richer
-// content lives in the hardcoded React components for now and will move
-// into sections[] as marketing populates the Studio.
+// Portable Text helper — produces a single block in the Sanity Portable Text
+// shape (style + array of spans). Used to compose the body of richTextBlock
+// sections without writing the verbose shape inline.
+const ptBlock = (
+  style: "normal" | "h2" | "h3" | "h4" | "blockquote",
+  text: string,
+  key: string,
+) => ({
+  _key: key,
+  _type: "block",
+  style,
+  markDefs: [],
+  children: [{ _key: `${key}-s`, _type: "span", marks: [], text }],
+});
+
+// About page sections — these populate page.sections so /about renders via
+// SectionRenderer (Sanity-first path) instead of the AboutPageContent
+// fallback. Each section maps to a block schema added in Day 3.
+const ABOUT_SECTIONS = [
+  {
+    _key: "about-story",
+    _type: "richTextBlock",
+    maxWidth: "narrow",
+    body: [
+      ptBlock("h2", "Our Story", "story-h"),
+      ptBlock(
+        "normal",
+        "Fonio Labs was founded with a clear mission: to build technology products that solve real problems across multiple industries. From gaming to education to fintech, we saw opportunities to create meaningful impact through thoughtful product development.",
+        "story-p1",
+      ),
+      ptBlock(
+        "normal",
+        "We're a product studio — not an agency. We conceive, design, build, and launch our own products. Each one is crafted to serve a specific market need, combining cutting-edge technology with user-centered design to deliver real value.",
+        "story-p2",
+      ),
+    ],
+  },
+  {
+    _key: "about-vision",
+    _type: "richTextBlock",
+    maxWidth: "narrow",
+    body: [
+      ptBlock("h2", "Our Vision", "vision-h"),
+      ptBlock(
+        "normal",
+        "We envision a future where technology products built in Africa compete on the global stage. Where innovation isn't limited by geography, and where Nigerian-built platforms serve millions of users worldwide.",
+        "vision-p1",
+      ),
+      ptBlock(
+        "normal",
+        "Through products like Futbol Fusion and Skoolbox, we're proving that world-class technology can come from anywhere. Each product we launch is a step toward a more connected, empowered, and innovative world.",
+        "vision-p2",
+      ),
+    ],
+  },
+  {
+    _key: "about-values",
+    _type: "featureGridBlock",
+    eyebrow: "// VALUES //",
+    headline: "Our Values",
+    intro: "The principles that guide everything we do",
+    columns: 3,
+    items: [
+      {
+        _key: "v1",
+        _type: "feature",
+        title: "Research-First",
+        body: "Every decision we make is backed by thorough research and data. We don't build on assumptions—we build on evidence.",
+      },
+      {
+        _key: "v2",
+        _type: "feature",
+        title: "User-Centric",
+        body: "The user experience is at the heart of everything we create. Complex technology should feel simple and intuitive.",
+      },
+      {
+        _key: "v3",
+        _type: "feature",
+        title: "Transparent",
+        body: "We believe in building in public, sharing our learnings, and being open about our processes and decisions.",
+      },
+      {
+        _key: "v4",
+        _type: "feature",
+        title: "Collaborative",
+        body: "Great innovation happens when diverse minds come together. We actively seek partnerships and community input.",
+      },
+      {
+        _key: "v5",
+        _type: "feature",
+        title: "Quality-Driven",
+        body: "We never compromise on quality. Every line of code, every design decision is made with excellence in mind.",
+      },
+      {
+        _key: "v6",
+        _type: "feature",
+        title: "Future-Focused",
+        body: "We're not just solving today's problems—we're anticipating tomorrow's challenges and building solutions today.",
+      },
+    ],
+  },
+  {
+    _key: "about-cta",
+    _type: "ctaBlock",
+    tone: "dark",
+    headline: "Want to join us on this journey?",
+    body: "We're always looking for talented individuals who share our vision and values.",
+    buttons: [
+      {
+        _key: "cta-b1",
+        _type: "ctaLink",
+        label: "View Open Positions",
+        href: "/contact",
+        variant: "primary",
+      },
+      {
+        _key: "cta-b2",
+        _type: "ctaLink",
+        label: "Meet the Team",
+        href: "/team",
+        variant: "secondary",
+      },
+    ],
+  },
+];
+
+// Home stays a minimal stub for now — the existing hardcoded JSX renders /.
+// DEFERRED.md tracks the criteria for migrating its narrative sections.
 const PAGES = [
   {
     slug: "home",
@@ -218,6 +343,7 @@ const PAGES = [
       subheadline:
         "A research-driven studio building user-friendly tools and platforms across Web3, AI, gaming, education, and fintech.",
     },
+    sections: undefined as unknown[] | undefined,
   },
   {
     slug: "about",
@@ -228,6 +354,7 @@ const PAGES = [
       subheadline:
         "Fonio Labs is a multi-industry studio. We research, design, and ship products that solve real problems with technology that respects the user.",
     },
+    sections: ABOUT_SECTIONS,
   },
 ];
 
@@ -281,13 +408,29 @@ async function upsert(doc: { _id: string; _type: string } & Record<string, unkno
   return client.createOrReplace(doc);
 }
 
+// For singletons whose fields are editor-managed (siteSettings, navigation),
+// seed the doc on first run but leave subsequent runs alone — re-running
+// migrate must not blow away an editor's hubspotPortalId paste etc. Uses
+// createIfNotExists which is a no-op if _id already exists.
+async function seedOnce(doc: { _id: string; _type: string } & Record<string, unknown>) {
+  if (DRY_RUN) {
+    console.log(
+      `  seedOnce ${doc._type} ${doc._id} (dry-run, no write)`,
+    );
+    return doc;
+  }
+  return client.createIfNotExists(doc);
+}
+
 // -----------------------------------------------------------------------
 // Migrators
 // -----------------------------------------------------------------------
 
 async function migrateSiteSettings() {
   console.log("\n— Site settings —");
-  await upsert({
+  // seedOnce, not upsert: editors paste hubspot/GA IDs into Studio after the
+  // initial migration. Re-running migrate must not blow those away.
+  await seedOnce({
     _id: "siteSettings",
     _type: "siteSettings",
     siteName: SITE.siteName,
@@ -299,7 +442,8 @@ async function migrateSiteSettings() {
 
 async function migrateNavigation() {
   console.log("\n— Navigation —");
-  await upsert({
+  // seedOnce: editors customise nav structure post-migration; preserve it.
+  await seedOnce({
     _id: "navigation",
     _type: "navigation",
     headerLinks: NAV.headerLinks.map((l, i) => ({
@@ -404,7 +548,7 @@ async function migratePosts(authorId: string) {
 }
 
 async function migratePages() {
-  console.log("\n— Pages (minimal stubs) —");
+  console.log("\n— Pages —");
   for (const p of PAGES) {
     await upsert({
       _id: `page-${p.slug}`,
@@ -412,6 +556,7 @@ async function migratePages() {
       title: p.title,
       slug: { _type: "slug", current: p.slug },
       hero: p.hero,
+      ...(p.sections ? { sections: p.sections } : {}),
     });
   }
 }

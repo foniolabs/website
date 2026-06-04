@@ -7,8 +7,9 @@ This file is a deliberate record of pages we **chose not to migrate to Sanity** 
 | Route | Status | Why |
 |---|---|---|
 | `/` (home) | **hardcoded** | Composed from `Hero`, `Mission`, `Solutions`, `WhyFonioLabs` sections under [`app/components/ui/sections/`](app/components/ui/sections/) — each is a one-off narrative piece, not a reusable block. |
-| `/about` | **Sanity-first with hardcoded fallback** | If the Sanity `page` doc with slug "about" has sections in Studio → Sanity renders. Otherwise the hardcoded `AboutPageContent` from before the migration renders. Marketing migrates by composing the page in Studio. |
-| `/contact` | **hardcoded** | Custom form + page chrome — uses Web3Forms today. Marketing can embed a HubSpot form here via the `contactFormBlock` once we migrate this page too. |
+| `/about` | **Sanity-driven** (migrate seeds Our Story, Our Vision, Our Values, CTA as block sections) | All text editable in Studio → Pages → About → Page sections. Visual is the SectionRenderer's generic rendering, not the prior gradient/ASCII-art composition. To restore the prior visual fidelity, build per-section custom blocks (the "Option B" path from the original DEFERRED entry). |
+| `/contact` | **Sanity-driven** (HubSpot form embed) | Hero + left-column info hardcoded in `ContactPageContent.tsx` (page-specific chrome). Right column is HubspotForm reading siteSettings.hubspotContactFormId — marketing changes the form via Studio. |
+| `/team` chrome (hero copy, Culture, Join us) | **hardcoded** | Team member list is Sanity. The page-level narrative chrome stays in `TeamPageContent.tsx` until marketing wants it editable — same migration path as /about applies (extract narrative to a Sanity page doc, wire /team/page.tsx to fetch and render its sections alongside the team grid). |
 
 ### New as of this update
 
