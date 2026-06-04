@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { SectionRenderer } from "@/app/components/sanity/SectionRenderer";
@@ -162,9 +163,9 @@ export default async function SanityPage({
           <h1 className="text-3xl font-bold text-white mb-4">{doc.title}</h1>
           <p className="text-neutral-400">
             This Sanity page has no hero or sections yet. Add some in{" "}
-            <a href="/studio" className="text-orange-400 underline">
+            <Link href="/studio" className="text-orange-400 underline">
               Studio
-            </a>
+            </Link>
             .
           </p>
         </div>

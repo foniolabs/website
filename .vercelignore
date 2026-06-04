@@ -1,0 +1,32 @@
+# Files Vercel can skip when uploading the deploy bundle. The build itself
+# reads only from app/, sanity/, lib/, public/, scripts/, and root config
+# files — anything below this list never gets imported and only inflates the
+# clone, the build context, or the public surface area.
+
+# Migration audit trail — Day 0 baselines + Day 10 Loom script
+migration/
+
+# Repo-internal docs (README stays — it's the project front page)
+HANDOFF.md
+OPERATING.md
+MIGRATION.md
+DEFERRED.md
+DEPLOY.md
+SETUP_EMAIL.md
+
+# Local env never reaches CI/Vercel via git, but defensive
+.env.local
+.env.*.local
+
+# Test artifacts (none yet, defensive)
+**/*.test.ts
+**/*.test.tsx
+coverage/
+
+# Editor + OS noise
+.DS_Store
+.vscode/
+.idea/
+
+# Local Next dev artifacts
+.next/cache/

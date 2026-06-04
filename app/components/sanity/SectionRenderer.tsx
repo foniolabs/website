@@ -356,12 +356,12 @@ export function SectionRenderer({
   if (!sections?.length) return null;
   return (
     <>
-      {sections.map((s) => {
+      {sections.map((s, i) => {
         const Cmp = SECTION_RENDERERS[s._type ?? ""];
         if (!Cmp) {
           return (
             <div
-              key={s._key ?? Math.random()}
+              key={s._key ?? `unknown-${i}`}
               className="px-6 py-4 text-xs font-mono text-neutral-500"
             >
               [unknown section type: {s._type ?? "?"}]
@@ -370,7 +370,7 @@ export function SectionRenderer({
         }
         return (
           <Cmp
-            key={s._key ?? Math.random()}
+            key={s._key ?? `section-${i}`}
             s={s as Section}
             globals={globals}
           />
