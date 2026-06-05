@@ -44,3 +44,6 @@ next-env.d.ts
 
 # OZ application drafts — kept out of the public repo deliberately
 docs/EmmanuelDoji_OZ_*
+
+# HANDOFF.md — sprint diary, kept local-only
+HANDOFF.md
