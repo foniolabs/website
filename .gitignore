@@ -41,3 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# OZ application drafts — kept out of the public repo deliberately
+docs/EmmanuelDoji_OZ_*
