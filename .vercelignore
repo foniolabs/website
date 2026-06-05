@@ -13,6 +13,10 @@ MIGRATION.md
 DEFERRED.md
 DEPLOY.md
 SETUP_EMAIL.md
+SCHEMA.md
+
+# Application package (resume, cover letter — versioned in repo, not on deploy)
+docs/
 
 # Local env never reaches CI/Vercel via git, but defensive
 .env.local
