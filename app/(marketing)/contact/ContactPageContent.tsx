@@ -1,71 +1,22 @@
 "use client";
 import { motion } from "framer-motion";
 import React from "react";
-import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
+import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { HiLocationMarker, HiMail, HiPhone } from "react-icons/hi";
 
-import { HubspotForm } from "@/app/components/sanity/HubspotForm";
+import { ContactForm } from "@/app/components/ui/ContactForm";
+import { PageHero } from "@/app/components/ui/sections/PageHero";
 
-// Existing /contact design preserved — left column unchanged. The right
-// column swaps the prior Web3Forms-based <form> for the HubspotForm
-// component, which mounts hbspt.forms.create against the portal/form/region
-// values pulled from siteSettings on the server side and threaded down.
-//
-// If any of portalId / formId / region are missing (e.g. an editor hasn't
-// finished Site Settings yet), HubspotForm renders a clear placeholder
-// instead of silently breaking the page.
-
-type Props = {
-  portalId?: string;
-  formId?: string;
-  region?: string;
-};
-
-export function ContactPageContent({ portalId, formId, region }: Props) {
+// /contact — left column is contact info, right column is a custom form
+// (ContactForm) that emails the team through /api/contact.
+export function ContactPageContent() {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden" style={{ background: "#0b0f1a" }}>
-        <div className="absolute top-20 right-20 ascii-art text-white/10 hidden lg:block">
-          {`CCCCCCCCCC
-CCCCCCCCCCCC
-CCCCCCCCCCCCCC
-CCCCCCCCCCCC
-CCCCCCCCCC`}
-        </div>
-
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <motion.div
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600/20 backdrop-blur-sm rounded-full mb-8 border border-blue-500/30"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="font-mono text-sm font-semibold tracking-wider text-blue-300">
-              // CONTACT US //
-            </span>
-          </motion.div>
-
-          <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-white"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Let's build the{" "}
-            <span className="text-gradient">future</span> together
-          </motion.h1>
-
-          <motion.p
-            className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            Have a question or want to work with us? We'd love to hear from you.
-          </motion.p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Contact Us"
+        title={<>Let&apos;s build the <span className="text-gradient">future</span> together</>}
+        subtitle="Have a question or want to work with us? We'd love to hear from you."
+      />
 
       {/* Contact Form & Info */}
       <section className="py-32 px-6 md:px-12 lg:px-20 bg-white">
@@ -102,8 +53,8 @@ CCCCCCCCCC`}
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <HiLocationMarker className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <HiLocationMarker className="w-6 h-6 text-cyan-600" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg mb-1">Location</h3>
@@ -114,8 +65,8 @@ CCCCCCCCCC`}
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <HiPhone className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(0,24,66,0.08)" }}>
+                    <HiPhone className="w-6 h-6" style={{ color: "#001842" }} />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg mb-1">
@@ -132,14 +83,6 @@ CCCCCCCCCC`}
               <div className="mt-12">
                 <h3 className="font-semibold text-lg mb-4">Follow Us</h3>
                 <div className="flex gap-4">
-                  <a
-                    href="https://x.com/emmanueldoji"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 bg-gray-100 hover:bg-blue-600 hover:text-white rounded-lg flex items-center justify-center transition-all duration-300"
-                  >
-                    <FaXTwitter className="w-5 h-5" />
-                  </a>
                   <a
                     href="https://github.com/foniolabs"
                     target="_blank"
@@ -167,12 +110,10 @@ CCCCCCCCCC`}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <div className="bg-gray-50 rounded-2xl p-8">
-                <HubspotForm
-                  portalId={portalId ?? ""}
-                  formId={formId ?? ""}
-                  region={region ?? "na1"}
-                />
+              <div className="rounded-2xl p-8" style={{ background: "#f6f8fc", border: "1px solid rgba(0,24,66,0.08)" }}>
+                <h3 className="text-2xl font-bold mb-1" style={{ color: "#001842" }}>Send us a message</h3>
+                <p className="text-gray-500 mb-6">We&apos;ll get back to you within 24–48 hours.</p>
+                <ContactForm />
               </div>
             </motion.div>
           </div>

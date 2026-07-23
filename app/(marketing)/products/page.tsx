@@ -1,5 +1,4 @@
 import { sanityFetch } from "@/lib/sanity/fetch";
-import { productsListQuery } from "@/lib/sanity/queries";
 
 import { ProductsPageContent, type ProductView } from "./ProductsPageContent";
 
@@ -15,33 +14,22 @@ type ProductDoc = {
 // Stable name → accent color so the visual continuity holds when marketing
 // adds a new product. Unknown products fall back to indigo.
 const COLOR_BY_SLUG: Record<string, string> = {
-  "futbol-fusion": "#34d399",
   skoolbox: "#fb923c",
-  stacka: "#60a5fa",
+  "rabit-wallet": "#6366f1",
 };
 
 const TAG_BY_SLUG: Record<string, string> = {
-  "futbol-fusion": "Web3 Gaming",
   skoolbox: "EdTech",
-  stacka: "Fintech",
+  "rabit-wallet": "Web3 Wallet",
+};
+
+// Status isn't a schema field yet (see MIGRATION.md §3) — map it by slug.
+const STATUS_BY_SLUG: Record<string, string> = {
+  skoolbox: "In Development",
+  "rabit-wallet": "In Development",
 };
 
 const FALLBACK: ProductView[] = [
-  {
-    slug: null,
-    name: "Futbol Fusion",
-    tag: "Web3 Gaming",
-    color: "#34d399",
-    description:
-      "A Web3-powered football gaming platform that merges the excitement of fantasy sports with blockchain ownership. Players collect, trade, and compete with digital assets in a decentralized gaming ecosystem.",
-    features: [
-      "NFT Player Cards",
-      "Play-to-Earn Mechanics",
-      "Live Match Integration",
-      "Community Tournaments",
-    ],
-    status: "In Development",
-  },
   {
     slug: null,
     name: "Skoolbox",
@@ -54,6 +42,21 @@ const FALLBACK: ProductView[] = [
       "Student Progress Tracking",
       "Parent-Teacher Communication",
       "Offline-First Design",
+    ],
+    status: "In Development",
+  },
+  {
+    slug: null,
+    name: "Rabit Wallet",
+    tag: "Web3 Wallet",
+    color: "#6366f1",
+    description:
+      "An embedded wallet SDK that gives users a non-custodial wallet from a simple email or Google sign-in — no seed phrases, no browser extensions. It supports both EVM chains and Solana from a single login, with a built-in fiat on-ramp.",
+    features: [
+      "Web2 Sign-In",
+      "Non-Custodial Security",
+      "EVM + Solana",
+      "Built-In Fiat On-Ramp",
     ],
     status: "In Development",
   },
@@ -102,9 +105,7 @@ const toView = (p: ListingDoc): ProductView => ({
   features: (p.features ?? [])
     .map((f) => f.title)
     .filter((t): t is string => !!t),
-  // Status isn't migrated as a schema field (see MIGRATION.md §3) — show a
-  // generic "Active" until we add it back to the schema.
-  status: "Active",
+  status: STATUS_BY_SLUG[p.slug] ?? "Active",
 });
 
 export default async function ProductsPage() {

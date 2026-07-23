@@ -62,13 +62,15 @@ const renderCtaLinks = (
         const isGhost = cta.variant === "ghost";
         const cls = isGhost
           ? dark
-            ? "text-blue-300 font-semibold hover:underline underline-offset-4"
-            : "text-blue-600 font-semibold hover:underline underline-offset-4"
+            ? "text-cyan-200 font-semibold hover:underline underline-offset-4"
+            : "font-semibold hover:underline underline-offset-4 text-[#0a6cff]"
           : isPrimary
-            ? "btn-primary text-lg"
+            ? dark
+              ? "px-8 py-3.5 rounded-lg font-semibold text-base bg-white text-[#001842] transition-transform duration-200 hover:-translate-y-0.5"
+              : "btn-primary text-base"
             : dark
-              ? "btn-outline text-lg"
-              : "px-8 py-3 border-2 border-gray-900 rounded-lg font-semibold hover:bg-gray-900 hover:text-white transition-all duration-300";
+              ? "px-8 py-3.5 rounded-lg font-semibold text-base text-white border border-white/40 hover:bg-white/10 transition-colors duration-200"
+              : "px-8 py-3.5 rounded-lg font-semibold text-base border-[1.5px] border-[#001842] text-[#001842] transition-transform duration-200 hover:-translate-y-0.5";
         const inner = isGhost ? (
           <span className={cls}>{cta.label ?? "Learn more"}</span>
         ) : (
@@ -105,14 +107,16 @@ function HeroSection({ s }: { s: Section }) {
       <div className={`max-w-6xl mx-auto ${variant === "split" ? "grid md:grid-cols-2 gap-12 items-center" : "text-center"}`}>
         <div>
           {!!s.eyebrow && (
-            <div className={`inline-flex items-center gap-2 px-6 py-3 backdrop-blur-sm rounded-full mb-8 border ${dark ? "bg-blue-600/20 border-blue-500/30" : "bg-blue-50 border-blue-200"}`}>
-              <span className={`font-mono text-sm font-semibold tracking-wider ${dark ? "text-blue-300" : "text-blue-600"}`}>
+            <div className="inline-flex items-center gap-3 mb-5">
+              <span className="h-px w-8" style={{ background: dark ? "rgba(255,255,255,0.5)" : "#0a6cff" }} />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: dark ? "rgba(255,255,255,0.85)" : "#0a6cff" }}>
                 {s.eyebrow as string}
               </span>
+              <span className="h-px w-8" style={{ background: dark ? "rgba(255,255,255,0.5)" : "#0a6cff" }} />
             </div>
           )}
           {!!s.headline && (
-            <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight ${dark ? "text-white" : "text-gray-900"}`}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight" style={dark ? { color: "#fff" } : { color: "#001842" }}>
               {s.headline as string}
             </h1>
           )}
@@ -141,16 +145,18 @@ function FeatureGridSection({ s }: { s: Section }) {
     <section className="py-32 px-6 md:px-12 lg:px-20 bg-white">
       <div className="max-w-6xl mx-auto">
         {Boolean(s.eyebrow || s.headline || s.intro) && (
-          <div className="text-center mb-20">
+          <div className="text-center mb-16">
             {!!s.eyebrow && (
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-blue-50 backdrop-blur-sm rounded-full mb-8 border border-blue-200">
-                <span className="font-mono text-sm font-semibold tracking-wider text-blue-600">
+              <div className="inline-flex items-center gap-3 mb-5">
+                <span className="h-px w-8" style={{ background: "#0a6cff" }} />
+                <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: "#0a6cff" }}>
                   {s.eyebrow as string}
                 </span>
+                <span className="h-px w-8" style={{ background: "#0a6cff" }} />
               </div>
             )}
             {!!s.headline && (
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ color: "#001842" }}>
                 {s.headline as string}
               </h2>
             )}
@@ -205,43 +211,45 @@ function RichTextSection({ s }: { s: Section }) {
 
 function CtaSection({ s }: { s: Section }) {
   const tone = (s.tone as string) ?? "default";
+  // dark / accent → brand navy→blue band; default → light strip on white.
   const dark = tone === "dark" || tone === "accent";
-  // accent: blue gradient ramp; dark: matches the site's #0b0f1a hero
-  // background; default: light bg-gray-50 strip used between white sections.
-  const sectionStyle =
-    tone === "accent"
-      ? { background: "linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)" }
-      : tone === "dark"
-        ? { background: "#0b0f1a" }
-        : undefined;
-  const sectionClass =
-    tone === "default"
-      ? "py-32 px-6 md:px-12 lg:px-20 bg-gray-50"
-      : "py-32 px-6 md:px-12 lg:px-20";
   return (
-    <section className={sectionClass} style={sectionStyle}>
-      <div className="max-w-4xl mx-auto text-center">
-        {!!s.eyebrow && (
-          <div className={`inline-flex items-center gap-2 px-6 py-3 backdrop-blur-sm rounded-full mb-8 border ${dark ? "bg-white/10 border-white/20" : "bg-blue-50 border-blue-200"}`}>
-            <span className={`font-mono text-sm font-semibold tracking-wider ${dark ? "text-blue-200" : "text-blue-600"}`}>
-              {s.eyebrow as string}
-            </span>
-          </div>
+    <section className="px-6 md:px-12 lg:px-20 py-16 bg-white">
+      <div
+        className={`max-w-6xl mx-auto rounded-3xl px-6 md:px-12 lg:px-16 py-16 text-center relative overflow-hidden ${dark ? "text-white" : ""}`}
+        style={dark ? { background: "linear-gradient(135deg, #001842 0%, #0a6cff 100%)" } : { background: "#f6f8fc", border: "1px solid rgba(0,24,66,0.1)" }}
+      >
+        {dark && (
+          <>
+            <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full blur-3xl" style={{ background: "rgba(0,218,242,0.25)" }} />
+            <div className="absolute -bottom-16 -left-16 w-64 h-64 rounded-full blur-3xl" style={{ background: "rgba(10,108,255,0.25)" }} />
+          </>
         )}
-        {!!s.headline && (
-          <h2 className={`text-4xl md:text-5xl font-bold mb-8 ${dark ? "text-white" : "text-gray-900"}`}>
-            {s.headline as string}
-          </h2>
-        )}
-        {!!s.body && (
-          <p className={`text-xl mb-8 max-w-2xl mx-auto ${dark ? "text-gray-300" : "text-gray-600"}`}>
-            {s.body as string}
-          </p>
-        )}
-        {renderCtaLinks(
-          s.buttons as Array<{ label?: string; href?: string; variant?: string }>,
-          { dark },
-        )}
+        <div className="relative z-10">
+          {!!s.eyebrow && (
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <span className="h-px w-8" style={{ background: dark ? "rgba(255,255,255,0.5)" : "#0a6cff" }} />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: dark ? "rgba(255,255,255,0.85)" : "#0a6cff" }}>
+                {s.eyebrow as string}
+              </span>
+              <span className="h-px w-8" style={{ background: dark ? "rgba(255,255,255,0.5)" : "#0a6cff" }} />
+            </div>
+          )}
+          {!!s.headline && (
+            <h2 className="text-4xl md:text-5xl font-bold mb-6" style={dark ? undefined : { color: "#001842" }}>
+              {s.headline as string}
+            </h2>
+          )}
+          {!!s.body && (
+            <p className={`text-lg md:text-xl mb-8 max-w-2xl mx-auto ${dark ? "text-white/80" : "text-gray-600"}`}>
+              {s.body as string}
+            </p>
+          )}
+          {renderCtaLinks(
+            s.buttons as Array<{ label?: string; href?: string; variant?: string }>,
+            { dark },
+          )}
+        </div>
       </div>
     </section>
   );

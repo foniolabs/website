@@ -13,6 +13,13 @@ import {
   productBySlugQuery,
 } from "@/lib/sanity/queries";
 
+// Live product sites, keyed by slug (until a "website" field is added to the
+// product schema).
+const WEBSITE_BY_SLUG: Record<string, string> = {
+  skoolbox: "https://skoolbox.xyz",
+  "rabit-wallet": "https://rabitwallet.xyz",
+};
+
 type ProductDoc = {
   _id: string;
   name: string;
@@ -96,6 +103,7 @@ export default async function ProductPage({
   });
   if (!doc) notFound();
 
+  const website = WEBSITE_BY_SLUG[doc.slug];
   const heroSrc = doc.heroImage?.asset
     ? urlFor(doc.heroImage as never).width(1600).url()
     : null;
@@ -110,21 +118,36 @@ export default async function ProductPage({
           { name: doc.name, href: `/products/${doc.slug}` },
         ]}
       />
-      <header className="px-6 md:px-12 pt-32 pb-12">
+      <header className="px-6 md:px-12 pt-32 pb-12 bg-white">
         <div className="max-w-5xl mx-auto">
           <Link
             href="/products"
-            className="text-sm font-mono text-orange-500 hover:underline underline-offset-4"
+            className="text-sm font-mono hover:underline underline-offset-4"
+            style={{ color: "#0a6cff" }}
           >
             ← All products
           </Link>
-          <h1 className="mt-6 text-4xl md:text-6xl font-bold tracking-tight">
+          <h1 className="mt-6 text-4xl md:text-6xl font-bold tracking-tight" style={{ color: "#001842" }}>
             {doc.name}
           </h1>
           {doc.tagline && (
-            <p className="mt-4 text-xl text-neutral-400 max-w-3xl">
+            <p className="mt-4 text-xl text-gray-500 max-w-3xl">
               {doc.tagline}
             </p>
+          )}
+          {website && (
+            <a
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white text-base transition-transform duration-200 hover:-translate-y-0.5"
+              style={{ background: "#0a6cff" }}
+            >
+              Visit website
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </a>
           )}
         </div>
       </header>
@@ -148,31 +171,32 @@ export default async function ProductPage({
       )}
 
       {doc.description ? (
-        <section className="px-6 md:px-12 pb-16">
-          <div className="max-w-3xl mx-auto prose prose-invert prose-headings:tracking-tight">
+        <section className="px-6 md:px-12 pb-16 bg-white">
+          <div className="max-w-3xl mx-auto prose prose-lg prose-headings:tracking-tight prose-headings:text-[#001842] prose-p:text-gray-600 prose-a:text-[#0a6cff]">
             <PortableText value={doc.description as never} />
           </div>
         </section>
       ) : null}
 
       {doc.features && doc.features.length > 0 && (
-        <section className="px-6 md:px-12 pb-16">
+        <section className="px-6 md:px-12 pb-16 bg-white">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-8">Features</h2>
-            <div className="grid gap-4 md:grid-cols-2">
+            <h2 className="text-2xl md:text-3xl font-bold mb-8" style={{ color: "#001842" }}>Features</h2>
+            <div className="grid gap-5 md:grid-cols-2">
               {doc.features.map((f, i) => (
                 <div
                   key={i}
-                  className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6"
+                  className="rounded-2xl p-6 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  style={{ border: "1px solid rgba(0,24,66,0.1)", boxShadow: "0 8px 24px rgba(0,24,66,0.05)" }}
                 >
                   {f.icon && (
-                    <div className="font-mono text-xs text-orange-500 mb-2">
+                    <div className="font-mono text-xs mb-2" style={{ color: "#0a6cff" }}>
                       {f.icon}
                     </div>
                   )}
-                  <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: "#001842" }}>{f.title}</h3>
                   {f.body && (
-                    <p className="text-sm text-neutral-400 leading-relaxed">
+                    <p className="text-sm text-gray-600 leading-relaxed">
                       {f.body}
                     </p>
                   )}
@@ -184,11 +208,12 @@ export default async function ProductPage({
       )}
 
       {doc.ctaUrl && (
-        <section className="px-6 md:px-12 pb-24">
+        <section className="px-6 md:px-12 pb-24 bg-white">
           <div className="max-w-3xl mx-auto text-center">
             <Link
               href={doc.ctaUrl}
-              className="inline-block bg-orange-500 hover:bg-orange-400 text-white font-semibold px-8 py-4 rounded-md"
+              className="inline-block text-white font-semibold px-8 py-4 rounded-lg transition-transform duration-200 hover:-translate-y-0.5"
+              style={{ background: "#0a6cff" }}
             >
               {doc.ctaLabel ?? "Learn more"}
             </Link>

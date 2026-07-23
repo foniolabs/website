@@ -1,54 +1,71 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
+
+const NAVY = "#001842";
+
+const pillars = [
+  {
+    stat: "Multi",
+    title: "Industry Focus",
+    body: "Gaming, EdTech, Fintech, and beyond",
+  },
+  {
+    stat: "Africa",
+    title: "First, Global Always",
+    body: "Built from Nigeria for the world",
+  },
+  {
+    stat: "Ship",
+    title: "Real Products, Real Impact",
+    body: "We build and launch — not just research",
+  },
+];
 
 const Mission = () => {
   return (
-    <section className="relative section-blue py-32 px-6 md:px-12 lg:px-20 overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="absolute top-32 right-20 ascii-art text-white/15 hidden xl:block">
-        {`::::::::::
-:::::::::::
-:::::::::::::
-:::::::::::
-:::::::::`}
-      </div>
+    <section className="relative bg-white py-28 md:py-32 px-6 md:px-12 lg:px-20 overflow-hidden">
+      {/* subtle brand wash */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(55% 45% at 15% 10%, rgba(0,218,242,0.07) 0%, transparent 60%)",
+        }}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Label */}
           <motion.div
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full mb-8 border border-white/20"
+            className="flex items-center justify-center gap-3 mb-5"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="w-2 h-2 bg-white rounded-full" />
-            <span className="font-mono text-sm font-semibold tracking-wider">
-              OUR MISSION
+            <span className="h-px w-8" style={{ background: "#0a6cff" }} />
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: "#0a6cff" }}>
+              Our Mission
             </span>
+            <span className="h-px w-8" style={{ background: "#0a6cff" }} />
           </motion.div>
 
-          {/* Heading */}
           <motion.h2
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight"
+            style={{ color: NAVY }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Building technology that solves real problems
+            Building technology that solves{" "}
+            <span className="text-gradient">real problems</span>
           </motion.h2>
 
-          {/* Description */}
           <motion.p
-            className="text-xl md:text-2xl text-white/80 mb-12 leading-relaxed max-w-3xl mx-auto"
+            className="text-lg md:text-xl mb-12 leading-relaxed max-w-3xl mx-auto"
+            style={{ color: "#4b5563" }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -57,44 +74,50 @@ const Mission = () => {
             Fonio Labs is a Nigerian technology studio. We build apps and platforms across industries — identifying high-impact problems and engineering products powered by AI, Web3, and modern software to solve them.
           </motion.p>
 
-          {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <button className="btn-outline text-lg">
-              Our Story
-            </button>
+            <Link href="/about">
+              <button
+                className="px-8 py-3.5 rounded-lg font-semibold text-base transition-all duration-300 hover:-translate-y-0.5"
+                style={{ border: `1.5px solid ${NAVY}`, color: NAVY }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = NAVY;
+                  e.currentTarget.style.color = "#fff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = NAVY;
+                }}
+              >
+                Our Story
+              </button>
+            </Link>
           </motion.div>
         </div>
 
         {/* Pillars */}
         <motion.div
-          className="grid md:grid-cols-3 gap-8 mt-24"
+          className="grid md:grid-cols-3 gap-6 mt-20"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.8 }}
         >
-          <div className="text-center p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <div className="text-5xl md:text-6xl font-bold mb-4">Multi</div>
-            <div className="text-lg text-white/70">Industry Focus</div>
-            <p className="text-sm text-white/50 mt-2">Gaming, EdTech, Fintech, and beyond</p>
-          </div>
-
-          <div className="text-center p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <div className="text-5xl md:text-6xl font-bold mb-4">Africa</div>
-            <div className="text-lg text-white/70">First, Global Always</div>
-            <p className="text-sm text-white/50 mt-2">Built from Nigeria for the world</p>
-          </div>
-
-          <div className="text-center p-8 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <div className="text-5xl md:text-6xl font-bold mb-4">Ship</div>
-            <div className="text-lg text-white/70">Real Products, Real Impact</div>
-            <p className="text-sm text-white/50 mt-2">We build and launch — not just research</p>
-          </div>
+          {pillars.map((p) => (
+            <div
+              key={p.title}
+              className="text-center p-10 rounded-2xl bg-white transition-shadow duration-300 hover:shadow-xl"
+              style={{ border: `1px solid ${NAVY}12`, boxShadow: "0 8px 24px rgba(0,24,66,0.05)" }}
+            >
+              <div className="text-4xl md:text-5xl font-bold mb-3 text-gradient">{p.stat}</div>
+              <div className="text-lg font-semibold" style={{ color: NAVY }}>{p.title}</div>
+              <p className="text-sm mt-2" style={{ color: "#6b7280" }}>{p.body}</p>
+            </div>
+          ))}
         </motion.div>
       </div>
     </section>

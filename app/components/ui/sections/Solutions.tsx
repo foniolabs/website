@@ -1,82 +1,57 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
+
+const NAVY = "#001842";
 
 const products = [
   {
-    name: "Futbol Fusion",
-    tag: "Web3 Gaming",
-    tagColor: "text-emerald-400",
-    tagBg: "bg-emerald-400/10 border-emerald-400/20",
-    description:
-      "PvP fantasy football where players truly own the game. Pick your squad, challenge opponents, and earn real rewards — all on-chain. Built for Solana dApp Store with an Android APK available.",
-    gradient: "from-emerald-500 to-teal-500",
-    highlights: ["Player-Owned Assets", "PvP Matchmaking", "Solana Network", "Android APK"],
-    status: "Live",
-    statusColor: "bg-emerald-500",
-  },
-  {
     name: "Skoolbox",
     tag: "EdTech",
-    tagColor: "text-orange-400",
-    tagBg: "bg-orange-400/10 border-orange-400/20",
+    tagColor: "text-orange-600",
+    tagBg: "bg-orange-50 border-orange-100",
+    logo: "/projects/skoolbox_logo.svg",
+    url: "https://skoolbox.xyz",
     description:
-      "An offline-first learning platform with an integrated AI tutor built for secondary school students in underserved Nigerian communities. Prep for WAEC, NECO, and JAMB — no internet required.",
-    gradient: "from-orange-500 to-amber-500",
-    highlights: ["Offline-First AI Tutor", "WAEC / NECO / JAMB Prep", "Vocational Skills", "Runs on Low-Cost Android"],
+      "An offline-first learning platform with a built-in AI copilot tutor for junior and senior secondary students in underserved Nigerian communities. From JSS coursework to WAEC, NECO, and JAMB prep — no internet required.",
+    highlights: ["Offline-First Copilot Tutor", "JSS + WAEC / NECO / JAMB", "Runs on Low-Cost Laptops"],
     status: "In Development",
     statusColor: "bg-orange-500",
   },
-  // {
-  //   name: "Stacka",
-  //   tag: "Fintech",
-  //   tagColor: "text-blue-400",
-  //   tagBg: "bg-blue-400/10 border-blue-400/20",
-  //   description:
-  //     "A next-generation investment platform bridging crypto and traditional finance. Built for crypto-native users in Nigeria and emerging markets, with unified access to stocks, crypto, and DeFi using USDC.",
-  //   gradient: "from-blue-500 to-cyan-500",
-  //   highlights: ["Stocks + Crypto + DeFi", "USDC-Powered", "Emerging Markets", "Unified Portfolio"],
-  //   status: "In Development",
-  //   statusColor: "bg-blue-500",
-  // },
 ];
 
 const Solutions = () => {
   return (
-    <section className="relative section-dark py-32 px-6 md:px-12 lg:px-20 overflow-hidden">
-      {/* Background accents */}
-      <div className="absolute top-0 left-0 w-full h-px" style={{ background: "linear-gradient(to right, transparent, rgba(99,102,241,0.3), transparent)" }} />
-      <div className="absolute top-40 left-10 ascii-art text-blue-500/10 hidden lg:block">
-        {`****++LLLL
-****LLLLLL
-****++LLLL
-****LLLLLL`}
-      </div>
-      <div className="absolute bottom-40 right-10 ascii-art text-purple-500/10 hidden lg:block">
-        {`VVVVVVIIII
-VIIIIIIII
-VIIIIIIII
-IIIIIIIII`}
-      </div>
+    <section className="relative py-28 md:py-32 px-6 md:px-12 lg:px-20 overflow-hidden" style={{ background: "#f6f8fc" }}>
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(50% 40% at 85% 5%, rgba(10,108,255,0.06) 0%, transparent 60%)",
+        }}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-16">
           <motion.div
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full mb-8"
-            style={{ background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.25)", backdropFilter: "blur(8px)" }}
+            className="flex items-center justify-center gap-3 mb-5"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="font-mono text-sm font-semibold tracking-wider text-indigo-300">
-              // OUR PRODUCTS //
+            <span className="h-px w-8" style={{ background: "#0a6cff" }} />
+            <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: "#0a6cff" }}>
+              Our Products
             </span>
+            <span className="h-px w-8" style={{ background: "#0a6cff" }} />
           </motion.div>
 
           <motion.h2
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+            style={{ color: NAVY }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -87,7 +62,8 @@ IIIIIIIII`}
           </motion.h2>
 
           <motion.p
-            className="text-xl text-gray-400 max-w-2xl mx-auto"
+            className="text-lg md:text-xl max-w-2xl mx-auto"
+            style={{ color: "#4b5563" }}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -97,28 +73,22 @@ IIIIIIIII`}
           </motion.p>
         </div>
 
-        {/* Products grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Products */}
+        <div className="flex justify-center">
           {products.map((product, index) => (
             <motion.div
               key={product.name}
-              className="card-hover bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 relative overflow-hidden group flex flex-col"
+              className="bg-white rounded-2xl p-8 md:p-10 relative overflow-hidden group flex flex-col w-full max-w-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              style={{ border: `1px solid ${NAVY}12`, boxShadow: "0 8px 24px rgba(0,24,66,0.05)" }}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
             >
-              {/* Gradient orb */}
-              <div
-                className={`absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br ${product.gradient} opacity-15 blur-3xl group-hover:opacity-25 transition-all duration-500`}
-              />
-
               <div className="relative z-10 flex flex-col flex-1">
                 {/* Header row */}
-                <div className="flex items-start justify-between mb-5">
-                  <div
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold font-mono ${product.tagColor} ${product.tagBg}`}
-                  >
+                <div className="flex items-start justify-between mb-6">
+                  <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold font-mono ${product.tagColor} ${product.tagBg}`}>
                     {product.tag}
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -127,15 +97,22 @@ IIIIIIIII`}
                   </div>
                 </div>
 
-                {/* Icon placeholder */}
+                {/* Product logo */}
                 <div
-                  className={`w-14 h-14 mb-5 rounded-xl bg-gradient-to-br ${product.gradient} flex items-center justify-center`}
+                  className="w-16 h-16 mb-5 rounded-xl flex items-center justify-center p-2.5 bg-white"
+                  style={{ border: `1px solid ${NAVY}12` }}
                 >
-                  <div className="w-7 h-7 bg-white/20 rounded-lg" />
+                  <Image
+                    src={product.logo}
+                    alt={`${product.name} logo`}
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
 
-                <h3 className="text-2xl font-bold mb-3 text-white">{product.name}</h3>
-                <p className="text-gray-400 mb-6 leading-relaxed text-sm flex-1">
+                <h3 className="text-2xl font-bold mb-3" style={{ color: NAVY }}>{product.name}</h3>
+                <p className="mb-6 leading-relaxed text-sm flex-1" style={{ color: "#4b5563" }}>
                   {product.description}
                 </p>
 
@@ -145,19 +122,25 @@ IIIIIIIII`}
                     <span
                       key={h}
                       className="text-xs px-2.5 py-1 rounded-md font-mono"
-                      style={{ background: "rgba(255,255,255,0.05)", color: "#9ca3af", border: "1px solid rgba(255,255,255,0.08)" }}
+                      style={{ background: `${NAVY}0a`, color: "#4b5563", border: `1px solid ${NAVY}12` }}
                     >
                       {h}
                     </span>
                   ))}
                 </div>
 
-                <button className={`text-sm font-semibold flex items-center gap-2 hover:gap-3.5 transition-all duration-300 ${product.tagColor}`}>
-                  Learn More
+                <a
+                  href={product.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-semibold inline-flex items-center gap-2 hover:gap-3.5 transition-all duration-300 w-fit"
+                  style={{ color: "#0a6cff" }}
+                >
+                  Visit Skoolbox
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
-                </button>
+                </a>
               </div>
             </motion.div>
           ))}

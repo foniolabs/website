@@ -2,7 +2,9 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
-import { FaGithub, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaGithub, FaGlobe, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa";
+
+import { PageHero } from "@/app/components/ui/sections/PageHero";
 
 export type TeamMemberView = {
   name: string;
@@ -14,60 +16,21 @@ export type TeamMemberView = {
     linkedin?: string;
     x?: string;
     youtube?: string;
+    website?: string;
   };
 };
 
 export function TeamPageContent({ team }: { team: TeamMemberView[] }) {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section
-        className="relative pt-40 pb-32 px-6 md:px-12 lg:px-20 overflow-hidden"
-        style={{ background: "#0b0f1a" }}
-      >
-        <div className="absolute top-20 left-20 ascii-art text-white/10 hidden lg:block">
-          {`TTTTTTTTTT
-TTTTTTTTTTT
-TTTTTTTTTTTT
-TTTTTTTTTTT
-TTTTTTTTTT`}
-        </div>
-
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <motion.div
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600/20 backdrop-blur-sm rounded-full mb-8 border border-blue-500/30"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="font-mono text-sm font-semibold tracking-wider text-blue-300">
-              // OUR TEAM //
-            </span>
-          </motion.div>
-
-          <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-white"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Meet the minds behind{" "}
-            <span className="text-gradient">Fonio Labs</span>
-          </motion.h1>
-
-          <motion.p
-            className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            A passionate team building products that change industries.
-          </motion.p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Our Team"
+        title={<>Meet the minds behind <span className="text-gradient">Fonio Labs</span></>}
+        subtitle="A passionate team building products that change industries."
+      />
 
       {/* Team Grid */}
-      <section className="py-32 px-6 md:px-12 lg:px-20 bg-white">
+      <section className="pb-24 pt-8 px-6 md:px-12 lg:px-20 bg-white">
         <div className="max-w-7xl mx-auto">
           <div
             className={
@@ -155,6 +118,17 @@ TTTTTTTTTT`}
                         <FaYoutube />
                       </a>
                     )}
+                    {member.social.website && (
+                      <a
+                        href={member.social.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 bg-gray-100 hover:bg-blue-600 hover:text-white rounded-lg flex items-center justify-center transition-all duration-300"
+                        aria-label="Personal website"
+                      >
+                        <FaGlobe />
+                      </a>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -187,11 +161,14 @@ TTTTTTTTTT`}
                 from you.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button className="btn-primary text-lg">
+                <button className="btn-primary text-base">
                   View Open Positions
                 </button>
                 <a href="/contact">
-                  <button className="px-8 py-3 border-2 border-gray-900 rounded-lg font-semibold hover:bg-gray-900 hover:text-white transition-all duration-300">
+                  <button
+                    className="px-8 py-3.5 rounded-lg font-semibold text-base transition-all duration-300 hover:-translate-y-0.5"
+                    style={{ border: "1.5px solid #001842", color: "#001842" }}
+                  >
                     Get in Touch
                   </button>
                 </a>
@@ -205,19 +182,12 @@ TTTTTTTTTT`}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <div className="bg-gradient-primary rounded-3xl p-16 relative overflow-hidden">
-                <div className="ascii-art text-white/30 text-center text-sm">
-                  {`::::::::::::::::
-::::::::::::::::::
-::::::::::::::::::::
-::::::::::::::::::::::
-::::::::::::::::::::::::
-::::::::::::::::::::::
-::::::::::::::::::::
-::::::::::::::::::
-::::::::::::::::
-::::::::::::::`}
-                </div>
+              <div
+                className="rounded-3xl p-16 relative overflow-hidden aspect-[4/3] flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, #0a6cff 0%, #001842 100%)" }}
+              >
+                <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full blur-3xl" style={{ background: "rgba(0,218,242,0.25)" }} />
+                <Image src="/images/logo.svg" alt="" width={140} height={140} className="w-32 h-32 object-contain opacity-90 relative z-10" />
               </div>
             </motion.div>
           </div>

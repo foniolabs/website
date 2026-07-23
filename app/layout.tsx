@@ -27,7 +27,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Fonio Labs — Building the Future of Web3 & AI",
+    default: "Fonio Labs",
     template: "%s · Fonio Labs",
   },
   description:

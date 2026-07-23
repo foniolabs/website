@@ -18,6 +18,7 @@ type TeamMemberDoc = {
     linkedin?: string;
     x?: string;
     youtube?: string;
+    website?: string;
   };
   order?: number;
 };
