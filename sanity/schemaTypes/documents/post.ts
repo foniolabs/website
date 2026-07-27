@@ -5,7 +5,7 @@ import { slugInputComponents } from "../../components/SlugInput";
 
 export const post = defineType({
   name: "post",
-  title: "News post",
+  title: "Blog post",
   type: "document",
   icon: DocumentTextIcon,
   groups: [

@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/about", label: "About" },
   { href: "/team", label: "Team" },
   { href: "/products", label: "Products" },
-  { href: "/news", label: "News" },
+  { href: "/blog", label: "Blog" },
 ];
 
 const Header = () => {

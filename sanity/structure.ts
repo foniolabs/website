@@ -12,7 +12,7 @@ import type { StructureResolver } from "sanity/structure";
 
 // Custom desk:
 //  - Singletons (Site Settings, Navigation) pinned at the top.
-//  - News defaults to publishedAt desc so editors land on the latest.
+//  - Blog defaults to publishedAt desc so editors land on the latest.
 //  - Other content types each get their own list item with a custom icon so
 //    the rail reads as a content map, not a flat alphabetised dump.
 //  - Day 4's presentation tool will sit beside this in the tool bar.
@@ -45,12 +45,12 @@ export const structure: StructureResolver = (S) =>
         .schemaType("page")
         .child(S.documentTypeList("page").title("Pages")),
       S.listItem()
-        .title("News")
+        .title("Blog")
         .icon(DocumentTextIcon)
         .schemaType("post")
         .child(
           S.documentTypeList("post")
-            .title("News")
+            .title("Blog")
             .defaultOrdering([{ field: "publishedAt", direction: "desc" }]),
         ),
       S.listItem()

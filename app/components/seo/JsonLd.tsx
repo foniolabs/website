@@ -9,7 +9,7 @@ const SITE_URL = (
 // ld+json"> tag. They're server components so the JSON is pre-serialised —
 // zero runtime cost. Schema.org types used:
 //   - Organization (site-wide, in root layout)
-//   - Article (per news post, on /news/[slug])
+//   - Article (per blog post, on /blog/[slug])
 //   - Product (per product, on /products/[slug])
 //   - BreadcrumbList (per deep route)
 
@@ -102,7 +102,7 @@ export function ArticleJsonLd({
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${SITE_URL}/news/${slug}`,
+      "@id": `${SITE_URL}/blog/${slug}`,
     },
   };
   return (

@@ -21,7 +21,7 @@ import { apiVersion } from "../env";
 
 const PATH_PREFIX_BY_TYPE: Record<string, string> = {
   page: "/",
-  post: "/news/",
+  post: "/blog/",
   product: "/products/",
   teamMember: "/team/",
 };

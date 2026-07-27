@@ -5,7 +5,7 @@ import React from "react";
 
 import { PageHero } from "@/app/components/ui/sections/PageHero";
 
-export type NewsPostView = {
+export type BlogPostView = {
   slug: string | null;
   title: string;
   excerpt?: string;
@@ -14,13 +14,13 @@ export type NewsPostView = {
   color: string;
 };
 
-export function NewsPageContent({ posts }: { posts: NewsPostView[] }) {
+export function BlogPageContent({ posts }: { posts: BlogPostView[] }) {
   return (
     <div className="min-h-screen">
       <PageHero
-        eyebrow="News & Updates"
+        eyebrow="Blog & Updates"
         title={<>Latest from <span className="text-gradient">Fonio Labs</span></>}
-        subtitle="Updates on our products, insights from our team, and news from the studio."
+        subtitle="Updates on our products, insights from our team, and stories from the studio."
       />
 
       {/* Posts Grid */}
@@ -64,7 +64,7 @@ export function NewsPageContent({ posts }: { posts: NewsPostView[] }) {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
                   {post.slug ? (
-                    <Link href={`/news/${post.slug}`} className={wrapperClass}>
+                    <Link href={`/blog/${post.slug}`} className={wrapperClass}>
                       {inner}
                     </Link>
                   ) : (

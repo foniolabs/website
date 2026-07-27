@@ -52,10 +52,10 @@ export default defineConfig({
             resolve: (doc) => ({
               locations: [
                 {
-                  title: doc?.title ?? "Untitled news post",
-                  href: `/news/${doc?.slug ?? ""}`,
+                  title: doc?.title ?? "Untitled blog post",
+                  href: `/blog/${doc?.slug ?? ""}`,
                 },
-                { title: "All news", href: "/news" },
+                { title: "All blog posts", href: "/blog" },
               ],
             }),
           },

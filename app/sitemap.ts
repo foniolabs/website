@@ -43,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     u("/about", "weekly", 0.8),
     u("/team", "weekly", 0.6),
     u("/products", "weekly", 0.8),
-    u("/news", "daily", 0.8),
+    u("/blog", "daily", 0.8),
     u("/contact", "monthly", 0.5),
   ];
 
@@ -54,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map((slug) => u(`/p/${slug}`, "weekly", 0.5));
 
   const posts: Entry[] = postSlugs.map((slug) =>
-    u(`/news/${slug}`, "weekly", 0.7),
+    u(`/blog/${slug}`, "weekly", 0.7),
   );
 
   const products: Entry[] = productSlugs.map((slug) =>

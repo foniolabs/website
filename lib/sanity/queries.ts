@@ -149,7 +149,7 @@ export const pageBySlugQuery = groq`*[_type == "page" && slug.current == $slug][
 
 export const allPageSlugsQuery = groq`*[_type == "page" && defined(slug.current)][].slug.current`;
 
-// ---- News (posts) -----------------------------------------------------
+// ---- Blog (posts) -----------------------------------------------------
 
 export const postsListQuery = groq`*[_type == "post" && defined(slug.current)] | order(publishedAt desc){
   _id,

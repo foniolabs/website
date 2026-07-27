@@ -1,7 +1,7 @@
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { postsListQuery } from "@/lib/sanity/queries";
 
-import { NewsPageContent, type NewsPostView } from "./NewsPageContent";
+import { BlogPageContent, type BlogPostView } from "./BlogPageContent";
 
 type PostDoc = {
   _id: string;
@@ -37,7 +37,7 @@ const formatDate = (iso?: string) => {
   }
 };
 
-const FALLBACK: NewsPostView[] = [
+const FALLBACK: BlogPostView[] = [
   {
     slug: null,
     title: "Introducing Futbol Fusion — Web3 Meets Fantasy Sports",
@@ -67,8 +67,8 @@ const FALLBACK: NewsPostView[] = [
   },
 ];
 
-const toView = (p: PostDoc): NewsPostView => {
-  const tag = p.tags?.[0] ?? "News";
+const toView = (p: PostDoc): BlogPostView => {
+  const tag = p.tags?.[0] ?? "Blog";
   return {
     slug: p.slug,
     title: p.title,
@@ -79,11 +79,11 @@ const toView = (p: PostDoc): NewsPostView => {
   };
 };
 
-export default async function NewsPage() {
+export default async function BlogPage() {
   const docs = await sanityFetch<PostDoc[]>({
     query: postsListQuery,
     tags: ["type:post"],
   });
   const posts = docs?.length ? docs.map(toView) : FALLBACK;
-  return <NewsPageContent posts={posts} />;
+  return <BlogPageContent posts={posts} />;
 }

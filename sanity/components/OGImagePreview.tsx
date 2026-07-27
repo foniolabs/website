@@ -18,7 +18,7 @@ type DocLike = {
 
 const HOSTS_BY_TYPE: Record<string, string> = {
   page: "foniolabs.xyz",
-  post: "foniolabs.xyz / News",
+  post: "foniolabs.xyz / Blog",
   product: "foniolabs.xyz / Products",
 };
 

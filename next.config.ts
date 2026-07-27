@@ -48,11 +48,16 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     const docs = await fetchSanityRedirects();
-    return docs.map((r) => ({
-      source: r.from,
-      destination: r.to,
-      permanent: (r.statusCode ?? 301) === 301,
-    }));
+    return [
+      // News → Blog rename: preserve old indexed URLs with permanent redirects.
+      { source: "/news", destination: "/blog", permanent: true },
+      { source: "/news/:slug", destination: "/blog/:slug", permanent: true },
+      ...docs.map((r) => ({
+        source: r.from,
+        destination: r.to,
+        permanent: (r.statusCode ?? 301) === 301,
+      })),
+    ];
   },
 };
 

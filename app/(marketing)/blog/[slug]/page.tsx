@@ -84,7 +84,7 @@ export async function generateMetadata({
     doc.coverImage?.asset?.url ??
     `/api/og?title=${encodeURIComponent(seoTitle)}${
       seoDescription ? `&subtitle=${encodeURIComponent(seoDescription)}` : ""
-    }&eyebrow=${encodeURIComponent("foniolabs.xyz / News")}`;
+    }&eyebrow=${encodeURIComponent("foniolabs.xyz / Blog")}`;
   return {
     title: seoTitle,
     description: seoDescription,
@@ -141,17 +141,17 @@ export default async function PostPage({
       <BreadcrumbJsonLd
         items={[
           { name: "Home", href: "/" },
-          { name: "News", href: "/news" },
-          { name: doc.title, href: `/news/${doc.slug}` },
+          { name: "Blog", href: "/blog" },
+          { name: doc.title, href: `/blog/${doc.slug}` },
         ]}
       />
       <header className="px-6 md:px-12 pt-32 pb-12">
         <div className="max-w-3xl mx-auto">
           <Link
-            href="/news"
+            href="/blog"
             className="text-sm font-mono text-orange-500 hover:underline underline-offset-4"
           >
-            ← All news
+            ← All posts
           </Link>
           {doc.tags && doc.tags.length > 0 && (
             <div className="mt-6 flex flex-wrap gap-2">
