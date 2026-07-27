@@ -20,7 +20,7 @@ const Header = () => {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 flex items-stretch bg-white"
+      className="fixed top-0 left-0 right-0 z-50 flex items-stretch justify-between bg-white"
       style={{ height: `${HEADER_HEIGHT}px` }}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
