@@ -1,8 +1,33 @@
+import type { Metadata } from "next";
+
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { urlFor } from "@/lib/sanity/image";
 import { teamMembersQuery } from "@/lib/sanity/queries";
 
 import { TeamPageContent, type TeamMemberView } from "./TeamPageContent";
+
+const TITLE = "Team";
+const DESCRIPTION =
+  "Meet the people building Fonio Labs — a remote-first team based in Nigeria, working across Web3, AI, and education technology.";
+const OG_IMAGE = `/api/og?title=${encodeURIComponent(TITLE)}&subtitle=${encodeURIComponent(DESCRIPTION)}&eyebrow=${encodeURIComponent("foniolabs.xyz")}`;
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/team" },
+  openGraph: {
+    title: `${TITLE} · Fonio Labs`,
+    description: DESCRIPTION,
+    type: "website",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${TITLE} · Fonio Labs`,
+    description: DESCRIPTION,
+    images: [OG_IMAGE],
+  },
+};
 
 type TeamMemberDoc = {
   _id: string;

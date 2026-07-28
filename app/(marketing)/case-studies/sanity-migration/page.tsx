@@ -6,7 +6,7 @@ import { BreadcrumbJsonLd } from "@/app/components/seo/JsonLd";
 const TITLE = "Migrating foniolabs.xyz to Sanity + Next.js in 14 days";
 const DESCRIPTION =
   "How I rebuilt a static-export marketing site as a Sanity-driven Next.js 16 app on Vercel, with custom Studio components, GROQ-driven ISR, and a Claude Code + Sanity MCP integration the marketing team actually uses.";
-const URL = "https://www.foniolabs.xyz/case-studies/sanity-migration";
+const URL = "https://foniolabs.xyz/case-studies/sanity-migration";
 const PUBLISHED_AT = "2026-06-04";
 
 export const metadata: Metadata = {
@@ -118,7 +118,7 @@ const LEARNED = [
 ];
 
 const RESOURCES = [
-  { label: "Live site", href: "https://www.foniolabs.xyz" },
+  { label: "Live site", href: "https://foniolabs.xyz" },
   { label: "GitHub repo", href: "https://github.com/foniolabs/website" },
   {
     label: "Marketing operating doc (OPERATING.md)",

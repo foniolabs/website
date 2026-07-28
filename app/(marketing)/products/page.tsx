@@ -1,6 +1,31 @@
+import type { Metadata } from "next";
+
 import { sanityFetch } from "@/lib/sanity/fetch";
 
 import { ProductsPageContent, type ProductView } from "./ProductsPageContent";
+
+const TITLE = "Products";
+const DESCRIPTION =
+  "Explore Fonio Labs' product lineup — including Skoolbox, an offline-first AI education platform for African schools, and Rabit Wallet, an embedded Web3 wallet.";
+const OG_IMAGE = `/api/og?title=${encodeURIComponent(TITLE)}&subtitle=${encodeURIComponent(DESCRIPTION)}&eyebrow=${encodeURIComponent("foniolabs.xyz")}`;
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/products" },
+  openGraph: {
+    title: `${TITLE} · Fonio Labs`,
+    description: DESCRIPTION,
+    type: "website",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${TITLE} · Fonio Labs`,
+    description: DESCRIPTION,
+    images: [OG_IMAGE],
+  },
+};
 
 type ProductDoc = {
   _id: string;
