@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,15 @@ const navLinks = [
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Lock body scroll while the mobile sidebar is open so the overlaid page
+  // behind the panel doesn't scroll under it.
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   return (
     <motion.header
@@ -53,8 +62,9 @@ const Header = () => {
         ))}
       </div>
 
-      {/* CTA + mobile hamburger */}
-      <div className="flex items-center flex-shrink-0 px-5 md:px-8 gap-3">
+      {/* CTA + mobile hamburger — ml-auto keeps the hamburger pinned right on
+          mobile, where the desktop nav (which normally fills the middle) is hidden. */}
+      <div className="flex items-center flex-shrink-0 px-5 md:px-8 gap-3 ml-auto lg:ml-0">
         <Link href="/contact" className="hidden lg:block">
           <button className="btn-primary text-sm px-5 py-2">Contact Us</button>
         </Link>
@@ -67,36 +77,67 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile dropdown */}
+      {/* Mobile sidebar panel + page overlay */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            className="lg:hidden absolute top-full left-0 right-0 z-50 border-t bg-white"
-            style={{ borderColor: "rgba(0,24,66,0.1)" }}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.22 }}
-          >
-            <div className="px-6 py-5">
-              <ul className="flex flex-col gap-1 mb-4">
-                {navLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="block py-2.5 px-3 rounded-lg text-sm font-medium text-[#001842]/70 hover:text-[#0a6cff] transition-colors"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                <button className="btn-primary w-full">Contact Us</button>
-              </Link>
-            </div>
-          </motion.div>
+          <>
+            {/* Dimmed backdrop over the page body */}
+            <motion.div
+              className="lg:hidden fixed inset-0 z-40 bg-[#001842]/40 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileOpen(false)}
+              aria-hidden="true"
+            />
+
+            {/* Right-hand sidebar panel */}
+            <motion.aside
+              className="lg:hidden fixed top-0 right-0 bottom-0 z-50 w-72 max-w-[80vw] bg-white shadow-2xl flex flex-col"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.28, ease: "easeInOut" }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+            >
+              <div
+                className="flex items-center justify-between px-5 border-b"
+                style={{ height: `${HEADER_HEIGHT}px`, borderColor: "rgba(0,24,66,0.1)" }}
+              >
+                <span className="text-base font-bold text-[#001842]">Menu</span>
+                <button
+                  className="text-2xl text-[#001842]"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <HiX />
+                </button>
+              </div>
+              <nav className="flex-1 overflow-y-auto px-4 py-5">
+                <ul className="flex flex-col gap-1">
+                  {navLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="block py-3 px-3 rounded-lg text-base font-medium text-[#001842]/70 hover:text-[#0a6cff] hover:bg-[#0a6cff]/5 transition-colors"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <div className="p-4 border-t" style={{ borderColor: "rgba(0,24,66,0.1)" }}>
+                <Link href="/contact" onClick={() => setMobileOpen(false)}>
+                  <button className="btn-primary w-full">Contact Us</button>
+                </Link>
+              </div>
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
     </motion.header>

@@ -105,7 +105,7 @@ export const portableTextComponents: PortableTextComponents = {
         | { width?: number; height?: number }
         | undefined;
       return (
-        <figure className="my-8">
+        <figure className="my-8 flex flex-col items-center">
           <Image
             src={src}
             alt={value.alt ?? ""}
@@ -113,11 +113,11 @@ export const portableTextComponents: PortableTextComponents = {
             height={dims?.height ?? 800}
             placeholder={lqip ? "blur" : "empty"}
             blurDataURL={lqip}
-            className="rounded-lg"
+            className="rounded-lg h-auto w-auto max-h-[420px]"
             sizes="(max-width: 768px) 100vw, 768px"
           />
           {value.caption && (
-            <figcaption className="mt-2 text-sm text-neutral-400">
+            <figcaption className="mt-2 text-sm text-neutral-400 text-center">
               {value.caption}
             </figcaption>
           )}
