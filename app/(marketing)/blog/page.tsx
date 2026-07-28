@@ -1,7 +1,32 @@
+import type { Metadata } from "next";
+
 import { sanityFetch } from "@/lib/sanity/fetch";
 import { postsListQuery } from "@/lib/sanity/queries";
 
 import { BlogPageContent, type BlogPostView } from "./BlogPageContent";
+
+const TITLE = "Blog";
+const DESCRIPTION =
+  "News, product updates, and engineering notes from Fonio Labs — covering Web3, AI, education technology, and the products we're building.";
+const OG_IMAGE = `/api/og?title=${encodeURIComponent(TITLE)}&subtitle=${encodeURIComponent(DESCRIPTION)}&eyebrow=${encodeURIComponent("foniolabs.xyz")}`;
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    title: `${TITLE} · Fonio Labs`,
+    description: DESCRIPTION,
+    type: "website",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${TITLE} · Fonio Labs`,
+    description: DESCRIPTION,
+    images: [OG_IMAGE],
+  },
+};
 
 type PostDoc = {
   _id: string;

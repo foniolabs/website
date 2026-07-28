@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 import { client } from "@/lib/sanity/client";
 import {
-  allPageSlugsQuery,
-  allPostSlugsQuery,
-  allProductSlugsQuery,
+  sitemapPagesQuery,
+  sitemapPostsQuery,
+  sitemapProductsQuery,
 } from "@/lib/sanity/queries";
 
 // Next 16 metadata-route. Hit at /sitemap.xml at runtime; statically
@@ -19,23 +19,29 @@ const SITE_URL = (
 ).replace(/\/+$/, "");
 
 type Entry = MetadataRoute.Sitemap[number];
+type SlugDoc = { slug: string; updatedAt: string };
+
+// Build timestamp — used only for the handful of static, hardcoded routes
+// that have no Sanity doc (and thus no real _updatedAt) to report.
+const BUILD_TIME = new Date();
 
 const u = (
   path: string,
   changeFrequency: Entry["changeFrequency"] = "weekly",
   priority = 0.7,
+  lastModified: Date = BUILD_TIME,
 ): Entry => ({
   url: `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`,
-  lastModified: new Date(),
+  lastModified,
   changeFrequency,
   priority,
 });
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [pageSlugs, postSlugs, productSlugs] = await Promise.all([
-    client.fetch<string[]>(allPageSlugsQuery),
-    client.fetch<string[]>(allPostSlugsQuery),
-    client.fetch<string[]>(allProductSlugsQuery),
+  const [pageDocs, postDocs, productDocs] = await Promise.all([
+    client.fetch<SlugDoc[]>(sitemapPagesQuery),
+    client.fetch<SlugDoc[]>(sitemapPostsQuery),
+    client.fetch<SlugDoc[]>(sitemapProductsQuery),
   ]);
 
   const top: Entry[] = [
@@ -45,20 +51,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     u("/products", "weekly", 0.8),
     u("/blog", "daily", 0.8),
     u("/contact", "monthly", 0.5),
+    u("/case-studies/sanity-migration", "monthly", 0.4),
   ];
 
   // Page docs at /p/<slug> (preview + Sanity-driven). Skip "home" and
   // "about" since they already appear at the canonical top-level paths.
-  const pages: Entry[] = pageSlugs
-    .filter((slug) => slug !== "home" && slug !== "about")
-    .map((slug) => u(`/p/${slug}`, "weekly", 0.5));
+  const pages: Entry[] = pageDocs
+    .filter((doc) => doc.slug !== "home" && doc.slug !== "about")
+    .map((doc) =>
+      u(`/p/${doc.slug}`, "weekly", 0.5, new Date(doc.updatedAt)),
+    );
 
-  const posts: Entry[] = postSlugs.map((slug) =>
-    u(`/blog/${slug}`, "weekly", 0.7),
+  const posts: Entry[] = postDocs.map((doc) =>
+    u(`/blog/${doc.slug}`, "weekly", 0.7, new Date(doc.updatedAt)),
   );
 
-  const products: Entry[] = productSlugs.map((slug) =>
-    u(`/products/${slug}`, "weekly", 0.8),
+  const products: Entry[] = productDocs.map((doc) =>
+    u(`/products/${doc.slug}`, "weekly", 0.8, new Date(doc.updatedAt)),
   );
 
   return [...top, ...pages, ...posts, ...products];
