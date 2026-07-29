@@ -59,9 +59,9 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: "/images/logo.svg",
-    shortcut: "/images/logo.svg",
-    apple: "/images/logo.svg",
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
   },
 };
 
@@ -74,15 +74,6 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/foniolabs-logo.svg?v=2" />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/foniolabs-logo.svg?v=2"
-        />
-        <link rel="shortcut icon" href="/foniolabs-logo.svg?v=2" />
-      </head>
       <body
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
       >
