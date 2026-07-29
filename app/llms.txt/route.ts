@@ -45,6 +45,12 @@ export async function GET() {
 
 Fonio Labs designs and ships its own products rather than taking client work. Flagship products include Skoolbox, an offline-first AI education platform for African schools, and Rabit Wallet, an embedded non-custodial Web3 wallet. The team is remote-first and based in Nigeria.
 
+## Site
+
+${line("Home", "/", "Studio homepage")}
+${line("XML sitemap", "/sitemap.xml", "Machine-readable list of all public URLs")}
+${line("Robots policy", "/robots.txt", "Crawler allow/disallow rules")}
+
 ## Products
 
 ${productLines || line("Products", "/products", "Full product lineup")}
@@ -61,9 +67,9 @@ ${postLines || line("Blog", "/blog", "News, product updates, and engineering not
 
 ## Optional
 
-${line("Full page list (XML sitemap)", "/sitemap.xml")}
 ${line("All blog posts", "/blog")}
 ${line("All products", "/products")}
+${line("Case study: Sanity migration", "/case-studies/sanity-migration")}
 `;
 
   return new Response(body, {

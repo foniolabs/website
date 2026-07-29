@@ -70,8 +70,10 @@ Open `http://localhost:3000` for the site, `http://localhost:3000/studio` for th
 /api/revalidate       Sanity webhook target — tag-based ISR invalidation
 /api/draft-mode/...   Sanity preview-URL signing + draft mode toggle
 /api/contact          Resend-backed contact form (legacy path)
-/sitemap.xml          Pulls page/post/product slugs from Sanity
-/robots.txt           Allows all, disallows /studio + /api/
+/sitemap.xml          Pulls page/post/product slugs from Sanity (excludes noIndex)
+/robots.txt           Allows all, disallows /studio + /api/; points at sitemap
+/llms.txt             Plain-text site index for AI agents (llmstxt.org)
+/llm.txt              301 → /llms.txt
 ```
 
 ---

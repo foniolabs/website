@@ -52,6 +52,8 @@ const nextConfig: NextConfig = {
       // News → Blog rename: preserve old indexed URLs with permanent redirects.
       { source: "/news", destination: "/blog", permanent: true },
       { source: "/news/:slug", destination: "/blog/:slug", permanent: true },
+      // Common misspelling / singular form of llms.txt
+      { source: "/llm.txt", destination: "/llms.txt", permanent: true },
       ...docs.map((r) => ({
         source: r.from,
         destination: r.to,

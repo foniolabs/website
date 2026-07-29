@@ -149,7 +149,7 @@ export const pageBySlugQuery = groq`*[_type == "page" && slug.current == $slug][
 
 export const allPageSlugsQuery = groq`*[_type == "page" && defined(slug.current)][].slug.current`;
 
-export const sitemapPagesQuery = groq`*[_type == "page" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`;
+export const sitemapPagesQuery = groq`*[_type == "page" && defined(slug.current) && seo.noIndex != true]{ "slug": slug.current, "updatedAt": _updatedAt }`;
 
 // ---- Blog (posts) -----------------------------------------------------
 
@@ -192,7 +192,7 @@ export const postBySlugQuery = groq`*[_type == "post" && slug.current == $slug][
 
 export const allPostSlugsQuery = groq`*[_type == "post" && defined(slug.current)][].slug.current`;
 
-export const sitemapPostsQuery = groq`*[_type == "post" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`;
+export const sitemapPostsQuery = groq`*[_type == "post" && defined(slug.current) && seo.noIndex != true]{ "slug": slug.current, "updatedAt": _updatedAt }`;
 
 // ---- Products ---------------------------------------------------------
 
@@ -221,7 +221,7 @@ export const productBySlugQuery = groq`*[_type == "product" && slug.current == $
 
 export const allProductSlugsQuery = groq`*[_type == "product" && defined(slug.current)][].slug.current`;
 
-export const sitemapProductsQuery = groq`*[_type == "product" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`;
+export const sitemapProductsQuery = groq`*[_type == "product" && defined(slug.current) && seo.noIndex != true]{ "slug": slug.current, "updatedAt": _updatedAt }`;
 
 // ---- Team -------------------------------------------------------------
 

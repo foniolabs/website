@@ -7,22 +7,19 @@ import {
   sitemapProductsQuery,
 } from "@/lib/sanity/queries";
 
-// Next 16 metadata-route. Hit at /sitemap.xml at runtime; statically
-// generated at build. Pulls every Sanity slug we render under a public URL,
-// plus the always-on top-level marketing routes.
-//
-// Set NEXT_PUBLIC_SITE_URL in .env.local / Vercel env to your canonical
-// origin (https://foniolabs.xyz). Falls back so dev works.
+// Served at /sitemap.xml. Rebuilds on demand (ISR) so new Sanity slugs
+// appear without a full redeploy. noIndex docs are excluded in the GROQ
+// queries so they never get submitted to search engines.
 
 const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://foniolabs.xyz"
 ).replace(/\/+$/, "");
 
+export const revalidate = 3600;
+
 type Entry = MetadataRoute.Sitemap[number];
 type SlugDoc = { slug: string; updatedAt: string };
 
-// Build timestamp — used only for the handful of static, hardcoded routes
-// that have no Sanity doc (and thus no real _updatedAt) to report.
 const BUILD_TIME = new Date();
 
 const u = (
@@ -37,25 +34,36 @@ const u = (
   priority,
 });
 
+const top: Entry[] = [
+  u("/", "daily", 1.0),
+  u("/about", "weekly", 0.8),
+  u("/team", "weekly", 0.6),
+  u("/products", "weekly", 0.8),
+  u("/blog", "daily", 0.8),
+  u("/contact", "monthly", 0.5),
+  u("/case-studies/sanity-migration", "monthly", 0.4),
+];
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [pageDocs, postDocs, productDocs] = await Promise.all([
-    client.fetch<SlugDoc[]>(sitemapPagesQuery),
-    client.fetch<SlugDoc[]>(sitemapPostsQuery),
-    client.fetch<SlugDoc[]>(sitemapProductsQuery),
-  ]);
+  let pageDocs: SlugDoc[] = [];
+  let postDocs: SlugDoc[] = [];
+  let productDocs: SlugDoc[] = [];
 
-  const top: Entry[] = [
-    u("/", "daily", 1.0),
-    u("/about", "weekly", 0.8),
-    u("/team", "weekly", 0.6),
-    u("/products", "weekly", 0.8),
-    u("/blog", "daily", 0.8),
-    u("/contact", "monthly", 0.5),
-    u("/case-studies/sanity-migration", "monthly", 0.4),
-  ];
+  try {
+    [pageDocs, postDocs, productDocs] = await Promise.all([
+      client.fetch<SlugDoc[]>(sitemapPagesQuery),
+      client.fetch<SlugDoc[]>(sitemapPostsQuery),
+      client.fetch<SlugDoc[]>(sitemapProductsQuery),
+    ]);
+  } catch (err) {
+    console.warn(
+      "[sitemap] Sanity fetch failed — serving static routes only:",
+      (err as Error).message,
+    );
+  }
 
-  // Page docs at /p/<slug> (preview + Sanity-driven). Skip "home" and
-  // "about" since they already appear at the canonical top-level paths.
+  // Page docs at /p/<slug>. Skip "home" and "about" — those already appear
+  // at the canonical top-level paths.
   const pages: Entry[] = pageDocs
     .filter((doc) => doc.slug !== "home" && doc.slug !== "about")
     .map((doc) =>
