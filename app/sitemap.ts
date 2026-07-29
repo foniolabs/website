@@ -12,7 +12,7 @@ import {
 // queries so they never get submitted to search engines.
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://foniolabs.xyz"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.foniolabs.xyz"
 ).replace(/\/+$/, "");
 
 export const revalidate = 3600;

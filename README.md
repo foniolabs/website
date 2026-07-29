@@ -120,7 +120,7 @@ CI runs lint + `npx tsc --noEmit` + `npm run build`. Both must be clean for a PR
 | `NEXT_PUBLIC_SANITY_PROJECT_ID` | `8smu0dlv` | All envs |
 | `NEXT_PUBLIC_SANITY_DATASET` | `production` | All envs |
 | `NEXT_PUBLIC_SANITY_API_VERSION` | `2025-05-31` | All envs |
-| `NEXT_PUBLIC_SITE_URL` | `https://foniolabs.xyz` | Production only |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.foniolabs.xyz` | Production only (www is canonical; apex redirects) |
 | `SANITY_API_READ_TOKEN` | Viewer-role token | Draft mode preview |
 | `SANITY_API_WRITE_TOKEN` | Editor-role token | Local migrate script (do not ship to Vercel) |
 | `SANITY_REVALIDATE_SECRET` | `openssl rand -hex 32` | Matches the Sanity webhook secret |

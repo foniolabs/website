@@ -9,7 +9,7 @@ import { OrganizationJsonLd } from "./components/seo/JsonLd";
 import "./globals.css";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://foniolabs.xyz"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.foniolabs.xyz"
 ).replace(/\/+$/, "");
 
 const spaceGrotesk = Space_Grotesk({

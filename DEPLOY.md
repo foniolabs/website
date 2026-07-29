@@ -34,11 +34,13 @@ In Vercel → your project → **Settings → Environment Variables**, add each 
 | `NEXT_PUBLIC_SANITY_PROJECT_ID` | `8smu0dlv` | Public — shipped to the client. |
 | `NEXT_PUBLIC_SANITY_DATASET` | `production` | Public. |
 | `NEXT_PUBLIC_SANITY_API_VERSION` | `2025-05-31` | Public. Lock to a date so server-side query shapes don't drift. |
-| `NEXT_PUBLIC_SITE_URL` | `https://foniolabs.xyz` (prod) | Drives sitemap.ts + JSON-LD canonicals. For preview env, leave unset — `vercel-url`-based fallback in the code handles it. |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.foniolabs.xyz` (prod) | Canonical host — must match the Vercel primary domain (apex redirects to www). Drives sitemap.ts, robots.txt, and JSON-LD. For preview, leave unset. |
 | `SANITY_API_READ_TOKEN` | https://www.sanity.io/manage/project/8smu0dlv/api → Tokens, role **Viewer** | Used by draft-mode preview. |
 | `SANITY_API_WRITE_TOKEN` | same page, role **Editor** | Optional in deploy — the migrate script + MCP use it locally. Leave unset on Vercel unless a deploy step needs to write. |
 | `SANITY_REVALIDATE_SECRET` | `openssl rand -hex 32` — generate fresh, never reuse the dev one | Must match the Sanity webhook secret in step 3. |
 | `RESEND_API_KEY` | https://resend.com/api-keys | Only if `/api/contact` is in use. |
+
+**Google Search Console:** submit `https://www.foniolabs.xyz/sitemap.xml` (returns HTTP 200). Submitting the apex `https://foniolabs.xyz/sitemap.xml` fails with "Couldn't fetch" because it 308-redirects to www.
 
 After saving: in Vercel → **Deployments**, hit **Redeploy** on the failed first deploy. It should now go green and produce a preview URL like `foniolabs-website.vercel.app`.
 

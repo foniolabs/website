@@ -2,7 +2,7 @@ import { sanityFetch } from "@/lib/sanity/fetch";
 import { siteSettingsQuery } from "@/lib/sanity/queries";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://foniolabs.xyz"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.foniolabs.xyz"
 ).replace(/\/+$/, "");
 
 // JSON-LD helpers. Each component renders a single <script type="application/

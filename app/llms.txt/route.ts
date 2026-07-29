@@ -8,7 +8,7 @@ import { postsListQuery, productsListQuery } from "@/lib/sanity/queries";
 // drifting out of date.
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://foniolabs.xyz"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.foniolabs.xyz"
 ).replace(/\/+$/, "");
 
 type PostDoc = { title: string; slug: string; excerpt?: string };

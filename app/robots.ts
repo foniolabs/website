@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://foniolabs.xyz"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.foniolabs.xyz"
 ).replace(/\/+$/, "");
 
 // Served at /robots.txt. Points crawlers at the sitemap; blocks Studio,
